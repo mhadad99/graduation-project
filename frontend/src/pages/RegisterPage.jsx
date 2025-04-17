@@ -8,10 +8,10 @@ export function RegisterPage() {
         <Container>
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
-              <h1>Register</h1>
+              <h1 className="text-center">Register</h1> {/* Centered the heading */}
               {/* {error && <div className="alert alert-danger">{error}</div>} */}
     
-              <Form >
+              <Form>
                 <Form.Group className="my-3">
                   <Form.Label> Name</Form.Label>
                   <Form.Control
@@ -57,7 +57,7 @@ export function RegisterPage() {
                   ></Form.Control>
                 </Form.Group>
                 <Button
-                  className="my-3"
+                  className="my-3 w-100" // Added w-100 to make the button full width
                   type="submit"
                 //   disabled={isLoading || !password || !email || !name || !username}
                   variant="dark"
