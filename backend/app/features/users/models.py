@@ -15,7 +15,8 @@ class User(Base):
     photo = Column(String, nullable=True)
     birth_date = Column(Date, nullable=True)
     phone = Column(String)
-
+    # created_at
+    # last_scene
     is_deleted = Column(Boolean, default=False)
     is_registered = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
