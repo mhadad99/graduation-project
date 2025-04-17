@@ -7,6 +7,7 @@ import {
   Routes,
 } from "react-router-dom";
 import { SharedLayout } from "../sharedLayout/SharedLayout";
+import { RegisterPage } from "../pages/RegisterPage";
 
 
 export function MainLayout() {
@@ -15,6 +16,7 @@ export function MainLayout() {
       <Routes>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
+          <Route path="register" element={<RegisterPage />} />
           <Route path="*" element={<NotFound />} /> 
         </Route>
       </Routes>
