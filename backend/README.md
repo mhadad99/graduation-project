@@ -42,3 +42,5 @@ Follow these steps to set up and run the project on your local machine.
 
 - NOTE: Every time you want to run the api server do step 3 and 5
 - NOTE2: `pip freeze > requirements.txt` will update the requirements.txt file i guess
+
+##
