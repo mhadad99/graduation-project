@@ -1,21 +1,23 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
-import Home from '../pages/Home';
-import About from '../pages/About';
+import React, { useEffect } from "react";
+import { Home } from "../pages/Home";
+import { NotFound } from "../pages/NotFound";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { SharedLayout } from "../sharedLayout/SharedLayout";
+
 
 export function MainLayout() {
   return (
-    <Router>
-      <Header />
-
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="*" element={<NotFound />} /> 
+        </Route>
       </Routes>
-
-      <Footer />
-    </Router>
+    </BrowserRouter>
   );
 }
