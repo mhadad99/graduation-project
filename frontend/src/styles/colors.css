@@ -17,7 +17,7 @@
     /* Button Colors */
     --color-btn-primary: var(--color-sapphire);
     --color-btn-secondary: var(--color-coral);
-    --color-btn-success: #3A6953;
+    --color-btn-success: #357557;
     --color-btn-danger: #EE2835;
     
     /* Form and Inputs */
@@ -28,7 +28,11 @@
     /* Error and Success States */
     --color-error: var(--color-coral);
     --color-success: var(--color-btn-success);
-    
+
+    /* Header  */
+    --color-header-bg: var(--color-sapphire);    /* #0765BC */
+    --color-header-text: #ffffff;
+
     /* Footer */
     --color-footer-bg: #013263;      /* Deep Sapphire */
     --color-footer-text: #E0EBFF;    /* Light Sapphire */
