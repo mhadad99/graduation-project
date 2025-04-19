@@ -23,6 +23,31 @@ import {
   FaBars,
 } from "react-icons/fa";
 import "../styles/header.css"; // Import your CSS file
+/** @format */
+
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Button,
+  Form,
+  FormControl,
+  Overlay,
+  Popover,
+  Badge,
+  Image,
+} from "react-bootstrap";
+import {
+  FaSearch,
+  FaShoppingCart,
+  FaUser,
+  FaEnvelope,
+  FaBell,
+  FaTruck,
+  FaBars,
+} from "react-icons/fa";
+import "../styles/header.css"; // Import your CSS file
 
 export const Header = ({ isLoggedIn = false }) => {
   // State for managing dropdowns with consolidated naming convention
@@ -279,11 +304,10 @@ export const Header = ({ isLoggedIn = false }) => {
 
             {/* Add Service Button - Only show when logged in */}
             {!isLoggedIn && (
-              <Button 
-                variant="outline-light" 
-                size="sm" 
-                className="py-1 px-3 d-none d-md-block add-service-btn"
-              >
+              <Button
+                variant="outline-light"
+                size="sm"
+                className="py-1 px-3 d-none d-md-block add-service-btn">
                 Add a service <span className="ms-1">+</span>
               </Button>
             )}
