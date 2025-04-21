@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+
+# Env & secrets
+.env
+*.env.local
+
+# Virtual Envs
+venv/
+env/
+
+# IDEs & OS
+.vscode/
+.idea/
+.DS_Store
+
+# Migrations cache
+alembic/versions/*.pyc
+
+# Bytecode
+.mypy_cache/
+pytest_cache/
