@@ -1,7 +1,28 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Navbar, Nav, Container, Button, Form, FormControl, Overlay, Popover, Badge, Image } from 'react-bootstrap';
-import { FaSearch, FaShoppingCart, FaUser, FaEnvelope, FaBell, FaTruck, FaBars } from 'react-icons/fa';
-import '../styles/header.css'; // Import your CSS file
+/** @format */
+
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Button,
+  Form,
+  FormControl,
+  Overlay,
+  Popover,
+  Badge,
+  Image,
+} from "react-bootstrap";
+import {
+  FaSearch,
+  FaShoppingCart,
+  FaUser,
+  FaEnvelope,
+  FaBell,
+  FaTruck,
+  FaBars,
+} from "react-icons/fa";
+import "../styles/header.css"; // Import your CSS file
 
 export const Header = ({ isLoggedIn = false }) => {
   // State for managing dropdowns with consolidated naming convention
@@ -11,7 +32,7 @@ export const Header = ({ isLoggedIn = false }) => {
     expandMenu: false,
     messages: false,
     notifications: false,
-    profileMenu: false
+    profileMenu: false,
   });
 
   // Refs for handling click outside events
@@ -21,18 +42,18 @@ export const Header = ({ isLoggedIn = false }) => {
     expandMenu: useRef(null),
     messages: useRef(null),
     notifications: useRef(null),
-    profileMenu: useRef(null)
+    profileMenu: useRef(null),
   };
-  
+
   // Toggle dropdown function - closes other dropdowns when opening one
   const toggleDropdown = (dropdown) => {
     const newState = { ...dropdowns };
-    
+
     // Close all other dropdowns
-    Object.keys(newState).forEach(key => {
+    Object.keys(newState).forEach((key) => {
       newState[key] = key === dropdown ? !newState[key] : false;
     });
-    
+
     setDropdowns(newState);
   };
 
@@ -41,94 +62,169 @@ export const Header = ({ isLoggedIn = false }) => {
     const handleClickOutside = (event) => {
       Object.entries(refs).forEach(([key, ref]) => {
         if (ref.current && !ref.current.contains(event.target)) {
-          setDropdowns(prev => ({...prev, [key]: false}));
+          setDropdowns((prev) => ({ ...prev, [key]: false }));
         }
       });
     };
-    
-    document.addEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   // Sample data for messages and notifications
   const messages = [
-    { id: 1, sender: "John Doe", content: "Hi, I'm interested in your service", time: "2 hours ago", unread: true },
-    { id: 2, sender: "Jane Smith", content: "Thanks for your quick response", time: "Yesterday", unread: false },
-    { id: 3, sender: "Mike Johnson", content: "When can we schedule a call?", time: "2 days ago", unread: true }
+    {
+      id: 1,
+      sender: "John Doe",
+      content: "Hi, I'm interested in your service",
+      time: "2 hours ago",
+      unread: true,
+    },
+    {
+      id: 2,
+      sender: "Jane Smith",
+      content: "Thanks for your quick response",
+      time: "Yesterday",
+      unread: false,
+    },
+    {
+      id: 3,
+      sender: "Mike Johnson",
+      content: "When can we schedule a call?",
+      time: "2 days ago",
+      unread: true,
+    },
   ];
-  
+
   const notifications = [
-    { id: 1, content: "Your order has been shipped", time: "1 hour ago", unread: true },
-    { id: 2, content: "New comment on your service", time: "5 hours ago", unread: true },
-    { id: 3, content: "Payment received", time: "Yesterday", unread: false }
+    {
+      id: 1,
+      content: "Your order has been shipped",
+      time: "1 hour ago",
+      unread: true,
+    },
+    {
+      id: 2,
+      content: "New comment on your service",
+      time: "5 hours ago",
+      unread: true,
+    },
+    { id: 3, content: "Payment received", time: "Yesterday", unread: false },
   ];
 
   // Categories data structure
   const categories = [
     {
       title: "Programming and development",
-      items: ["WordPress", "Website development", "Technical support", 
-              "Software development", "Create an online store", "Mobile application programming"]
+      items: [
+        "WordPress",
+        "Website development",
+        "Technical support",
+        "Software development",
+        "Create an online store",
+        "Mobile application programming",
+      ],
     },
     {
       title: "Digital marketing",
-      items: ["Marketing plans", "Marketing Consulting", "Search Engine Optimization", 
-              "Social media ads", "Social media account management", "Social media marketing"]
+      items: [
+        "Marketing plans",
+        "Marketing Consulting",
+        "Search Engine Optimization",
+        "Social media ads",
+        "Social media account management",
+        "Social media marketing",
+      ],
     },
     {
       title: "Writing and translation",
-      items: ["Translation", "Creative writing", "Specialized content", 
-              "Website content", "Marketing content", "Academic and professional content"]
+      items: [
+        "Translation",
+        "Creative writing",
+        "Specialized content",
+        "Website content",
+        "Marketing content",
+        "Academic and professional content",
+      ],
     },
     {
       title: "Design",
-      items: ["Edit and enhance photos", "Design advertising banners", "Social media designs", 
-              "Website and application design", "Logos and brand identities", "Marketing designs"]
+      items: [
+        "Edit and enhance photos",
+        "Design advertising banners",
+        "Social media designs",
+        "Website and application design",
+        "Logos and brand identities",
+        "Marketing designs",
+      ],
     },
     {
       title: "Audio",
-      items: ["Singing", "Voiceover", "IVR", "Audiobook production", "Sound engineering", 
-              "Music production and composition"]
+      items: [
+        "Singing",
+        "Voiceover",
+        "IVR",
+        "Audiobook production",
+        "Sound engineering",
+        "Music production and composition",
+      ],
     },
     {
       title: "Works",
-      items: ["Business Administration", "Business Planning", "Business Consulting", 
-              "E-commerce", "Legal services", "Financial and accounting services"]
+      items: [
+        "Business Administration",
+        "Business Planning",
+        "Business Consulting",
+        "E-commerce",
+        "Legal services",
+        "Financial and accounting services",
+      ],
     },
     {
       title: "Engineering and Architecture",
-      items: ["Architecture", "Civil and Structural Engineering", "Mechanical Engineering", 
-              "Electronics Engineering", "Electrical Engineering", "Engineering Consultations"]
+      items: [
+        "Architecture",
+        "Civil and Structural Engineering",
+        "Mechanical Engineering",
+        "Electronics Engineering",
+        "Electrical Engineering",
+        "Engineering Consultations",
+      ],
     },
     {
       title: "Video and animation",
-      items: ["Intro design", "Video editing", "Animation and motion graphics", 
-              "Marketing videos", "Social media videos"]
+      items: [
+        "Intro design",
+        "Video editing",
+        "Animation and motion graphics",
+        "Marketing videos",
+        "Social media videos",
+      ],
     },
     {
       title: "Lifestyle",
-      items: ["Personal consultations"]
+      items: ["Personal consultations"],
     },
     {
       title: "Data",
-      items: ["Data entry"]
+      items: ["Data entry"],
     },
     {
       title: "Distance learning",
-      items: ["Learn languages"]
-    }
+      items: ["Learn languages"],
+    },
   ];
 
   const profileMenuOptions = [
     { icon: <FaUser />, text: "Profile" },
     { icon: <FaShoppingCart />, text: "Saved" },
     { icon: <FaEnvelope />, text: "Balance" },
-    { icon: <FaBell />, text: "Settings" }, 
+    { icon: <FaBell />, text: "Settings" },
     { icon: <FaUser />, text: "Edit my account" },
     { icon: <FaTruck />, text: "Help" },
-    { icon: <FaUser />, text: "Logout" }
+    { icon: <FaUser />, text: "Logout" },
   ];
 
   const expandMenuOptions = [
@@ -137,14 +233,17 @@ export const Header = ({ isLoggedIn = false }) => {
     { icon: <FaEnvelope />, text: "Messages" },
     { icon: <FaBell />, text: "Notifications" },
     { icon: <FaUser />, text: "Settings" },
-    { icon: <FaUser />, text: "Logout" }
+    { icon: <FaUser />, text: "Logout" },
   ];
 
   // Function to render notification badge
   const renderBadge = (items) => {
-    const count = items.filter(item => item.unread).length;
+    const count = items.filter((item) => item.unread).length;
     return count > 0 ? (
-      <Badge bg="danger" pill className="position-absolute top-0 end-0 notification-badge">
+      <Badge
+        bg="danger"
+        pill
+        className="position-absolute top-0 end-0 notification-badge">
         {count}
       </Badge>
     ) : null;
@@ -165,56 +264,58 @@ export const Header = ({ isLoggedIn = false }) => {
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
-            
+
             {/* Categories Dropdown */}
             <div ref={refs.categories} className="me-3">
-              <Button 
-                variant="outline-light" 
-                size="sm" 
-                className="rounded-pill py-1 px-3 category-btn"
-                onClick={() => toggleDropdown('categories')}
-                aria-expanded={dropdowns.categories}
-              >
+              <Button
+                variant="outline-light"
+                size="sm"
+                className="rounded-pill py-1 px-3 category-btn shadow-sm"
+                onClick={() => toggleDropdown("categories")}
+                aria-expanded={dropdowns.categories}>
                 Categories
               </Button>
             </div>
-            
+
             {/* Add Service Button - Only show when logged in */}
             {!isLoggedIn && (
-              <Nav.Link href="/add/service" className="text-light me-3"><Button 
-              variant="outline-light" 
-              size="sm" 
-              className="py-1 px-3 d-none d-md-block add-service-btn"
-            >
-              Add a service <span className="ms-1">+</span>
-            </Button></Nav.Link>
-
+              <Button 
+                variant="outline-light" 
+                size="sm" 
+                className="py-1 px-3 d-none d-md-block add-service-btn"
+              >
+                Add a service <span className="ms-1">+</span>
+              </Button>
             )}
           </div>
-          
+
           {/* Responsive navbar toggle */}
-          <Navbar.Toggle 
-            aria-controls="basic-navbar-nav" 
+          <Navbar.Toggle
+            aria-controls="basic-navbar-nav"
             className="ms-auto d-lg-none border-0 custom-toggler"
           />
-          
+
           {/* Right section: Search, cart, notifications, etc. */}
-          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className="justify-content-end">
             <Nav className="align-items-center nav-icons-container">
               {/* Search Button */}
               <div ref={refs.search} className="position-relative icon-wrapper">
-                <Nav.Link 
-                  onClick={() => toggleDropdown('search')} 
-                  className="nav-icon"
-                  aria-label="Search"
-                >
+                <Nav.Link
+                  onClick={() => toggleDropdown("search")}
+                  className="nav-icon shadow-sm"
+                  aria-label="Search">
                   <FaSearch />
                 </Nav.Link>
               </div>
-              
+
               {/* Shopping Cart */}
               <div className="icon-wrapper">
-                <Nav.Link href="#cart" className="nav-icon" aria-label="Shopping Cart">
+                <Nav.Link
+                  href="#cart"
+                  className="nav-icon"
+                  aria-label="Shopping Cart">
                   <FaShoppingCart />
                 </Nav.Link>
               </div>
@@ -222,18 +323,16 @@ export const Header = ({ isLoggedIn = false }) => {
               {/* Login/Signup buttons for not logged in users */}
               {isLoggedIn && (
                 <div className="d-flex align-items-center auth-buttons">
-                  <Button 
-                    variant="outline-secondary" 
-                    size="sm" 
-                    className="me-2 text-white border-0 signup-btn"
-                  >
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="me-2 text-white border-0 signup-btn">
                     <FaUser className="me-1" /> New account
                   </Button>
-                  <Button 
-                    variant="outline-secondary" 
-                    size="sm" 
-                    className="text-white border-0 login-btn"
-                  >
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="text-white border-0 login-btn">
                     <FaUser className="me-1" /> Login
                   </Button>
                 </div>
@@ -243,89 +342,134 @@ export const Header = ({ isLoggedIn = false }) => {
               {!isLoggedIn && (
                 <>
                   {/* Notifications Dropdown */}
-                  <div ref={refs.notifications} className="position-relative icon-wrapper">
-                    <Nav.Link 
-                      onClick={() => toggleDropdown('notifications')}
+                  <div
+                    ref={refs.notifications}
+                    className="position-relative icon-wrapper">
+                    <Nav.Link
+                      onClick={() => toggleDropdown("notifications")}
                       className="nav-icon"
-                      aria-label="Notifications"
-                    >
+                      aria-label="Notifications">
                       <FaBell />
                       {renderBadge(notifications)}
                     </Nav.Link>
-                    
+
                     <Overlay
                       show={dropdowns.notifications}
                       target={refs.notifications.current}
                       placement="bottom-end"
                       container={refs.notifications.current}
-                      containerPadding={20}
-                    >
-                      <Popover id="notifications-popover" className="border-0 shadow-custom">
+                      containerPadding={20}>
+                      <Popover
+                        id="notifications-popover"
+                        className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex justify-content-between align-items-center popup-header">
                           <span>Notifications</span>
-                          <Button variant="link" size="sm" className="p-0 text-muted mark-read-btn">
+                          <Button
+                            variant="link"
+                            size="sm"
+                            className="p-0 text-muted mark-read-btn">
                             Mark all as read
                           </Button>
                         </Popover.Header>
                         <Popover.Body className="p-0">
                           {notifications.length > 0 ? (
                             <div className="notification-list">
-                              {notifications.map(notification => (
-                                <div key={notification.id} className={`notification-item p-2 border-bottom ${notification.unread ? 'bg-light' : ''}`}>
+                              {notifications.map((notification) => (
+                                <div
+                                  key={notification.id}
+                                  className={`notification-item p-2 border-bottom ${
+                                    notification.unread ? "bg-light" : ""
+                                  }`}>
                                   <div className="d-flex justify-content-between">
-                                    <span className="notification-content">{notification.content}</span>
-                                    {notification.unread && <span className="text-primary unread-indicator">•</span>}
+                                    <span className="notification-content">
+                                      {notification.content}
+                                    </span>
+                                    {notification.unread && (
+                                      <span className="text-primary unread-indicator">
+                                        •
+                                      </span>
+                                    )}
                                   </div>
-                                  <small className="text-muted notification-time">{notification.time}</small>
+                                  <small className="text-muted notification-time">
+                                    {notification.time}
+                                  </small>
                                 </div>
                               ))}
                               <div className="text-center py-2">
-                                <a href="#all-notifications" className="text-decoration-none see-all-link">See all notifications</a>
+                                <a
+                                  href="#all-notifications"
+                                  className="text-decoration-none see-all-link">
+                                  See all notifications
+                                </a>
                               </div>
                             </div>
                           ) : (
-                            <div className="p-3 text-center">No notifications</div>
+                            <div className="p-3 text-center">
+                              No notifications
+                            </div>
                           )}
                         </Popover.Body>
                       </Popover>
                     </Overlay>
                   </div>
-                  
+
                   {/* Messages Dropdown */}
-                  <div ref={refs.messages} className="position-relative icon-wrapper">
-                    <Nav.Link 
-                      onClick={() => toggleDropdown('messages')}
+                  <div
+                    ref={refs.messages}
+                    className="position-relative icon-wrapper">
+                    <Nav.Link
+                      onClick={() => toggleDropdown("messages")}
                       className="nav-icon"
-                      aria-label="Messages"
-                    >
+                      aria-label="Messages">
                       <FaEnvelope />
                       {renderBadge(messages)}
                     </Nav.Link>
-                    
+
                     <Overlay
                       show={dropdowns.messages}
                       target={refs.messages.current}
                       placement="bottom-end"
                       container={refs.messages.current}
-                      containerPadding={20}
-                    >
-                      <Popover id="messages-popover" className="border-0 shadow-custom">
-                        <Popover.Header className="bg-light popup-header">Messages</Popover.Header>
+                      containerPadding={20}>
+                      <Popover
+                        id="messages-popover"
+                        className="border-0 shadow-custom">
+                        <Popover.Header className="bg-light popup-header">
+                          Messages
+                        </Popover.Header>
                         <Popover.Body className="p-0">
                           {messages.length > 0 ? (
                             <div className="message-list">
-                              {messages.map(message => (
-                                <div key={message.id} className={`message-item p-2 border-bottom ${message.unread ? 'bg-light' : ''}`}>
+                              {messages.map((message) => (
+                                <div
+                                  key={message.id}
+                                  className={`message-item p-2 border-bottom ${
+                                    message.unread ? "bg-light" : ""
+                                  }`}>
                                   <div className="d-flex justify-content-between">
-                                    <strong className="message-sender">{message.sender}</strong>
-                                    {message.unread && <span className="text-primary unread-indicator">•</span>}
+                                    <strong className="message-sender">
+                                      {message.sender}
+                                    </strong>
+                                    {message.unread && (
+                                      <span className="text-primary unread-indicator">
+                                        •
+                                      </span>
+                                    )}
                                   </div>
-                                  <div className="message-content text-truncate">{message.content}</div>
-                                  <small className="text-muted message-time">{message.time}</small>
+                                  <div className="message-content text-truncate">
+                                    {message.content}
+                                  </div>
+                                  <small className="text-muted message-time">
+                                    {message.time}
+                                  </small>
                                 </div>
                               ))}
                               <div className="text-center py-2">
-                                <a href="#all-messages" className="text-decoration-none see-all-link">See all messages</a>
+                                <a
+                                  href="#all-messages"
+                                  className="text-decoration-none see-all-link">
+                                  See all messages
+                                </a>
                               </div>
                             </div>
                           ) : (
@@ -335,62 +479,74 @@ export const Header = ({ isLoggedIn = false }) => {
                       </Popover>
                     </Overlay>
                   </div>
-                  
+
                   {/* Incoming Requests - Hide on smaller screens */}
                   <div className="icon-wrapper d-none d-lg-block">
-                    <Nav.Link href="#incoming" className="nav-icon incoming-requests">
-                      <FaTruck /> <span className="d-none d-xl-inline ms-1">Incoming requests</span>
+                    <Nav.Link
+                      href="#incoming"
+                      className="nav-icon incoming-requests">
+                      <FaTruck />{" "}
+                      <span className="d-none d-xl-inline ms-1">
+                        Incoming requests
+                      </span>
                     </Nav.Link>
                   </div>
-                  
+
                   {/* Profile Picture with Dropdown */}
-                  <div ref={refs.profileMenu} className="position-relative icon-wrapper">
-                    <Nav.Link 
-                      onClick={() => toggleDropdown('profileMenu')} 
+                  <div
+                    ref={refs.profileMenu}
+                    className="position-relative icon-wrapper">
+                    <Nav.Link
+                      onClick={() => toggleDropdown("profileMenu")}
                       className="p-0 profile-link"
-                      aria-label="Profile"
-                    >
-                      <Image 
-                        src="https://www.20i.com/blog/wp-content/uploads/2021/06/christina-wocintechchat-com-0Zx1bDv5BNY-unsplash-1.jpg" 
-                        roundedCircle 
-                        width="32" 
-                        height="32" 
-                        className="border border-2 border-light profile-image" 
-                        alt="Profile" 
+                      aria-label="Profile">
+                      <Image
+                        src="https://i.imgur.com/6AglEUF.jpeg"
+                        roundedCircle
+                        width="32"
+                        height="32"
+                        className="border border-2 border-light profile-image shadow"
+                        alt="Profile"
                       />
                     </Nav.Link>
-                    
+
                     <Overlay
                       show={dropdowns.profileMenu}
                       target={refs.profileMenu.current}
                       placement="bottom-end"
                       container={refs.profileMenu.current}
-                      containerPadding={20}
-                    >
-                      <Popover id="profile-menu-popover" className="border-0 shadow-custom">
+                      containerPadding={20}>
+                      <Popover
+                        id="profile-menu-popover"
+                        className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
-                          <Image 
-                            src="https://www.20i.com/blog/wp-content/uploads/2021/06/christina-wocintechchat-com-0Zx1bDv5BNY-unsplash-1.jpg" 
-                            roundedCircle 
-                            width="40" 
-                            height="40" 
-                            className="border me-2" 
-                            alt="Profile" 
+                          <Image
+                            src="https://i.imgur.com/6AglEUF.jpeg"
+                            roundedCircle
+                            width="40"
+                            height="40"
+                            className="border me-2"
+                            alt="Profile"
                           />
                           <div>
-                            <div className="fw-bold">Nada Hassan</div>
-                            <div className="small text-muted">john@example.com</div>
+                            <div className="fw-bold">Ayman Samir</div>
+                            <div className="small text-muted">
+                              Ayman@gmail.com
+                            </div>
                           </div>
                         </Popover.Header>
                         <Popover.Body className="p-0">
                           <Nav className="flex-column">
                             {profileMenuOptions.map((option, idx) => (
-                              <Nav.Link 
-                                key={idx} 
-                                href={`#${option.text.toLowerCase().replace(/ /g, '-')}`} 
-                                className="px-3 py-2 text-dark menu-item"
-                              >
-                                <span className="menu-icon me-2">{option.icon}</span>
+                              <Nav.Link
+                                key={idx}
+                                href={`#${option.text
+                                  .toLowerCase()
+                                  .replace(/ /g, "-")}`}
+                                className="px-3 py-2 text-dark menu-item">
+                                <span className="menu-icon me-2">
+                                  {option.icon}
+                                </span>
                                 {option.text}
                               </Nav.Link>
                             ))}
@@ -403,34 +559,39 @@ export const Header = ({ isLoggedIn = false }) => {
               )}
 
               {/* Expand Menu Button */}
-              <div ref={refs.expandMenu} className="position-relative icon-wrapper">
-                <Button 
-                  variant="outline-light" 
-                  size="sm" 
+              <div
+                ref={refs.expandMenu}
+                className="position-relative icon-wrapper">
+                <Button
+                  variant="outline-light"
+                  size="sm"
                   className="py-1 px-2 d-lg-none expand-menu-btn"
-                  onClick={() => toggleDropdown('expandMenu')}
-                  aria-expanded={dropdowns.expandMenu}
-                >
+                  onClick={() => toggleDropdown("expandMenu")}
+                  aria-expanded={dropdowns.expandMenu}>
                   <FaBars />
                 </Button>
-                
+
                 <Overlay
                   show={dropdowns.expandMenu}
                   target={refs.expandMenu.current}
                   placement="bottom-end"
                   container={refs.expandMenu.current}
-                  containerPadding={20}
-                >
-                  <Popover id="expand-menu-popover" className="border-0 shadow-custom expandable-menu">
+                  containerPadding={20}>
+                  <Popover
+                    id="expand-menu-popover"
+                    className="border-0 shadow-custom expandable-menu">
                     <Popover.Body className="p-0">
                       <Nav className="flex-column">
                         {expandMenuOptions.map((option, idx) => (
-                          <Nav.Link 
-                            key={idx} 
-                            href={`#${option.text.toLowerCase().replace(/ /g, '-')}`} 
-                            className="px-3 py-2 text-dark menu-item"
-                          >
-                            <span className="menu-icon me-2">{option.icon}</span>
+                          <Nav.Link
+                            key={idx}
+                            href={`#${option.text
+                              .toLowerCase()
+                              .replace(/ /g, "-")}`}
+                            className="px-3 py-2 text-dark menu-item">
+                            <span className="menu-icon me-2">
+                              {option.icon}
+                            </span>
                             {option.text}
                           </Nav.Link>
                         ))}
@@ -456,7 +617,9 @@ export const Header = ({ isLoggedIn = false }) => {
                 aria-label="Search"
                 autoFocus
               />
-              <Button variant="primary" className="search-btn">Search</Button>
+              <Button variant="primary" className="search-btn">
+                Search
+              </Button>
             </Form>
           </Container>
         </div>
@@ -469,15 +632,18 @@ export const Header = ({ isLoggedIn = false }) => {
             <div className="categories-menu">
               <div className="row g-3">
                 {categories.map((category, idx) => (
-                  <div key={idx} className="col-6 col-md-4 col-lg-3 col-xl-2 mb-3 category-column">
-                    <h6 className="fw-bold text-capitalize category-title">{category.title}</h6>
+                  <div
+                    key={idx}
+                    className="col-6 col-md-4 col-lg-3 col-xl-2 mb-3 category-column">
+                    <h6 className="fw-bold text-capitalize category-title">
+                      {category.title}
+                    </h6>
                     <ul className="list-unstyled small category-list">
                       {category.items.map((item, i) => (
                         <li key={i} className="category-item">
-                          <a 
-                            href={`#${item.toLowerCase().replace(/ /g, '-')}`} 
-                            className="text-decoration-none text-dark d-block py-1 category-link"
-                          >
+                          <a
+                            href={`#${item.toLowerCase().replace(/ /g, "-")}`}
+                            className="text-decoration-none text-dark d-block py-1 category-link">
                             {item}
                           </a>
                         </li>

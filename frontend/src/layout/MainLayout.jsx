@@ -6,7 +6,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { SharedLayout } from "../sharedLayout/SharedLayout";
+import {SharedLayout } from "../sharedLayout/SharedLayout";
 import CreateService from "../pages/CreateService";
 
 
