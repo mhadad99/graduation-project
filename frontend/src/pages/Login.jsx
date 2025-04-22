@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { GoogleLoginButton, AppleLoginButton } from 'react-social-login-buttons';
 import axios from 'axios'; 
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+// import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import '../styles/Login.css';
 
 
@@ -61,7 +61,7 @@ export default function LoginPage()  {
   return (
     <div className="login-container">
       <div className="logo-container">
-        <img src="../logo.png" alt="Tanfeez Logo" className="logo" />
+        <img src="../TANFEEZ.png" alt="Tanfeez Logo" className="logo" />
       </div>
 
       <div className="login-card">

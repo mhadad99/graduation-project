@@ -21,16 +21,16 @@
   }
   
   .logo {
-    width: 160px;
-    height: 160px;
+    width: 50%;
+    height: 50%;
     object-fit: contain;
-    border-radius: 50%;
+    /* border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 0 8px rgba(49, 49, 49, 0.2);
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     -ms-border-radius: 50%;
-    -o-border-radius: 50%;
+    -o-border-radius: 50%; */
 }
 
   .login-card {
