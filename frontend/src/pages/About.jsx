@@ -2,15 +2,15 @@ import React from 'react';
 
 export default function About() {
   return (
-    <div className="about-khamsat" style={styles.container}>
+    <div className="about-TANFEEZ" style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.title}>About Khamsat Platform</h1>
+        <h1 style={styles.title}>About TANFEEZ Platform</h1>
         <div style={styles.underline}></div>
       </div>
       
       <div style={styles.content}>
         <p style={styles.paragraph}>
-          Khamsat is the largest online marketplace for buying and selling services. It connects professional freelancers with business owners and companies to provide quick solutions they need at affordable prices without compromising on quality.
+          TANFEEZ is a large online marketplace for buying and selling services. It connects professional freelancers with business owners and companies to provide quick solutions they need at affordable prices without compromising on quality.
         </p>
         
         <div style={styles.highlightBox}>
@@ -20,7 +20,7 @@ export default function About() {
         </div>
         
         <p style={styles.paragraph}>
-          Khamsat offers a wide range of services including programming and development, graphic design, digital marketing, video and audio production, writing and translation, social media management, and more. Whatever service you need, you'll find the right professional freelancer on Khamsat.
+          TANFEEZ offers a wide range of services including programming and development, graphic design, digital marketing, video and audio production, writing and translation, social media management, and more. Whatever service you need, you'll find the right professional freelancer on Khamsat.
         </p>
         
         <div style={styles.servicesGrid}>
@@ -31,30 +31,32 @@ export default function About() {
           <div style={styles.serviceCard}>Writing & Translation</div>
           <div style={styles.serviceCard}>Social Media</div>
         </div>
-        
-        <p style={styles.note}>
-          Khamsat is operated by Hsoub Limited, registered in the United Kingdom with company number 07571594.
-        </p>
-      </div>
-      
-      <div style={styles.hsoubSection}>
-        <h2 style={styles.subtitle}>About Hsoub</h2>
+
+        <div style={styles.hsoubSection}>
+          <h2 style={styles.subtitle}>TANFEEZ</h2>
+          <div style={styles.underline}></div>
+          <p style={styles.paragraph}>
+            TANFEEZ aims to develop the Arab world by providing solutions and products that help ambitious youth to work and grow. TANFEEZ focuses its activities on the future of work and education, serving hundreds of thousands of users from various countries.
+          </p>
+        </div>
+
+        {/* Team Members */}
+        <h2 style={styles.subtitl}>Operated By</h2>
         <div style={styles.underline}></div>
-        <p style={styles.paragraph}>
-          Hsoub aims to develop the Arab world by providing solutions and products that help ambitious youth to work and grow. Hsoub focuses its activities on the future of work and education, serving hundreds of thousands of users from various Arab countries.
-        </p>
-        
-        <div style={styles.linkContainer}>
-          <a 
-            href="https://www.hsoub.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={styles.link}
-            aria-label="Visit Hsoub Company Website"
-          >
-            Visit Hsoub Company Website
-            <span style={styles.linkIcon}>→</span>
-          </a>
+        <div style={styles.teamGrid}>
+          {[
+            { name: "Mohamed Hassan", img: "./images/mohamed-hassan.jpg" },
+            { name: "AYMAN samer", img: "./images/ayman-samer.jpg" },
+            { name: "Saraa Talat Ali", img: "./images/saraa-talat.jpg" },
+            { name: "Mohamed Akram", img: "./images/mohamed-akram.jpg" },
+            { name: "Mohamed Emad", img: "./images/mohamed-emad.jpg" },
+            { name: "Mohamed Hosny", img: "./images/mohamed-hosny.jpg" },
+          ].map((person, index) => (
+            <div key={index} style={styles.memberCard}>
+              <img src={person.img} alt={person.name} style={styles.memberImage} />
+              <p style={styles.memberName}>{person.name}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -127,16 +129,6 @@ const styles = {
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     transition: 'transform 0.2s',
     cursor: 'default',
-    '&:hover': {
-      transform: 'translateY(-2px)',
-      cursor: 'pointer',
-    },
-  },
-  note: {
-    fontSize: '0.9rem',
-    color: '#7f8c8d',
-    fontStyle: 'italic',
-    textAlign: 'center',
   },
   hsoubSection: {
     backgroundColor: '#f8f9fa',
@@ -144,33 +136,37 @@ const styles = {
     borderRadius: '8px',
     textAlign: 'center',
   },
-  linkContainer: {
-    marginTop: '1.5rem',
+  teamGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '1.5rem',
+    marginTop: '3rem',
+    justifyItems: 'center',
+    textAlign: 'center',
   },
-  link: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
-    color: 'white',
-    padding: '0.8rem 1.5rem',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    fontWeight: '500',
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      backgroundColor: '#3498db',
-      transform: 'translateY(-2px)',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-    },
-    '&:active': {
-      transform: 'translateY(0)',
-    },
+  subtitl: {
+    marginTop: '3rem',
+    justifyItems: 'center',
+    textAlign: 'center',
   },
-  linkIcon: {
-    marginLeft: '8px',
-    transition: 'transform 0.3s ease',
-    'a:hover &': {
-      transform: 'translateX(3px)',
-    },
+  memberCard: {
+    backgroundColor: '#f2f2f2',
+    padding: '1rem',
+    borderRadius: '10px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+    width: '100%',
+    maxWidth: '220px',
+  },
+  memberImage: {
+    width: '100px',
+    height: '100px',
+    objectFit: 'cover',
+    borderRadius: '50%',
+    marginBottom: '0.8rem',
+  },
+  memberName: {
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
+    color: '#2c3e50',
   },
 };
