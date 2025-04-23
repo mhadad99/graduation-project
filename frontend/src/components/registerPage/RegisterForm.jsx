@@ -10,6 +10,7 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
         firstName: '',
         lastName: '',
         email: '',
+        username:'',
         password: '',
         country: 'United States',
         agreeTerms: false
@@ -118,6 +119,19 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                         />
                         <Form.Control.Feedback type="invalid">
                             Please provide a valid email.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="username">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a valid username.
                         </Form.Control.Feedback>
                     </Form.Group>
 

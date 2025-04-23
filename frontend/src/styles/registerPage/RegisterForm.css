@@ -5,6 +5,11 @@
   color: #5e6d55;
 }
 
+.signup-tabs {
+  text-align: center;
+  background: #1C1818;
+}
+
 .divider {
   height: 1px;
   background-color: #dee2e6;
