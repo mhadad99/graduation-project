@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const ProfileEditForm = ({ user, onSave }) => {
-    // if (!user) {
-    //     return <p>Loading...</p>;
-    // }
+    user = true;
+    if (!user) {
+        return <p>Loading...</p>;
+    }
 
     const [formData, setFormData] = useState({
         firstName: user.firstName || '',
