@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
 import { Home } from "../pages/Home";
 import { NotFound } from "../pages/NotFound";
 import {
@@ -9,6 +9,8 @@ import {
 import {SharedLayout } from "../sharedLayout/SharedLayout";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
+import About from "../pages/About";
+import LoginPage from "../pages/Login";
 
 
 export function MainLayout() {
@@ -17,7 +19,7 @@ export function MainLayout() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
           <Route path="/servicedetails" element={<ServiceDetailsPage />} />
