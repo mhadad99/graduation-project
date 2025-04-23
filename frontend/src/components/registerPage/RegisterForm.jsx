@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { Card, Nav, Button, Form, Row, Col } from 'react-bootstrap';
 import SocialRegister from './SocialRegister';
 import '../../styles/registerPage/RegisterPage.css';
+import { registerUser } from '../../api/auth'; // Import the registerUser function
 
-export default function RegisterForm({ isClient, setIsClient }) { // Accept setIsClient as a prop
+export default function RegisterForm({ isClient, setIsClient }) {
     const [formType, setFormType] = useState(isClient ? 'client' : 'freelancer');
     const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        second_name: '',
         email: '',
-        username:'',
+        user_name: '',
         password: '',
-        country: 'United States',
-        agreeTerms: false
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -25,15 +26,27 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         const form = e.currentTarget;
         e.preventDefault();
 
         if (form.checkValidity() === false) {
             e.stopPropagation();
         } else {
-            console.log('Form submitted:', formData);
-            // Here you would typically send the data to your backend
+            try {
+                const newUser = {
+                    ...formData,
+                    userType: formType, // Add user type (client or freelancer)
+                };
+                const response = await registerUser(newUser); // Call the API
+                setSuccessMessage('Registration successful! You can now log in.');
+                setErrorMessage('');
+                console.log('User registered:', response);
+            } catch (error) {
+                setErrorMessage(error.response?.data?.message || 'Registration failed. Please try again.');
+                setSuccessMessage('');
+                console.error('Error registering user:', error);
+            }
         }
 
         setValidated(true);
@@ -74,15 +87,18 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                     <span className="position-relative start-50 text-muted small text-uppercase">or</span>
                 </div>
 
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Row className="mb-3">
                         <Col md={6}>
-                            <Form.Group controlId="firstName">
+                            <Form.Group controlId="first_name">
                                 <Form.Label>First name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
+                                    name="first_name"
+                                    value={formData.first_name}
                                     onChange={handleChange}
                                     required
                                 />
@@ -92,12 +108,12 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                             </Form.Group>
                         </Col>
                         <Col md={6}>
-                            <Form.Group controlId="lastName">
+                            <Form.Group controlId="second_name">
                                 <Form.Label>Last name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
+                                    name="second_name"
+                                    value={formData.second_name}
                                     onChange={handleChange}
                                     required
                                 />
@@ -121,12 +137,12 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                             Please provide a valid email.
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="username">
+                    <Form.Group className="mb-3" controlId="user_name">
                         <Form.Label>Username</Form.Label>
                         <Form.Control
                             type="text"
-                            name="username"
-                            value={formData.username}
+                            name="user_name"
+                            value={formData.user_name}
                             onChange={handleChange}
                             required
                         />
@@ -136,29 +152,29 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="password">
-    <Form.Label>Password (8 or more characters)</Form.Label>
-    <div className="input-group">
-        <Form.Control
-            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            minLength={8}
-        />
-        <Button
-            variant="outline-secondary"
-            onClick={() => setShowPassword(!showPassword)} // Toggle the state
-        >
-            {showPassword ? "Hide" : "Show"}
-        </Button>
-        <Form.Control.Feedback type="invalid">
-            Password must be at least 8 characters.
-        </Form.Control.Feedback>
-    </div>
-</Form.Group>
+                        <Form.Label>Password (8 or more characters)</Form.Label>
+                        <div className="input-group">
+                            <Form.Control
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                minLength={8}
+                            />
+                            <Button
+                                variant="outline-secondary"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </Button>
+                            <Form.Control.Feedback type="invalid">
+                                Password must be at least 8 characters.
+                            </Form.Control.Feedback>
+                        </div>
+                    </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="country">
+                    {/* <Form.Group className="mb-3" controlId="country">
                         <Form.Label>Country</Form.Label>
                         <Form.Select
                             name="country"
@@ -171,11 +187,11 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                             <option value="Canada">Canada</option>
                             <option value="Australia">Australia</option>
                             <option value="India">India</option>
-                            {/* Add more countries as needed */}
+                            // Add more countries as needed
                         </Form.Select>
-                    </Form.Group>
+                    </Form.Group> */}
 
-                    <Form.Group className="mb-4" controlId="agreeTerms">
+                    {/* <Form.Group className="mb-4" controlId="agreeTerms">
                         <Form.Check
                             type="checkbox"
                             name="agreeTerms"
@@ -187,7 +203,7 @@ export default function RegisterForm({ isClient, setIsClient }) { // Accept setI
                         <Form.Control.Feedback type="invalid">
                             You must agree to the terms to continue.
                         </Form.Control.Feedback>
-                    </Form.Group>
+                    </Form.Group> */}
 
                     <Button
                         variant="success"
