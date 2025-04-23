@@ -66,12 +66,12 @@ import "../styles/UserProfile.css";
     const [activeTab, setActiveTab] = useState("services"); 
 
   // Function to handle field editing
-  const handleEditField = (field, value) => {
-    setProfileData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const handleEditField = (field, value) => {
+  //   setProfileData((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
   const skills = [
     "Professional landing page design",

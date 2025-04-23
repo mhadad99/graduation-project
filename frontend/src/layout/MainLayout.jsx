@@ -9,6 +9,7 @@ import {
 import {SharedLayout } from "../sharedLayout/SharedLayout";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
+import UserProfile from "../pages/UserProfile";
 
 
 export function MainLayout() {
@@ -17,9 +18,10 @@ export function MainLayout() {
       <Routes>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
-          <Route path="/servicedetails" element={<ServiceDetailsPage />} />
+          <Route path="servicedetails" element={<ServiceDetailsPage />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/add/service" element={<CreateService/>} /> 
+          <Route path="add/service" element={<CreateService/>} /> 
+          <Route path="profile/:id" element={<UserProfile/>} />
           <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
 
         </Route>

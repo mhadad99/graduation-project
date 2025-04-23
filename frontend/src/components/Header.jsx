@@ -256,11 +256,11 @@ export const Header = ({ isLoggedIn = false }) => {
           {/* Left section: Logo and Categories */}
           <div className="d-flex align-items-center">
             {/* Logo */}
-            <Navbar.Brand href="/" className="me-3">
-              <img 
-                src="10002.png" 
-                alt="Logo" 
-                height="30" 
+            <Navbar.Brand href="#home" className="me-4">
+              <img
+                src="10002.png"
+                alt="Logo"
+                height="36"
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
@@ -279,11 +279,10 @@ export const Header = ({ isLoggedIn = false }) => {
 
             {/* Add Service Button - Only show when logged in */}
             {!isLoggedIn && (
-              <Button 
-                variant="outline-light" 
-                size="sm" 
-                className="py-1 px-3 d-none d-md-block add-service-btn"
-              >
+              <Button
+                variant="outline-light"
+                size="sm"
+                className="py-1 px-3 d-none d-md-block add-service-btn">
                 Add a service <span className="ms-1">+</span>
               </Button>
             )}
