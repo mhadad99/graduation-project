@@ -1,5 +1,6 @@
-from sqlalchemy import Column, String, Boolean, Date, Integer
+from sqlalchemy import Column, String, Boolean, Date, Integer, DateTime
 from app.core.database import Base
+from datetime import datetime  # for datetime.utcnow()
 
 
 class User(Base):
@@ -15,7 +16,7 @@ class User(Base):
     photo = Column(String, nullable=True)
     birth_date = Column(Date, nullable=True)
     phone = Column(String)
-    # created_at
+    created_at = Column(DateTime, default=datetime.utcnow)
     # last_scene
     is_deleted = Column(Boolean, default=False)
     is_registered = Column(Boolean, default=False)
