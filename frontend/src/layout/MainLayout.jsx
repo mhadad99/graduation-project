@@ -10,7 +10,6 @@ import {SharedLayout } from "../sharedLayout/SharedLayout";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
 import About from "../pages/About";
-import About from "../pages/About";
 import LoginPage from "../pages/Login";
 
 
