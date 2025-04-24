@@ -258,9 +258,9 @@ export const Header = ({ isLoggedIn = false }) => {
             {/* Logo */}
             <Navbar.Brand href="/" className="me-3">
               <img 
-                src="10002.png" 
+                src="TANFEEZ.png" 
                 alt="Logo" 
-                height="30" 
+                height="50" 
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
@@ -364,6 +364,7 @@ export const Header = ({ isLoggedIn = false }) => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex justify-content-between align-items-center popup-header">
                           <span>Notifications</span>
+                          
                           <Button
                             variant="link"
                             size="sm"
