@@ -6,7 +6,8 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import {SharedLayout } from "../sharedLayout/SharedLayout";
+import { SharedLayout } from "../sharedLayout/SharedLayout";
+import { RegisterPage } from "../pages/RegisterPage";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
 import UserProfile from "../pages/UserProfile";
@@ -23,6 +24,7 @@ export function MainLayout() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
+          <Route path="register" element={<RegisterPage />} />
           <Route path="servicedetails" element={<ServiceDetailsPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="add/service" element={<CreateService/>} /> 
