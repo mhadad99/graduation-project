@@ -71,7 +71,7 @@ export const Header = ({ isLoggedIn = false }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  });
 
   // Sample data for messages and notifications
   const messages = [
