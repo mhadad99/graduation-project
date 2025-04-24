@@ -4,8 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import UserProfile from "./pages/UserProfile";
 import { Header } from "./components/Header";
 import About from "./pages/About";
-// import './styles/colors.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 
