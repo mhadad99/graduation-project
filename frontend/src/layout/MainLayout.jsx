@@ -10,6 +10,7 @@ import {SharedLayout } from "../sharedLayout/SharedLayout";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
 import About from "../pages/About";
+import About from "../pages/About";
 import LoginPage from "../pages/Login";
 
 
@@ -26,6 +27,7 @@ export function MainLayout() {
           <Route path="*" element={<NotFound />} />
           <Route path="/add/service" element={<CreateService/>} /> 
           <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
+          <Route path="/about" element={<About />} />
 
         </Route>
       </Routes>
