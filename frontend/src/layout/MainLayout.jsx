@@ -1,4 +1,4 @@
-// import React, { useEffect } from "react";
+import React from "react";
 import { Home } from "../pages/Home";
 import { NotFound } from "../pages/NotFound";
 import {
@@ -25,6 +25,8 @@ export function MainLayout() {
           <Route path="/servicedetails" element={<ServiceDetailsPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/add/service" element={<CreateService/>} /> 
+          <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
