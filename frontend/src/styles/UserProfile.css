@@ -1,158 +1,445 @@
 /* UserProfile.css */
+@import url('designSystem.css');
+
+/* Profile Header */
 .profile-header {
-    background: linear-gradient(135deg, #2d2d2d, #130c13);
-    color: white;
-    padding: 3rem 0;
-    border-radius: 0 0 0.5rem 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  .profile-avatar {
-    width: 120px;
-    height: 120px;
-    border: 4px solid white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    object-fit: cover;
-  }
-  .profile-status-dot {
-    width: 16px;
-    height: 16px;
-    border: 2px solid white;
-    bottom: 10px;
-    right: 10px;
-  }
-  .profile-badge {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 0.2rem 0.6rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    margin: 0 0.2rem;
-  }
-  .section-title {
-    font-weight: 600;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #f0f0f0;
-  }
-  .skill-check {
-    color: #28a745;
-  }
-  .service-card {
-    transition: transform 0.3s;
-    overflow: hidden;
-  }
-  .service-card:hover {
-    transform: translateY(-5px);
-  }
-  .service-img {
-    height: 180px;
-    object-fit: cover;
-  }
-  .service-overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  padding: 4rem 0 3rem;
+  border-bottom: none;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://i.imgur.com/JFHjdNZ.jpeg') center/cover no-repeat;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.profile-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-avatar {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.profile-pic-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-title {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.profile-status-dot {
+  width: 16px;
+  height: 16px;
+  bottom: 12px;
+  right: 12px;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile-badge {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-full);
+  margin: 0 0.5rem 0.5rem;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  display: inline-flex;
+  align-items: center;
+  transition: all var(--transition-fast);
+}
+
+.profile-badge:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.contact-btn {
+  min-width: 140px;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-md) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+/* Custom Tabs */
+.custom-tab {
+  margin-top: -1.5rem;
+  position: relative;
+  z-index: 10;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-sm);
+  padding: 0 1rem;
+}
+
+.custom-tab .nav-link {
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 1.25rem 1.75rem;
+  border: none;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.custom-tab .nav-link.active {
+  color: var(--primary-600);
+  background-color: transparent;
+}
+
+.custom-tab .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background-color: var(--primary-500);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-fast);
+}
+
+.custom-tab .nav-link:hover:not(.active) {
+  color: var(--primary-500);
+}
+
+.custom-tab .nav-link.active:hover::after {
+  width: 50px;
+}
+
+.custom-tab .nav-link svg {
+  margin-right: 8px;
+  transition: transform var(--transition-fast);
+}
+
+.custom-tab .nav-link:hover svg {
+  transform: translateY(-2px);
+}
+
+/* Services Tab */
+.service-card {
+  transition: all var(--transition-normal);
+  height: 100%;
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-secondary) !important;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.service-image {
+  height: 220px;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.service-card:hover .service-image {
+  transform: scale(1.05);
+}
+
+.service-price {
+  font-weight: 700;
+  color: var(--primary-500);
+  font-size: 1.25rem;
+}
+
+.service-card .card-body {
+  padding: 1.5rem !important;
+}
+
+.service-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.service-meta {
+  display: flex;
+  align-items: center;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.service-meta svg {
+  margin-right: 0.5rem;
+}
+
+/* Portfolio Tab */
+.portfolio-item {
+  transition: all var(--transition-normal);
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.portfolio-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.portfolio-item img {
+  transition: transform var(--transition-normal);
+}
+
+.portfolio-item:hover img {
+  transform: scale(1.05);
+}
+
+.portfolio-modal .modal-content {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.portfolio-modal .modal-header {
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.portfolio-modal .modal-body {
+  padding: 0;
+}
+
+.portfolio-modal-image {
+  max-height: 500px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.portfolio-modal .modal-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.portfolio-form-image-preview {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin-top: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* About Tab */
+.section-title {
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--primary-500);
+  border-radius: var(--radius-full);
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-full);
+  margin: 0 0.75rem 0.75rem 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.skill-pill:hover {
+  background-color: var(--primary-100);
+  color: var(--primary-700);
+  transform: translateY(-2px);
+}
+
+.quality-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.quality-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.stat-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+  transition: all var(--transition-normal);
+}
+
+.stat-circle::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  z-index: -1;
+}
+
+.stat-circle:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--primary-200), var(--primary-300));
+}
+
+/* Reviews Tab */
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rating-star {
+  cursor: pointer;
+  color: var(--neutral-300);
+  transition: all var(--transition-fast);
+}
+
+.rating-star.filled {
+  color: var(--warning);
+}
+
+.rating-star:hover {
+  transform: scale(1.2);
+}
+
+.testimonial-card {
+  transition: all var(--transition-normal);
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.testimonial-text {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-card .card-body {
+  padding: 1.75rem !important;
+}
+
+/* Stats Card */
+.stats-card {
+  height: 100%;
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.stats-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
     opacity: 0;
-    transition: opacity 0.3s;
+    transform: translateY(20px);
   }
-  .service-card:hover .service-overlay {
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
-  .featured-badge {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    background: #ff9800;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.75rem;
-    border-radius: 0 4px 4px 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
+}
+
+.fade-in-up {
+  animation: fadeInUp var(--transition-normal) ease-out;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 3rem 0 2rem;
   }
-  .service-tags {
-    min-height: 2rem;
+  
+  .profile-avatar {
+    width: 140px;
+    height: 140px;
   }
-  .stats-card {
-    transition: transform 0.3s;
+  
+  .custom-tab .nav-link {
+    padding: 1rem 0.75rem;
+    font-size: 0.9rem;
   }
-  .stats-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-  .nav-link.active {
-    font-weight: 600;
-  }
-  .testimonial-card {
-    border-left: 4px solid #28a745 !important;
-  }
-  .testimonial-text {
-    font-style: italic;
-    color: #555;
-  }
-  .custom-tab {
-    border: none;
-    background: transparent;
-  }
-  .custom-tab .nav-item .nav-link {
-    border: none;
-    color: #555;
-    font-weight: 500;
-    padding: 1rem 1.5rem;
-  }
-  .custom-tab .nav-item .nav-link.active {
-    border-bottom: 3px solid #4568dc;
-    color: #4568dc;
-    background: transparent;
-  }
-  .skill-pill {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 50px;
-    padding: 0.25rem 0.75rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-    display: inline-block;
+  
+  .profile-badge {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.25rem 0.5rem;
     font-size: 0.85rem;
-    transition: all 0.3s;
   }
-  .skill-pill:hover {
-    background-color: #e9ecef;
-  }
-  .quality-item {
-    background-color: #f8f9fa;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s;
-  }
-  .quality-item:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
+  
   .stat-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    background: #f8f9fa;
-    border: 5px solid #e9ecef;
+    width: 100px;
+    height: 100px;
   }
-  .contact-btn {
-    background: linear-gradient(135deg, #4568dc, #b06ab3);
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  .contact-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  }
-  .edit-icon {
-    opacity: 0.7;
-    transition: opacity 0.3s;
-  }
-  .edit-icon:hover {
-    opacity: 1;
-  }
+}

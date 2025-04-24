@@ -12,6 +12,7 @@ import {
   Popover,
   Badge,
   Image,
+  Spinner,
 } from "react-bootstrap";
 import {
   FaSearch,
@@ -21,10 +22,39 @@ import {
   FaBell,
   FaTruck,
   FaBars,
+  FaSignOutAlt,
+  FaCog,
+  FaBookmark,
+  FaQuestionCircle,
+  FaTachometerAlt,
+  FaSun,
+  FaMoon,
+  FaPlus
 } from "react-icons/fa";
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../redux/slices/userSlice';
+import { fetchServices } from '../redux/slices/serviceSlice';
+import { fetchConversations } from '../redux/slices/chatSlice';
+import { fetchNotifications } from '../redux/slices/notificationSlice';
+import api from '../api/axiosConfig';
 import "../styles/header.css"; // Import your CSS file
 
-export const Header = ({ isLoggedIn = false }) => {
+function Header() {
+  const { isAuthenticated, currentUser, userRole } = useSelector(state => state.user);
+  const { theme } = useSelector(state => state.theme);
+  const { services, loading: servicesLoading } = useSelector(state => state.service);
+  const { conversations } = useSelector(state => state.chat);
+  const { notifications, unreadCount: notificationsCount } = useSelector(state => state.notification);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // Handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/');
+  };
+
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
     categories: false,
@@ -34,6 +64,10 @@ export const Header = ({ isLoggedIn = false }) => {
     notifications: false,
     profileMenu: false,
   });
+  
+  // State for categories
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
 
   // Refs for handling click outside events
   const refs = {
@@ -71,182 +105,84 @@ export const Header = ({ isLoggedIn = false }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
-
-  // Sample data for messages and notifications
-  const messages = [
-    {
-      id: 1,
-      sender: "John Doe",
-      content: "Hi, I'm interested in your service",
-      time: "2 hours ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      sender: "Jane Smith",
-      content: "Thanks for your quick response",
-      time: "Yesterday",
-      unread: false,
-    },
-    {
-      id: 3,
-      sender: "Mike Johnson",
-      content: "When can we schedule a call?",
-      time: "2 days ago",
-      unread: true,
-    },
-  ];
-
-  const notifications = [
-    {
-      id: 1,
-      content: "Your order has been shipped",
-      time: "1 hour ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      content: "New comment on your service",
-      time: "5 hours ago",
-      unread: true,
-    },
-    { id: 3, content: "Payment received", time: "Yesterday", unread: false },
-  ];
-
-  // Categories data structure
-  const categories = [
-    {
-      title: "Programming and development",
-      items: [
-        "WordPress",
-        "Website development",
-        "Technical support",
-        "Software development",
-        "Create an online store",
-        "Mobile application programming",
-      ],
-    },
-    {
-      title: "Digital marketing",
-      items: [
-        "Marketing plans",
-        "Marketing Consulting",
-        "Search Engine Optimization",
-        "Social media ads",
-        "Social media account management",
-        "Social media marketing",
-      ],
-    },
-    {
-      title: "Writing and translation",
-      items: [
-        "Translation",
-        "Creative writing",
-        "Specialized content",
-        "Website content",
-        "Marketing content",
-        "Academic and professional content",
-      ],
-    },
-    {
-      title: "Design",
-      items: [
-        "Edit and enhance photos",
-        "Design advertising banners",
-        "Social media designs",
-        "Website and application design",
-        "Logos and brand identities",
-        "Marketing designs",
-      ],
-    },
-    {
-      title: "Audio",
-      items: [
-        "Singing",
-        "Voiceover",
-        "IVR",
-        "Audiobook production",
-        "Sound engineering",
-        "Music production and composition",
-      ],
-    },
-    {
-      title: "Works",
-      items: [
-        "Business Administration",
-        "Business Planning",
-        "Business Consulting",
-        "E-commerce",
-        "Legal services",
-        "Financial and accounting services",
-      ],
-    },
-    {
-      title: "Engineering and Architecture",
-      items: [
-        "Architecture",
-        "Civil and Structural Engineering",
-        "Mechanical Engineering",
-        "Electronics Engineering",
-        "Electrical Engineering",
-        "Engineering Consultations",
-      ],
-    },
-    {
-      title: "Video and animation",
-      items: [
-        "Intro design",
-        "Video editing",
-        "Animation and motion graphics",
-        "Marketing videos",
-        "Social media videos",
-      ],
-    },
-    {
-      title: "Lifestyle",
-      items: ["Personal consultations"],
-    },
-    {
-      title: "Data",
-      items: ["Data entry"],
-    },
-    {
-      title: "Distance learning",
-      items: ["Learn languages"],
-    },
-  ];
-
-  const profileMenuOptions = [
-    { icon: <FaUser />, text: "Profile" },
-    { icon: <FaShoppingCart />, text: "Saved" },
-    { icon: <FaEnvelope />, text: "Balance" },
-    { icon: <FaBell />, text: "Settings" },
-    { icon: <FaUser />, text: "Edit my account" },
-    { icon: <FaTruck />, text: "Help" },
-    { icon: <FaUser />, text: "Logout" },
-  ];
-
-  const expandMenuOptions = [
-    { icon: <FaUser />, text: "My Profile" },
-    { icon: <FaShoppingCart />, text: "My Services" },
-    { icon: <FaEnvelope />, text: "Messages" },
-    { icon: <FaBell />, text: "Notifications" },
-    { icon: <FaUser />, text: "Settings" },
-    { icon: <FaUser />, text: "Logout" },
-  ];
+  }, []);
 
   // Function to render notification badge
-  const renderBadge = (items) => {
-    const count = items.filter((item) => item.unread).length;
+  const renderBadge = (count) => {
     return count > 0 ? (
       <Badge
-        bg="danger"
         pill
-        className="position-absolute top-0 end-0 notification-badge">
+        bg="danger"
+        className="position-absolute top-0 end-0 translate-middle"
+      >
         {count}
       </Badge>
     ) : null;
+  };
+  
+  // Get unread messages count from conversations
+  const unreadMessagesCount = conversations?.reduce((total, conv) => total + (conv.unreadCount || 0), 0) || 0;
+  
+  // Get unread notifications count from notification slice
+  const unreadNotificationsCount = notificationsCount || 0;
+  
+  // Fetch data when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && currentUser?.id) {
+      // Fetch user's conversations for messages count
+      dispatch(fetchConversations(currentUser.id));
+      
+      // Fetch notifications
+      dispatch(fetchNotifications(currentUser.id));
+      
+      // Fetch services
+      dispatch(fetchServices());
+    }
+  }, [isAuthenticated, currentUser, dispatch]);
+  
+  // Fetch categories directly from the server
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setCategoriesLoading(true);
+        
+        // Try to fetch from API
+        try {
+          const response = await api.get('/categories');
+          
+          // Format categories for display
+          const formattedCategories = response.data.map(category => category.name || category.label);
+          setCategories(formattedCategories);
+        } catch (apiError) {
+          console.warn('Error fetching categories from API, using mock data:', apiError.message);
+          
+          // Fallback to mock categories
+          const mockCategories = [
+            'Web Development',
+            'Mobile App Development',
+            'UI/UX Design',
+            'Data Science',
+            'Digital Marketing',
+            'Content Writing',
+            'Video Editing',
+            'Graphic Design'
+          ];
+          
+          setCategories(mockCategories);
+        }
+      } catch (error) {
+        console.error('Error in categories processing:', error);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+  
+  // Toggle theme function
+  const handleToggleTheme = () => {
+    dispatch({ type: 'theme/toggleTheme' });
   };
 
   return (
@@ -278,12 +214,14 @@ export const Header = ({ isLoggedIn = false }) => {
             </div>
 
             {/* Add Service Button - Only show when logged in */}
-            {!isLoggedIn && (
+            {isAuthenticated && userRole === 'freelancer' && (
               <Button
                 variant="outline-light"
                 size="sm"
-                className="py-1 px-3 d-none d-md-block add-service-btn">
-                Add a service <span className="ms-1">+</span>
+                className="rounded-pill py-1 px-3 category-btn shadow-sm"
+                onClick={() => navigate('/add/service')}
+              >
+                <FaPlus className="me-1" size={12} /> Add Service
               </Button>
             )}
           </div>
@@ -299,13 +237,25 @@ export const Header = ({ isLoggedIn = false }) => {
             id="basic-navbar-nav"
             className="justify-content-end">
             <Nav className="align-items-center nav-icons-container">
+              {/* Theme Toggle Button */}
+              <div className="me-3">
+                <button
+                  className="theme-toggle-btn"
+                  onClick={handleToggleTheme}
+                  aria-label="Toggle theme"
+                  title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                >
+                  {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={18} />}
+                </button>
+              </div>
+
               {/* Search Button */}
               <div ref={refs.search} className="position-relative icon-wrapper">
                 <Nav.Link
+                  className="nav-icon"
                   onClick={() => toggleDropdown("search")}
-                  className="nav-icon shadow-sm"
-                  aria-label="Search">
-                  <FaSearch />
+                >
+                  <FaSearch size={18} />
                 </Nav.Link>
               </div>
 
@@ -320,91 +270,124 @@ export const Header = ({ isLoggedIn = false }) => {
               </div>
 
               {/* Login/Signup buttons for not logged in users */}
-              {isLoggedIn && (
+              {!isAuthenticated && (
                 <div className="d-flex align-items-center auth-buttons">
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    className="me-2 text-white border-0 signup-btn">
-                    <FaUser className="me-1" /> New account
-                  </Button>
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    className="text-white border-0 login-btn">
-                    <FaUser className="me-1" /> Login
-                  </Button>
+                  <Link to="/login">
+                    <Button
+                      variant="outline-primary"
+                      className="me-2 btn-sm">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button variant="primary" className="btn-sm">
+                      Sign Up
+                    </Button>
+                  </Link>
                 </div>
               )}
 
               {/* Logged in user features */}
-              {!isLoggedIn && (
+              {isAuthenticated && (
                 <>
                   {/* Notifications Dropdown */}
                   <div
                     ref={refs.notifications}
                     className="position-relative icon-wrapper">
                     <Nav.Link
-                      onClick={() => toggleDropdown("notifications")}
                       className="nav-icon"
-                      aria-label="Notifications">
-                      <FaBell />
-                      {renderBadge(notifications)}
+                      onClick={() => toggleDropdown("notifications")}
+                    >
+                      <FaBell size={18} />
+                      {renderBadge(unreadNotificationsCount)}
                     </Nav.Link>
 
                     <Overlay
                       show={dropdowns.notifications}
                       target={refs.notifications.current}
-                      placement="bottom-end"
+                      placement="bottom"
                       container={refs.notifications.current}
-                      containerPadding={20}>
-                      <Popover
-                        id="notifications-popover"
-                        className="border-0 shadow-custom">
-                        <Popover.Header className="bg-light d-flex justify-content-between align-items-center popup-header">
-                          <span>Notifications</span>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 text-muted mark-read-btn">
-                            Mark all as read
-                          </Button>
+                      containerPadding={20}
+                    >
+                      <Popover id="popover-notifications" className="notifications-popover shadow-lg border-0">
+                        <Popover.Header className="bg-white border-0 pb-0">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h6 className="mb-0 fw-bold">Notifications</h6>
+                            <Button 
+                              variant="link" 
+                              className="p-0 text-decoration-none small"
+                              onClick={() => dispatch({ type: 'notification/markAllAsRead' })}
+                            >
+                              Mark all as read
+                            </Button>
+                          </div>
                         </Popover.Header>
-                        <Popover.Body className="p-0">
-                          {notifications.length > 0 ? (
-                            <div className="notification-list">
-                              {notifications.map((notification) => (
-                                <div
-                                  key={notification.id}
-                                  className={`notification-item p-2 border-bottom ${
-                                    notification.unread ? "bg-light" : ""
-                                  }`}>
-                                  <div className="d-flex justify-content-between">
-                                    <span className="notification-content">
-                                      {notification.content}
-                                    </span>
-                                    {notification.unread && (
-                                      <span className="text-primary unread-indicator">
-                                        •
-                                      </span>
-                                    )}
+                        <Popover.Body>
+                          {notifications && notifications.length > 0 ? (
+                            notifications.slice(0, 5).map(notification => {
+                              // Format timestamp to relative time
+                              const notifTime = new Date(notification.createdAt);
+                              const now = new Date();
+                              const diffMs = now - notifTime;
+                              const diffMins = Math.floor(diffMs / 60000);
+                              const diffHours = Math.floor(diffMins / 60);
+                              const diffDays = Math.floor(diffHours / 24);
+                              
+                              let timeAgo;
+                              if (diffDays > 0) {
+                                timeAgo = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+                              } else if (diffHours > 0) {
+                                timeAgo = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+                              } else if (diffMins > 0) {
+                                timeAgo = `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+                              } else {
+                                timeAgo = 'Just now';
+                              }
+                              
+                              // Determine icon based on notification type
+                              let icon;
+                              let bgColor;
+                              
+                              if (notification.type === 'message') {
+                                icon = <FaEnvelope size={14} />;
+                                bgColor = 'bg-primary';
+                              } else if (notification.type === 'proposal') {
+                                icon = <FaShoppingCart size={14} />;
+                                bgColor = 'bg-success';
+                              } else {
+                                icon = <FaBell size={14} />;
+                                bgColor = 'bg-info';
+                              }
+                              
+                              return (
+                                <div 
+                                  key={notification.id} 
+                                  className={`notification-item d-flex p-2 border-bottom ${!notification.read ? 'bg-light' : ''}`}
+                                  onClick={() => {
+                                    if (notification.type === 'message') {
+                                      navigate(`/chat/${notification.sourceId}`);
+                                    } else if (notification.type === 'proposal') {
+                                      navigate(`/proposals/${notification.sourceId}`);
+                                    }
+                                    dispatch({ type: 'notification/markAsRead', payload: notification.id });
+                                    setDropdowns(prev => ({ ...prev, notifications: false }));
+                                  }}
+                                  style={{ cursor: 'pointer' }}
+                                >
+                                  <div className={`notification-icon me-3 ${bgColor} text-white rounded-circle d-flex align-items-center justify-content-center`} style={{width: 36, height: 36}}>
+                                    {icon}
                                   </div>
-                                  <small className="text-muted notification-time">
-                                    {notification.time}
-                                  </small>
+                                  <div>
+                                    <p className="small mb-0">{notification.content}</p>
+                                    <small className="text-muted">{timeAgo}</small>
+                                  </div>
                                 </div>
-                              ))}
-                              <div className="text-center py-2">
-                                <a
-                                  href="#all-notifications"
-                                  className="text-decoration-none see-all-link">
-                                  See all notifications
-                                </a>
-                              </div>
-                            </div>
+                              );
+                            })
                           ) : (
-                            <div className="p-3 text-center">
-                              No notifications
+                            <div className="text-center py-3">
+                              <p className="mb-0">No notifications</p>
+                              <small className="text-muted">You're all caught up!</small>
                             </div>
                           )}
                         </Popover.Body>
@@ -417,81 +400,90 @@ export const Header = ({ isLoggedIn = false }) => {
                     ref={refs.messages}
                     className="position-relative icon-wrapper">
                     <Nav.Link
-                      onClick={() => toggleDropdown("messages")}
                       className="nav-icon"
-                      aria-label="Messages">
-                      <FaEnvelope />
-                      {renderBadge(messages)}
+                      onClick={() => toggleDropdown("messages")}
+                    >
+                      <FaEnvelope size={18} />
+                      {renderBadge(unreadMessagesCount)}
                     </Nav.Link>
 
                     <Overlay
                       show={dropdowns.messages}
                       target={refs.messages.current}
-                      placement="bottom-end"
+                      placement="bottom"
                       container={refs.messages.current}
-                      containerPadding={20}>
-                      <Popover
-                        id="messages-popover"
-                        className="border-0 shadow-custom">
-                        <Popover.Header className="bg-light popup-header">
-                          Messages
+                      containerPadding={20}
+                    >
+                      <Popover id="popover-messages" className="messages-popover shadow-lg border-0">
+                        <Popover.Header className="bg-white border-0 pb-0">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h6 className="mb-0 fw-bold">Messages</h6>
+                            <Link to="/chat" className="text-decoration-none small" onClick={() => setDropdowns(prev => ({ ...prev, messages: false }))}>View All</Link>
+                          </div>
                         </Popover.Header>
-                        <Popover.Body className="p-0">
-                          {messages.length > 0 ? (
-                            <div className="message-list">
-                              {messages.map((message) => (
-                                <div
-                                  key={message.id}
-                                  className={`message-item p-2 border-bottom ${
-                                    message.unread ? "bg-light" : ""
-                                  }`}>
-                                  <div className="d-flex justify-content-between">
-                                    <strong className="message-sender">
-                                      {message.sender}
-                                    </strong>
-                                    {message.unread && (
-                                      <span className="text-primary unread-indicator">
-                                        •
+                        <Popover.Body>
+                          {conversations && conversations.length > 0 ? (
+                            conversations.slice(0, 3).map(conversation => {
+                              // Format timestamp to relative time
+                              const messageTime = new Date(conversation.lastMessageTime);
+                              const now = new Date();
+                              const diffMs = now - messageTime;
+                              const diffMins = Math.floor(diffMs / 60000);
+                              const diffHours = Math.floor(diffMins / 60);
+                              const diffDays = Math.floor(diffHours / 24);
+                              
+                              let timeAgo;
+                              if (diffDays > 0) {
+                                timeAgo = `${diffDays}d ago`;
+                              } else if (diffHours > 0) {
+                                timeAgo = `${diffHours}h ago`;
+                              } else if (diffMins > 0) {
+                                timeAgo = `${diffMins}m ago`;
+                              } else {
+                                timeAgo = 'Just now';
+                              }
+                              
+                              return (
+                                <div key={conversation.id} className="message-item d-flex p-2 border-bottom">
+                                  <Image 
+                                    src="https://i.imgur.com/JFHjdNZ.jpeg" 
+                                    roundedCircle 
+                                    width={40} 
+                                    height={40} 
+                                    className="me-2" 
+                                  />
+                                  <div>
+                                    <div className="d-flex justify-content-between">
+                                      <span className="fw-semibold">
+                                        {conversation.participants && conversation.participants.length > 0 
+                                          ? (conversation.participants[0] === currentUser?.id 
+                                              ? 'User ' + conversation.participants[1]
+                                              : 'User ' + conversation.participants[0])
+                                          : 'Unknown User'}
                                       </span>
-                                    )}
+                                      <small className="text-muted">{timeAgo}</small>
+                                    </div>
+                                    <p className="small text-truncate mb-0">
+                                      {conversation.lastMessage && conversation.lastMessage.length > 30
+                                        ? conversation.lastMessage.substring(0, 30) + '...'
+                                        : conversation.lastMessage || 'No message'}
+                                    </p>
                                   </div>
-                                  <div className="message-content text-truncate">
-                                    {message.content}
-                                  </div>
-                                  <small className="text-muted message-time">
-                                    {message.time}
-                                  </small>
                                 </div>
-                              ))}
-                              <div className="text-center py-2">
-                                <a
-                                  href="#all-messages"
-                                  className="text-decoration-none see-all-link">
-                                  See all messages
-                                </a>
-                              </div>
-                            </div>
+                              );
+                            })
                           ) : (
-                            <div className="p-3 text-center">No messages</div>
+                            <div className="text-center py-3">
+                              <p className="mb-0">No messages yet</p>
+                              <small className="text-muted">Start a conversation with a freelancer</small>
+                            </div>
                           )}
                         </Popover.Body>
                       </Popover>
                     </Overlay>
                   </div>
 
-                  {/* Incoming Requests - Hide on smaller screens */}
-                  <div className="icon-wrapper d-none d-lg-block">
-                    <Nav.Link
-                      href="#incoming"
-                      className="nav-icon incoming-requests">
-                      <FaTruck />{" "}
-                      <span className="d-none d-xl-inline ms-1">
-                        Incoming requests
-                      </span>
-                    </Nav.Link>
-                  </div>
-
-                  {/* Profile Picture with Dropdown */}
+                  {/* User Profile Dropdown */}
                   <div
                     ref={refs.profileMenu}
                     className="position-relative icon-wrapper">
@@ -500,12 +492,11 @@ export const Header = ({ isLoggedIn = false }) => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                        src="https://i.imgur.com/6AglEUF.jpeg"
+                        src={currentUser?.profileImage || "https://i.imgur.com/JFHjdNZ.jpeg"}
                         roundedCircle
-                        width="32"
-                        height="32"
-                        className="border border-2 border-light profile-image shadow"
-                        alt="Profile"
+                        width={32}
+                        height={32}
+                        className="profile-pic"
                       />
                     </Nav.Link>
 
@@ -520,35 +511,67 @@ export const Header = ({ isLoggedIn = false }) => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
                           <Image
-                            src="https://i.imgur.com/6AglEUF.jpeg"
+                            src={currentUser?.profileImage || "https://i.imgur.com/JFHjdNZ.jpeg"}
                             roundedCircle
-                            width="40"
-                            height="40"
-                            className="border me-2"
-                            alt="Profile"
+                            width={40}
+                            height={40}
+                            className="me-2"
                           />
                           <div>
-                            <div className="fw-bold">Ayman Samir</div>
-                            <div className="small text-muted">
-                              Ayman@gmail.com
-                            </div>
+                            <h6 className="mb-0 fw-bold">{currentUser?.name || 'User'}</h6>
+                            <small className="text-muted">{userRole && userRole.charAt(0).toUpperCase() + userRole.slice(1)}</small>
                           </div>
                         </Popover.Header>
                         <Popover.Body className="p-0">
                           <Nav className="flex-column">
-                            {profileMenuOptions.map((option, idx) => (
-                              <Nav.Link
-                                key={idx}
-                                href={`#${option.text
-                                  .toLowerCase()
-                                  .replace(/ /g, "-")}`}
-                                className="px-3 py-2 text-dark menu-item">
-                                <span className="menu-icon me-2">
-                                  {option.icon}
-                                </span>
-                                {option.text}
-                              </Nav.Link>
-                            ))}
+                            <Link
+                              to={`/profile/${currentUser?.id}`}
+                              className="nav-link px-3 py-2 text-dark menu-item">
+                              <span className="menu-icon me-2">
+                                <FaUser />
+                              </span>
+                              Profile
+                            </Link>
+                            <Link
+                              to="/dashboard"
+                              className="nav-link px-3 py-2 text-dark menu-item">
+                              <span className="menu-icon me-2">
+                                <FaTachometerAlt />
+                              </span>
+                              Dashboard
+                            </Link>
+                            <Link
+                              to="/saved-services"
+                              className="nav-link px-3 py-2 text-dark menu-item">
+                              <span className="menu-icon me-2">
+                                <FaBookmark />
+                              </span>
+                              Saved Services
+                            </Link>
+                            <Link
+                              to="/settings"
+                              className="nav-link px-3 py-2 text-dark menu-item">
+                              <span className="menu-icon me-2">
+                                <FaCog />
+                              </span>
+                              Settings
+                            </Link>
+                            <Link
+                              to="/help"
+                              className="nav-link px-3 py-2 text-dark menu-item">
+                              <span className="menu-icon me-2">
+                                <FaQuestionCircle />
+                              </span>
+                              Help & Support
+                            </Link>
+                            <button
+                              onClick={handleLogout}
+                              className="nav-link px-3 py-2 text-dark menu-item w-100 text-start border-0 bg-transparent">
+                              <span className="menu-icon me-2">
+                                <FaSignOutAlt />
+                              </span>
+                              Logout
+                            </button>
                           </Nav>
                         </Popover.Body>
                       </Popover>
@@ -581,19 +604,46 @@ export const Header = ({ isLoggedIn = false }) => {
                     className="border-0 shadow-custom expandable-menu">
                     <Popover.Body className="p-0">
                       <Nav className="flex-column">
-                        {expandMenuOptions.map((option, idx) => (
-                          <Nav.Link
-                            key={idx}
-                            href={`#${option.text
-                              .toLowerCase()
-                              .replace(/ /g, "-")}`}
-                            className="px-3 py-2 text-dark menu-item">
-                            <span className="menu-icon me-2">
-                              {option.icon}
-                            </span>
-                            {option.text}
-                          </Nav.Link>
-                        ))}
+                        <Link
+                          to={`/profile/${currentUser?.id}`}
+                          className="nav-link px-3 py-2 text-dark menu-item">
+                          <span className="menu-icon me-2">
+                            <FaUser />
+                          </span>
+                          Profile
+                        </Link>
+                        <Link
+                          to="/dashboard"
+                          className="nav-link px-3 py-2 text-dark menu-item">
+                          <span className="menu-icon me-2">
+                            <FaTachometerAlt />
+                          </span>
+                          Dashboard
+                        </Link>
+                        <Link
+                          to="/saved-services"
+                          className="nav-link px-3 py-2 text-dark menu-item">
+                          <span className="menu-icon me-2">
+                            <FaBookmark />
+                          </span>
+                          Saved Services
+                        </Link>
+                        <Link
+                          to="/settings"
+                          className="nav-link px-3 py-2 text-dark menu-item">
+                          <span className="menu-icon me-2">
+                            <FaCog />
+                          </span>
+                          Settings
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="nav-link px-3 py-2 text-dark menu-item w-100 text-start border-0 bg-transparent">
+                          <span className="menu-icon me-2">
+                            <FaSignOutAlt />
+                          </span>
+                          Logout
+                        </button>
                       </Nav>
                     </Popover.Body>
                   </Popover>
@@ -628,28 +678,51 @@ export const Header = ({ isLoggedIn = false }) => {
       {dropdowns.categories && (
         <div className="position-absolute w-100 bg-white shadow-sm py-3 categories-dropdown">
           <Container>
-            <div className="categories-menu">
-              <div className="row g-3">
-                {categories.map((category, idx) => (
-                  <div
-                    key={idx}
-                    className="col-6 col-md-4 col-lg-3 col-xl-2 mb-3 category-column">
-                    <h6 className="fw-bold text-capitalize category-title">
-                      {category.title}
-                    </h6>
-                    <ul className="list-unstyled small category-list">
-                      {category.items.map((item, i) => (
-                        <li key={i} className="category-item">
-                          <a
-                            href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-                            className="text-decoration-none text-dark d-block py-1 category-link">
-                            {item}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            <div className="categories-dropdown-content" style={{ display: dropdowns.categories ? 'block' : 'none' }}>
+              {categoriesLoading ? (
+                <div className="py-5 text-center">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Loading categories...</p>
+                </div>
+              ) : (
+                <div className="row py-4">
+                  {/* Group categories into columns */}
+                  {categories.length > 0 ? (
+                    // Split categories into groups of 3-4 for columns
+                    Array.from({ length: Math.ceil(categories.length / 4) }).map((_, colIndex) => {
+                      const startIdx = colIndex * 4;
+                      const colCategories = categories.slice(startIdx, startIdx + 4);
+                      
+                      return (
+                        <div key={colIndex} className="col-6 col-md-4 col-lg-3 col-xl-2 mb-3 category-column">
+                          <h6 className="fw-bold text-capitalize category-title">
+                            {colCategories[0]}
+                          </h6>
+                          <ul className="list-unstyled small category-list">
+                            {colCategories.map((category, idx) => (
+                              <li key={idx} className="category-item">
+                                <Link 
+                                  to={`/services?category=${encodeURIComponent(category.toLowerCase().replace(/ /g, '-'))}`} 
+                                  className="text-decoration-none text-dark d-block py-1 category-link"
+                                  onClick={() => setDropdowns(prev => ({ ...prev, categories: false }))}
+                                >
+                                  {category}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="col-12 text-center py-4">
+                      <p>No categories found</p>
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className="text-center mt-3">
+                <Link to="/services" className="btn btn-outline-primary btn-sm">View All Categories</Link>
               </div>
             </div>
           </Container>
@@ -657,6 +730,6 @@ export const Header = ({ isLoggedIn = false }) => {
       )}
     </header>
   );
-};
+}
 
-export default Header;
+export { Header };

@@ -1,0 +1,197 @@
+/* Theme styles for light and dark mode */
+
+/* Light Theme (default) */
+:root {
+  /* Base colors */
+  --color-background: #F0EFEF;
+  --color-text: #1C1818;
+  --color-text-muted: #605656;
+  --color-border: #CAC8C5;
+  
+  /* Component colors */
+  --color-card-bg: #FFFFFF;
+  --color-input-bg: #FFFFFF;
+  --color-dropdown-bg: #FFFFFF;
+  --color-dropdown-text: #1C1818;
+  --color-dropdown-hover: #f3f4f6;
+  
+  /* Navbar */
+  --color-navbar-bg: #0765BC;
+  --color-navbar-text: #FFFFFF;
+  
+  /* Transitions */
+  --theme-transition: all 0.3s ease;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Base colors */
+  --color-background: #121212;
+  --color-text: #F0F0F0;
+  --color-text-muted: #B0B0B0;
+  --color-border: #333333;
+  
+  /* Component colors */
+  --color-card-bg: #1E1E1E;
+  --color-input-bg: #2A2A2A;
+  --color-dropdown-bg: #2A2A2A;
+  --color-dropdown-text: #F0F0F0;
+  --color-dropdown-hover: #3A3A3A;
+  
+  /* Navbar */
+  --color-navbar-bg: #1A1A1A;
+  --color-navbar-text: #F0F0F0;
+  
+  /* Override bootstrap and other component styles */
+  --bs-body-bg: #121212;
+  --bs-body-color: #F0F0F0;
+  
+  /* Override specific colors */
+  --color-sapphire: #4B92F6; /* Brighter blue */
+  --color-coral: #FF8A94; /* Brighter coral */
+  --color-breeze: #1A4D47; /* Darker teal for dark mode */
+  --color-header-bg: #1A1A1A;
+  --color-header-text: #F0F0F0;
+  --color-footer-bg: #1A1A1A;
+  --color-footer-text: #F0F0F0;
+  
+  /* Button colors */
+  --color-btn-primary: #4B92F6; /* Brighter blue */
+  --color-btn-secondary: #FF8A94; /* Brighter coral */
+  --color-btn-success: #42A57A; /* Brighter green */
+  --color-btn-danger: #FF4A56; /* Brighter red */
+  
+  /* Form and Inputs */
+  --color-form-bg: #2A2A2A;
+  --color-input-border: #444444;
+  --color-input-focus: #4B92F6;
+}
+
+/* Apply theme to elements */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: var(--theme-transition);
+}
+
+/* Dark mode specific overrides for text and links */
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] h3, 
+[data-theme="dark"] h4, 
+[data-theme="dark"] h5, 
+[data-theme="dark"] h6 {
+  color: var(--color-sapphire);
+}
+
+[data-theme="dark"] a {
+  color: var(--color-coral);
+}
+
+[data-theme="dark"] a:hover {
+  color: #FF6A74; /* Lighter coral for hover */
+}
+
+/* Card styles */
+.card {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-border);
+  transition: var(--theme-transition);
+}
+
+/* Navbar styles */
+.navbar.bg-dark {
+  background-color: var(--color-navbar-bg) !important;
+  transition: var(--theme-transition);
+}
+
+/* Form controls */
+.form-control, .form-select {
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+  transition: var(--theme-transition);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+  background-color: var(--color-dropdown-bg);
+  border-color: var(--color-border);
+  transition: var(--theme-transition);
+}
+
+.dropdown-item {
+  color: var(--color-dropdown-text);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color: var(--color-dropdown-hover);
+}
+
+/* Tables */
+table {
+  color: var(--color-text);
+}
+
+/* Modal */
+.modal-content {
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+}
+
+/* Popover */
+.popover {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-border);
+}
+
+.popover-header {
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border-bottom-color: var(--color-border);
+}
+
+.popover-body {
+  color: var(--color-text);
+}
+
+/* Theme toggle button */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  color: var(--color-navbar-text);
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode specific overrides */
+[data-theme="dark"] .text-dark {
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--color-card-bg) !important;
+}
+
+[data-theme="dark"] .border {
+  border-color: var(--color-border) !important;
+}
+
+/* Category dropdown in dark mode */
+[data-theme="dark"] .category-link {
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .category-link:hover {
+  background-color: var(--color-dropdown-hover);
+}

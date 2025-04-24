@@ -1,9 +1,19 @@
-import React, { useState, useRef } from 'react';
-import { Container, Row, Col, Form, Button, Card, Badge, Alert } from 'react-bootstrap';
+import React, { useState, useRef, useEffect } from 'react';
+import { Container, Row, Col, Form, Button, Card, Badge, Alert, Spinner } from 'react-bootstrap';
 import { FiUpload, FiDollarSign, FiTag, FiList, FiX, FiImage, FiInfo, FiYoutube } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createService, fetchServiceById, updateService } from '../redux/slices/serviceSlice';
+import api from '../api/axiosConfig';
 import '../styles/CreateService.css';
 
 const CreateService = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { serviceId } = useParams();
+  const { isAuthenticated, currentUser } = useSelector(state => state.user);
+  const { services, loading, error } = useSelector(state => state.service);
+  
   // Ref for file input
   const galleryInputRef = useRef(null);
   
@@ -27,25 +37,72 @@ const CreateService = () => {
   
   // State for alerts
   const [showMaxImagesAlert, setShowMaxImagesAlert] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // State for YouTube video preview
   const [youtubeVideoId, setYoutubeVideoId] = useState('');
   const [youtubeError, setYoutubeError] = useState('');
   
-  // Sample categories (you can replace with your actual categories)
-  const categories = [
-    'Web Development', 
-    'Graphic Design', 
-    'Interior Design', 
-    'Content Writing', 
-    'Digital Marketing',
-    'UI/UX Design',
-    'Video Editing',
-    'Translation',
-    'Photography',
-    'Other'
-  ];
-
+  // State for categories from API
+  const [categories, setCategories] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Redirect if not authenticated or not a freelancer
+  useEffect(() => {
+    if (!isAuthenticated || (currentUser && currentUser.role !== 'freelancer')) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, currentUser, navigate]);
+  
+  // Fetch categories from server
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/categories');
+        const categoryLabels = response.data.map(category => category.label);
+        setCategories(categoryLabels);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+  
+  // Fetch service data if editing
+  useEffect(() => {
+    if (serviceId) {
+      setIsEditing(true);
+      dispatch(fetchServiceById(serviceId))
+        .unwrap()
+        .then((service) => {
+          // Convert price to string for the form
+          const priceFromStr = service.price ? service.price.toString() : '';
+          
+          setFormData({
+            title: service.title || '',
+            category: service.tags?.[0] || '',
+            tags: service.tags || [],
+            priceFrom: priceFromStr,
+            description: service.longDescription || service.description || '',
+            thumbnailImage: service.image || null,
+            galleryImages: service.galleryImages || [],
+            youtubeUrl: service.youtubeUrl || ''
+          });
+          
+          if (service.youtubeUrl) {
+            const videoId = extractYoutubeId(service.youtubeUrl);
+            if (videoId) setYoutubeVideoId(videoId);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching service:', err);
+          setSubmitError('Could not load service data. Please try again.');
+        });
+    }
+  }, [serviceId, dispatch]);
+  
   // Handle text/select inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,53 +110,78 @@ const CreateService = () => {
       ...formData,
       [name]: value
     });
-    
-    // Clear YouTube error when user modifies input
-    if (name === 'youtubeUrl') {
-      setYoutubeError('');
-    }
+    setYoutubeVideoId('');
+    setYoutubeError('');
   };
 
   // Handle thumbnail image upload
   const handleThumbnailUpload = (e) => {
-    if (e.target.files[0]) {
-      setFormData({
-        ...formData,
-        thumbnailImage: e.target.files[0]
-      });
+    const file = e.target.files[0];
+    if (file) {
+      // Convert image to base64 for storage in JSON
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          thumbnailImage: reader.result // Store base64 string
+        });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   // Handle gallery images upload
   const handleGalleryUpload = (e) => {
-    if (e.target.files) {
-      const newImages = Array.from(e.target.files);
-      const totalImages = formData.galleryImages.length + newImages.length;
+    const files = Array.from(e.target.files);
+    
+    if (files.length > 0) {
+      // Check if adding these files would exceed the limit
+      const totalImagesAfterAdd = formData.galleryImages.length + files.length;
       
-      if (totalImages <= 6) {
-        setFormData({
-          ...formData,
-          galleryImages: [...formData.galleryImages, ...newImages]
-        });
-        setShowMaxImagesAlert(false);
-      } else {
-        // Only add images up to the maximum of 6
-        const availableSlots = 6 - formData.galleryImages.length;
-        if (availableSlots > 0) {
-          const imagesToAdd = newImages.slice(0, availableSlots);
-          setFormData({
-            ...formData,
-            galleryImages: [...formData.galleryImages, ...imagesToAdd]
-          });
-        }
+      if (totalImagesAfterAdd > 6) {
         setShowMaxImagesAlert(true);
+        // Only add images up to the limit
+        const remainingSlots = 6 - formData.galleryImages.length;
         
-        // Clear the file input
+        if (remainingSlots > 0) {
+          const filesToAdd = files.slice(0, remainingSlots);
+          
+          // Convert each image to base64
+          processGalleryImages(filesToAdd);
+        }
+        
+        // Clear the input
         if (galleryInputRef.current) {
           galleryInputRef.current.value = '';
         }
+        
+        return;
       }
+      
+      // Convert all images to base64
+      processGalleryImages(files);
     }
+  };
+  
+  // Process gallery images to base64
+  const processGalleryImages = (files) => {
+    const processedImages = [...formData.galleryImages];
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        processedImages.push(reader.result); // Add base64 string
+        
+        // Update state after all images are processed
+        if (processedImages.length === formData.galleryImages.length + files.length) {
+          setFormData({
+            ...formData,
+            galleryImages: processedImages
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   // Add tag to the tags array
@@ -192,16 +274,63 @@ const CreateService = () => {
       return;
     }
     
-    console.log('Form Data:', formData);
-    // Here you would typically send the data to your backend API
-    alert('Service created successfully!');
+    // Validate required fields
+    if (!formData.title || !formData.category || !formData.priceFrom || !formData.description) {
+      setSubmitError('Please fill in all required fields');
+      setValidated(true);
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setSubmitError('');
+    
+    // Create service object
+    const serviceData = {
+      userId: currentUser.id,
+      title: formData.title,
+      description: formData.description.substring(0, 150), // Short description
+      longDescription: formData.description,
+      price: parseFloat(formData.priceFrom),
+      deliveryTime: '7 days', // Default delivery time
+      image: formData.thumbnailImage || 'https://i.imgur.com/thdopBi.jpeg', // Default image if none provided
+      galleryImages: formData.galleryImages || [], // Add gallery images as base64 strings
+      tags: formData.tags.length > 0 ? formData.tags : [formData.category],
+      featured: false,
+      createdAt: new Date().toISOString(),
+      averageRating: 0,
+      numberOfReviews: 0,
+      youtubeUrl: formData.youtubeUrl || '',
+      status: 'pending', // Add pending status for admin review
+      adminReviewed: false
+    };
+    
+    // If editing, update the service, otherwise create a new one
+    const action = isEditing 
+      ? updateService({ id: serviceId, ...serviceData })
+      : createService(serviceData);
+    
+    dispatch(action)
+      .unwrap()
+      .then((result) => {
+        setIsSubmitting(false);
+        // Navigate to dashboard with success message instead of service details
+        navigate('/dashboard', { 
+          state: { 
+            successMessage: 'Service submitted successfully! It is now pending admin review.'
+          }
+        });
+      })
+      .catch((err) => {
+        setIsSubmitting(false);
+        setSubmitError(err.message || 'Failed to save service. Please try again.');
+      });
   };
 
   return (
     <div className="page-container">
       <Container>
         <div className="page-header">
-          <h1 className="fw-bold">Add a New Service</h1>
+          <h1 className="fw-bold">{isEditing ? 'Edit Service' : 'Add a New Service'}</h1>
           <p className="text-muted mb-0">
             Complete the form below to create a service that clients can order. Be detailed and showcase your best work.
           </p>
@@ -500,19 +629,41 @@ const CreateService = () => {
             </Col>
           </Row>
 
+          {submitError && (
+            <Alert variant="danger" className="mt-3" onClose={() => setSubmitError('')} dismissible>
+              {submitError}
+            </Alert>
+          )}
+          
           <div className="d-flex justify-content-between mt-4">
             <Button 
               variant="outline-secondary" 
               className="button-outline"
+              onClick={() => navigate('/dashboard')}
             >
-              Save as Draft
+              Cancel
             </Button>
             <Button 
               variant="primary" 
               type="submit"
               className="button-primary"
+              disabled={isSubmitting}
             >
-              Publish Service
+              {isSubmitting ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  {isEditing ? 'Updating...' : 'Publishing...'}
+                </>
+              ) : (
+                isEditing ? 'Update Service' : 'Publish Service'
+              )}
             </Button>
           </div>
         </Form>

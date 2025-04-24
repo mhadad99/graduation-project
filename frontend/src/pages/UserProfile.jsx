@@ -1,78 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Container, Tabs, Tab, Alert, Button } from "react-bootstrap";
 import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Badge,
-  ListGroup,
-  Image,
-  Nav,
-  Tabs,
-  Tab,
-  ProgressBar,
-} from "react-bootstrap";
-import {
-  Calendar,
-  Star,
-  Phone,
-  Envelope,
-  Bookmark,
-  Clock,
-  Award,
-  File,
-  Instagram,
-  Facebook,
-  CheckCircleFill,
-  PersonFill,
   Briefcase,
-  StarFill,
-  GeoAlt,
-  ChatDots,
-  Heart,
-  Share,
-  Cash,
-  PatchCheck,
-  LightningCharge,
-  Pencil,
+  PersonFill,
+  Collection,
+  Star,
+  GeoAlt
 } from "react-bootstrap-icons";
+
+// Import Redux actions
+import { fetchUserProfile } from "../redux/slices/userSlice";
+import { fetchUserServices } from "../redux/slices/serviceSlice";
+import { fetchUserPortfolio, addPortfolioItem, deletePortfolioItem } from "../redux/slices/portfolioSlice";
+import { fetchUserRatings, submitUserRating } from "../redux/slices/ratingSlice";
+
+// Import profile components
+import {
+  ProfileHeader,
+  ServicesTab,
+  PortfolioTab,
+  AboutTab,
+  ReviewsTab
+} from "../components/profile";
+
+// Import mock data for fallback
+import { mockUsers, mockServices, mockPortfolioItems, mockRatings } from "../utils/apiUtils";
+
+// Import API
+import api from "../api/axiosConfig";
+
+// Import styles
 import "../styles/UserProfile.css";
 
-  const UserProfile = ({ isMyProfile = true }) => {
-    // State for profile data
-    const [profileData, setProfileData] = useState({
-      name: "Ayman Samir",
-      title: "Front-end and Web Developer | React and Python Expert",
-      location: "New York, USA",
-      description:
-        "Hello, I'm Ayman Samir, a web developer specializing in front-end design and development using HTML, CSS, JavaScript, and React, with experience in Python and Django to create dynamic and high-performance solutions.",
-      completionRate: 98,
-      publishedServices: 12,
-      numberOfReviews: 45,
-      averageResponse: "2 hours",
-      joinDate: "January 23, 2023",
-      lastSeen: "2 days ago",
-      mobileNumber: "+1234567890",
-      email: "ayman@example.com",
-      averageRating: 4.8,
-      languages: ["English (Fluent)", "Arabic (Native)", "French (Basic)"],
-      socialMedia: {
-        instagram: "ayman_samir",
-        facebook: "aymansamir",
-        github: "aymansamir",
-      },
-    });
-    const [activeTab, setActiveTab] = useState("services"); 
-
-  // Function to handle field editing
-  // const handleEditField = (field, value) => {
-  //   setProfileData((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-  // };
-
+const UserProfile = () => {
+  const dispatch = useDispatch();
+  const { userId: urlUserId } = useParams();
+  
+  // Redux state
+  const { currentUser } = useSelector(state => state.user);
+  const { userServices, loading: servicesLoading } = useSelector(state => state.service);
+  const { portfolioItems, loading: portfolioLoading } = useSelector(state => state.portfolio);
+  const { userRatings, loading: ratingsLoading } = useSelector(state => state.rating);
+  
+  // Local state
+  const [activeTab, setActiveTab] = useState("about");
+  const [isMyProfile, setIsMyProfile] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [effectiveUserId, setEffectiveUserId] = useState(urlUserId);
+  
+  // If urlUserId is undefined, use the current user's ID
+  useEffect(() => {
+    if (!urlUserId && currentUser) {
+      console.log('No userId in URL, using current user ID:', currentUser.id);
+      setEffectiveUserId(currentUser.id.toString());
+      setIsMyProfile(true);
+    } else if (!urlUserId) {
+      // If no urlUserId and no currentUser, try to get from localStorage
+      const localUser = JSON.parse(localStorage.getItem('user'));
+      if (localUser) {
+        console.log('Using user ID from localStorage:', localUser.id);
+        setEffectiveUserId(localUser.id.toString());
+        setIsMyProfile(true);
+      }
+    } else {
+      // If urlUserId is defined, use it
+      setEffectiveUserId(urlUserId);
+    }
+  }, [urlUserId, currentUser]);
+  
+  // Sample data for skills and qualities
   const skills = [
     "Professional landing page design",
     "Responsive and fast loading",
@@ -94,484 +94,294 @@ import "../styles/UserProfile.css";
     "Clear communication",
     "Understanding client requirements",
   ];
+  
+  // Determine if this is the current user's profile
+  useEffect(() => {
+    if (currentUser && effectiveUserId) {
+      const isCurrentUserProfile = currentUser.id.toString() === effectiveUserId.toString();
+      console.log('Checking if current user profile:', isCurrentUserProfile);
+      setIsMyProfile(isCurrentUserProfile);
+    }
+  }, [currentUser, effectiveUserId]);
 
-  const services = [
-    {
-      id: 1,
-      title: "Professional Website Development",
-      description:
-        "Custom, responsive websites built with modern frameworks like React and Next.js",
-      price: 500,
-      deliveryTime: "5 days",
-      image: "https://i.imgur.com/thdopBi.jpeg",
-      tags: ["Web Development", "React", "Responsive"],
-      featured: true,
-    },
-    {
-      id: 2,
-      title: "UI/UX Design",
-      description:
-        "User-friendly interfaces with modern aesthetics and optimal user experience",
-      price: 300,
-      deliveryTime: "3 days",
-      image: "https://i.imgur.com/thdopBi.jpeg",
-      tags: ["Design", "UI/UX", "Wireframing"],
-    },
-    {
-      id: 3,
-      title: "SEO Optimization",
-      description:
-        "Improve website visibility and ranking on search engines with data-driven strategies",
-      price: 200,
-      deliveryTime: "4 days",
-      image: "https://i.imgur.com/thdopBi.jpeg",
-      tags: ["SEO", "Marketing", "Analytics"],
-    },
-  ];
+  // Fetch user profile data - simplified to run only once when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!effectiveUserId) {
+        console.log('No effectiveUserId available yet, waiting...');
+        return;
+      }
+      
+      console.log('Starting to fetch data for userId:', effectiveUserId);
+      setIsLoading(true);
+      
+      try {
+        // Check if we're viewing our own profile
+        const isOwnProfile = currentUser && currentUser.id.toString() === effectiveUserId.toString();
+        
+        // Set profile data directly if it's our own profile
+        if (isOwnProfile) {
+          console.log('Using current user data');
+          setProfileData(currentUser);
+        } else {
+          // Fetch profile data for other users
+          console.log('Fetching user profile data');
+          const userData = await dispatch(fetchUserProfile(effectiveUserId)).unwrap();
+          setProfileData(userData);
+        }
+        
+        // Always fetch these additional data in parallel
+        console.log('Fetching user services');
+        dispatch(fetchUserServices(effectiveUserId));
+        
+        console.log('Fetching user portfolio');
+        dispatch(fetchUserPortfolio(effectiveUserId));
+        
+        console.log('Fetching user ratings');
+        dispatch(fetchUserRatings(effectiveUserId));
+        
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching profile data:', err);
+        setError('Failed to load profile data. Please try again later.');
+        
+        // Use mock data as fallback
+        setProfileData(mockUsers.find(user => user.id.toString() === effectiveUserId));
+        dispatch(fetchUserServices(effectiveUserId));
+        dispatch(fetchUserPortfolio(effectiveUserId));
+        dispatch(fetchUserRatings(effectiveUserId));
+      } finally {
+        // Set loading to false after a short delay to ensure data is displayed
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      }
+    };
+    
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveUserId]);
+  
+  // This second useEffect is no longer needed as we've simplified the data fetching logic above
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      company: "TechStart Inc.",
-      comment:
-        "Ayman delivered an exceptional website that perfectly matched our brand identity. His attention to detail and responsive design skills are outstanding.",
-      rating: 5,
-      date: "March 15, 2024",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      company: "GrowthHub",
-      comment:
-        "Working with Ayman was a breeze. He understood our requirements quickly and delivered a beautiful, high-performance website ahead of schedule.",
-      rating: 5,
-      date: "February 8, 2024",
-    },
-    {
-      id: 3,
-      name: "Jessica Williams",
-      company: "Creative Solutions",
-      comment:
-        "Great communication and exceptional work. The website Ayman built for us has significantly improved our conversion rates.",
-      rating: 4,
-      date: "January 20, 2024",
-    },
-  ];
+  // Handle adding portfolio item
+  const handleAddPortfolioItem = async (portfolioData) => {
+    try {
+      const newItem = {
+        userId: parseInt(effectiveUserId),
+        ...portfolioData,
+        createdAt: new Date().toISOString()
+      };
+      
+      await dispatch(addPortfolioItem(newItem)).unwrap();
+    } catch (err) {
+      console.error('Error adding portfolio item:', err);
+      setError('Failed to add portfolio item');
+    }
+  };
 
-  const renderStars = (rating) => (
-    <div className="d-inline-flex align-items-center">
-      {Array.from({ length: 5 }, (_, i) => (
-        <StarFill
-          key={i}
-          className={`me-1 ${i < Math.floor(rating) ? "text-warning" : "text-muted"}`}
-          size={14}
+  // Handle deleting portfolio item
+  const handleDeletePortfolioItem = async (itemId) => {
+    try {
+      await dispatch(deletePortfolioItem(itemId)).unwrap();
+    } catch (err) {
+      console.error('Error deleting portfolio item:', err);
+      setError('Failed to delete portfolio item');
+    }
+  };
+
+  // Handle submitting a review
+  const handleSubmitReview = async (reviewData) => {
+    try {
+      const ratingData = {
+        userId: parseInt(userId),
+        raterId: currentUser.id,
+        ...reviewData,
+        createdAt: new Date().toISOString()
+      };
+      
+      await dispatch(submitUserRating(ratingData)).unwrap();
+    } catch (err) {
+      console.error('Error submitting rating:', err);
+      setError('Failed to submit rating');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Container className="py-5 text-center">
+        {profileData ? (
+          <>
+            <div className="position-relative profile-pic-container mx-auto">
+              <img
+                className="rounded-circle img-fluid profile-pic"
+                src={profileData.profileImage}
+                alt="Profile Picture"
+              />
+              <span className="position-absolute profile-status-dot bg-success rounded-circle"></span>
+            </div>
+            <h2 className="mt-3 mb-1 fw-bold">{profileData.name}</h2>
+            <div className="profile-title mb-2">{profileData.title}</div>
+            <div className="d-flex justify-content-center align-items-center mb-3">
+              <GeoAlt className="me-1" />
+              <span>{profileData.location}</span>
+            </div>
+          </>
+        ) : (
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-2">Loading profile data...</p>
+          </div>
+        )}
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <Container className="py-5">
+        <Alert variant="warning">User profile not found</Alert>
+      </Container>
+    );
+  }
+
+  // Determine which tabs to show based on user role
+  const renderRoleBasedTabs = () => {
+    // Default to freelancer if role not available
+    const userRole = profileData?.role || 'freelancer';
+    
+    // Array to hold tabs based on role
+    const roleTabs = [];
+    
+    // Common tabs for all roles - About tab is always first for all roles
+    roleTabs.push(
+      <Tab key="about" eventKey="about" title={<span><PersonFill className="me-2" /> About</span>}>
+        <AboutTab 
+          profileData={profileData} 
+          skills={skills} 
+          qualities={qualities} 
         />
-      ))}
-      <span className="ms-2 text-muted small">{rating.toFixed(1)}</span>
-    </div>
-  );
-
-  const ServiceCard = ({ service }) => (
-    <Card className="h-100 service-card border-0 shadow-sm">
-      {service.featured && (
-        <div className="featured-badge">
-          <LightningCharge className="me-1" /> Featured
-        </div>
-      )}
-      <div className="position-relative">
-        <Card.Img
-          variant="top"
-          src={service.image}
-          alt={service.title}
-          className="service-img"
+      </Tab>
+    );
+    
+    // Role-specific tabs
+    if (userRole === 'freelancer') {
+      // Freelancers have services
+      roleTabs.unshift(
+        <Tab key="services" eventKey="services" title={<span><Briefcase className="me-2" /> Services</span>}>
+          <ServicesTab 
+            services={userServices || mockServices} 
+            isLoading={servicesLoading} 
+            isMyProfile={isMyProfile} 
+          />
+        </Tab>
+      );
+      
+      // Freelancers have portfolio
+      roleTabs.push(
+        <Tab key="portfolio" eventKey="portfolio" title={<span><Collection className="me-2" /> Portfolio</span>}>
+          <PortfolioTab 
+            portfolioItems={portfolioItems || mockPortfolioItems} 
+            isLoading={portfolioLoading} 
+            isMyProfile={isMyProfile} 
+            onAddItem={handleAddPortfolioItem}
+            onDeleteItem={handleDeletePortfolioItem}
+          />
+        </Tab>
+      );
+    } else if (userRole === 'client') {
+      // Clients have projects instead of services
+      roleTabs.unshift(
+        <Tab key="projects" eventKey="projects" title={<span><Briefcase className="me-2" /> Projects</span>}>
+          <div className="p-4">
+            {isMyProfile && (
+              <div className="mb-4">
+                <Button 
+                  variant="primary" 
+                  as={Link} 
+                  to="/create-project"
+                  className="d-flex align-items-center"
+                >
+                  <span className="me-2">+</span> Add New Project
+                </Button>
+              </div>
+            )}
+            
+            {userServices && userServices.length > 0 ? (
+              <ServicesTab 
+                services={userServices || mockServices} 
+                isLoading={servicesLoading} 
+                isMyProfile={isMyProfile} 
+                displayAsProjects={true}
+              />
+            ) : (
+              <Alert variant="info">
+                {isMyProfile ? "You haven't created any projects yet." : "This user hasn't created any projects yet."}
+              </Alert>
+            )}
+          </div>
+        </Tab>
+      );
+    } else if (userRole === 'admin') {
+      // Admins have a dashboard tab instead of services
+      roleTabs.unshift(
+        <Tab key="dashboard" eventKey="dashboard" title={<span><Briefcase className="me-2" /> Dashboard</span>}>
+          <div className="p-4">
+            <h3>Admin Dashboard</h3>
+            <p>Welcome to your admin profile. Use the main admin dashboard for full management capabilities.</p>
+            
+            <Link to="/admin" className="btn btn-primary mt-3">
+              Go to Admin Dashboard
+            </Link>
+          </div>
+        </Tab>
+      );
+    }
+    
+    // Everyone has reviews
+    roleTabs.push(
+      <Tab key="reviews" eventKey="reviews" title={<span><Star className="me-2" /> Reviews</span>}>
+        <ReviewsTab 
+          profileData={profileData} 
+          testimonials={userRatings || mockRatings} 
+          isLoading={ratingsLoading} 
+          isMyProfile={isMyProfile} 
+          onSubmitReview={handleSubmitReview}
         />
-        <div className="service-overlay">
-          <Button variant="light" size="sm" className="me-2">
-            <Heart className="text-danger" />
-          </Button>
-          <Button variant="light" size="sm">
-            <Share />
-          </Button>
-        </div>
-      </div>
-      <Card.Body>
-        <Card.Title className="h5 fw-bold">{service.title}</Card.Title>
-        <Card.Text className="text-muted mb-3">{service.description}</Card.Text>
-        <div className="service-tags mb-3">
-          {service.tags.map((tag, idx) => (
-            <Badge key={idx} bg="light" text="dark" className="me-1 mb-1">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-        <hr className="my-3" />
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <Clock className="text-muted me-1" size={14} />
-            <small className="text-muted">{service.deliveryTime}</small>
-          </div>
-          <div className="text-end">
-            <small className="text-muted d-block">Starting from</small>
-            <h5 className="text-success mb-0 fw-bold">${service.price}</h5>
-          </div>
-        </div>
-      </Card.Body>
-      <Card.Footer className="bg-white border-0">
-        <Button variant="primary" className="w-100">
-          View Details
-        </Button>
-      </Card.Footer>
-    </Card>
-  );
-
-  const TestimonialCard = ({ testimonial }) => (
-    <Card className="h-100 testimonial-card border-0 shadow-sm">
-      <Card.Body>
-        <div className="mb-3">{renderStars(testimonial.rating)}</div>
-        <Card.Text className="testimonial-text">
-          "{testimonial.comment}"
-        </Card.Text>
-        <div className="d-flex justify-content-between align-items-center mt-3">
-          <div>
-            <h6 className="mb-0 fw-bold">{testimonial.name}</h6>
-            <small className="text-muted">{testimonial.company}</small>
-          </div>
-          <small className="text-muted">{testimonial.date}</small>
-        </div>
-      </Card.Body>
-    </Card>
-  );
+      </Tab>
+    );
+    
+    return roleTabs;
+  };
 
   return (
     <div className="bg-light min-vh-100">
-      {/* Header with Profile Picture */}
-      <div className="profile-header text-center">
-        <Container>
-          <div className="position-relative d-inline-block">
-            <Image
-              src="https://i.imgur.com/6AglEUF.jpeg"
-              roundedCircle
-              className="profile-avatar"
-              alt="Profile Picture"
-            />
-            <span className="position-absolute profile-status-dot bg-success rounded-circle"></span>
-          </div>
-          <h2 className="mt-3 mb-1 fw-bold">{profileData.name}</h2>
-          <div className="profile-title mb-2">{profileData.title}</div>
-          <div className="d-flex justify-content-center align-items-center mb-3">
-            <GeoAlt className="me-1" />
-            <span>{profileData.location}</span>
-          </div>
-          <div className="mt-2 mb-3">
-            <span className="profile-badge d-inline-flex align-items-center">
-              <Star className="me-1" /> {profileData.averageRating.toFixed(1)} (
-              {profileData.numberOfReviews} reviews)
-            </span>
-            <span className="profile-badge d-inline-flex align-items-center">
-              <Award className="me-1" /> {profileData.completionRate}% Completion
-            </span>
-            <span className="profile-badge d-inline-flex align-items-center">
-              <Clock className="me-1" /> {profileData.averageResponse} response
-            </span>
-          </div>
-          <div className="d-flex justify-content-center mt-3">
-            <Button variant="light" className="me-2">
-              <Heart className="me-1" /> Save
-            </Button>
-            <Button variant="light" className="me-2">
-              <Share className="me-1" /> Share
-            </Button>
-            {isMyProfile&&<Button className="btn-success">
-              <Pencil className="me-1" /> Edit Profile
-            </Button>}
-
-          </div>
-        </Container>
-      </div>
+      {/* Profile Header */}
+      {profileData && <ProfileHeader profileData={profileData} isMyProfile={isMyProfile} />}
 
       {/* Navigation */}
       <Container className="mt-4">
         <Tabs
-          activeKey={activeTab} // Bind active tab to state
-          onSelect={(k) => setActiveTab(k)} // Update state when tab is clicked
+          activeKey={activeTab}
+          onSelect={(k) => setActiveTab(k)}
           className="mb-4 custom-tab"
           justify
         >
-          <Tab eventKey="services" title={<span><Briefcase className="me-2" /> Services</span>}>
-            <Row xs={1} md={2} lg={3} className="g-4 mb-4">
-              {services.map((service) => (
-                <Col key={service.id}>
-                  <ServiceCard service={service} />
-                </Col>
-              ))}
-            </Row>
-          </Tab>
-          <Tab eventKey="about" title={<span><PersonFill className="me-2" /> About</span>}>
-            <Row>
-              {/* Left Column - About & Skills */}
-              <Col md={8} className="mb-4">
-                <Card className="border-0 shadow-sm mb-4">
-                  <Card.Header className="bg-white border-bottom-0 pt-4">
-                    <h5 className="mb-0 fw-bold">About Me</h5>
-                  </Card.Header>
-                  <Card.Body>
-                    <p className="mb-4">{profileData.description}</p>
-                    <h6 className="section-title">Skills</h6>
-                    <div className="mb-4">
-                      {skills.map((skill, index) => (
-                        <span key={index} className="skill-pill">
-                          <CheckCircleFill className="text-success me-1" size={12} />
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                    <h6 className="section-title">Working Style</h6>
-                    <Row xs={1} md={2} className="g-3 mb-4">
-                      {qualities.map((quality, index) => (
-                        <Col key={index}>
-                          <div className="quality-item">
-                            <div className="d-flex align-items-center">
-                              <PatchCheck className="text-primary me-2" size={18} />
-                              <span>{quality}</span>
-                            </div>
-                          </div>
-                        </Col>
-                      ))}
-                    </Row>
-                    <h6 className="section-title">Languages</h6>
-                    <div>
-                      {profileData.languages.map((language, index) => (
-                        <Badge key={index} bg="light" text="dark" className="me-2 p-2 mb-2">
-                          {language}
-                        </Badge>
-                      ))}
-                    </div>
-                  </Card.Body>
-                </Card>
-                <Card className="border-0 shadow-sm">
-                  <Card.Header className="bg-white border-bottom-0 pt-4">
-                    <h5 className="mb-0 fw-bold">Recent Work</h5>
-                  </Card.Header>
-                  <Card.Body>
-                    <Row xs={1} md={2} className="g-3">
-                      {[1, 2, 3, 4].map((item) => (
-                        <Col key={item}>
-                          <Card className="portfolio-item border-0 shadow-sm">
-                            <Card.Img variant="top" src="https://i.imgur.com/thdopBi.jpeg" />
-                            <Card.Body className="p-3">
-                              <Card.Title className="h6">Project {item}</Card.Title>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-              {/* Right Column - Stats & Contact */}
-              <Col md={4}>
-                <Card className="border-0 shadow-sm mb-4 stats-card">
-                  <Card.Header className="bg-white border-bottom-0 pt-4">
-                    <h5 className="mb-0 fw-bold">Stats & Info</h5>
-                  </Card.Header>
-                  <Card.Body>
-                    <Row className="text-center">
-                      <Col xs={4}>
-                        <div className="stat-circle">
-                          <h4 className="mb-0 fw-bold">{profileData.completionRate}%</h4>
-                        </div>
-                        <h6 className="font-weight-bold">Completion</h6>
-                      </Col>
-                      <Col xs={4}>
-                        <div className="stat-circle">
-                          <h4 className="mb-0 fw-bold">{profileData.publishedServices}</h4>
-                        </div>
-                        <h6 className="font-weight-bold">Services</h6>
-                      </Col>
-                      <Col xs={4}>
-                        <div className="stat-circle">
-                          <h4 className="mb-0 fw-bold">{profileData.averageRating.toFixed(1)}</h4>
-                        </div>
-                        <h6 className="font-weight-bold">Rating</h6>
-                      </Col>
-                    </Row>
-                    <hr className="my-4" />
-                    <ListGroup variant="flush" className="mb-3">
-                      <ListGroup.Item className="px-0 d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                          <Calendar className="me-3 text-primary" />
-                          <span>Member since</span>
-                        </div>
-                        <span className="fw-bold">{profileData.joinDate}</span>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="px-0 d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                          <Clock className="me-3 text-info" />
-                          <span>Response time</span>
-                        </div>
-                        <span className="fw-bold">{profileData.averageResponse}</span>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="px-0 d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                          <File className="me-3 text-secondary" />
-                          <span>Last active</span>
-                        </div>
-                        <span className="fw-bold">{profileData.lastSeen}</span>
-                      </ListGroup.Item>
-                    </ListGroup>
-                    <h6 className="section-title">Verifications</h6>
-                    <ListGroup variant="flush">
-                      <ListGroup.Item className="px-0 d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <Phone className="me-3 text-success" />
-                          <span>Phone</span>
-                        </div>
-                        <Badge bg="success" pill>
-                          Verified
-                        </Badge>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="px-0 d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <Envelope className="me-3 text-primary" />
-                          <span>Email</span>
-                        </div>
-                        <Badge bg="success" pill>
-                          Verified
-                        </Badge>
-                      </ListGroup.Item>
-                      <ListGroup.Item className="px-0 d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <Bookmark className="me-3 text-info" />
-                          <span>ID</span>
-                        </div>
-                        <Badge bg="danger" pill>
-                          Not Verified
-                        </Badge>
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Card.Body>
-                </Card>
-                <Button variant="primary" className="w-100 mb-3 contact-btn">
-                  <ChatDots className="me-2" /> Contact Me
-                </Button>
-                <div className="d-flex justify-content-center mb-4">
-                  <Button variant="outline-primary" size="sm" className="mx-1">
-                    <Facebook />
-                  </Button>
-                  <Button variant="outline-danger" size="sm" className="mx-1">
-                    <Instagram />
-                  </Button>
-                  <Button variant="outline-dark" size="sm" className="mx-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-github"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-                    </svg>
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </Tab>
-          <Tab eventKey="reviews" title={<span><Star className="me-2" /> Reviews</span>}>
-            <Row>
-              <Col md={8}>
-                <Card className="border-0 shadow-sm mb-4">
-                  <Card.Header className="bg-white border-bottom-0 pt-4 d-flex justify-content-between align-items-center">
-                    <h5 className="mb-0 fw-bold">Client Reviews</h5>
-                    <div>
-                      <span className="h4 text-warning me-2">{profileData.averageRating.toFixed(1)}</span>
-                      {renderStars(profileData.averageRating)}
-                    </div>
-                  </Card.Header>
-                  <Card.Body>
-                    <div className="mb-4">
-                      <h6 className="mb-3">Rating Breakdown</h6>
-                      {[5, 4, 3, 2, 1].map((rating) => (
-                        <div key={rating} className="d-flex align-items-center mb-2">
-                          <div className="me-2" style={{ width: "30px" }}>
-                            {rating} <Star size={12} className="text-warning" />
-                          </div>
-                          <ProgressBar
-                            now={rating === 5 ? 80 : rating === 4 ? 15 : rating === 3 ? 5 : 0}
-                            variant={rating >= 4 ? "success" : rating === 3 ? "info" : "danger"}
-                            className="flex-grow-1 me-2"
-                            style={{ height: "10px" }}
-                          />
-                          <div style={{ width: "40px" }}>
-                            {rating === 5 ? "80%" : rating === 4 ? "15%" : rating === 3 ? "5%" : "0%"}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <hr className="my-4" />
-                    {testimonials.map((testimonial) => (
-                      <div key={testimonial.id} className="mb-4">
-                        <TestimonialCard testimonial={testimonial} />
-                      </div>
-                    ))}
-                  </Card.Body>
-                  <Card.Footer className="bg-white text-center">
-                    <Button variant="outline-primary">View All Reviews</Button>
-                  </Card.Footer>
-                </Card>
-              </Col>
-              <Col md={4}>
-                <Card className="border-0 shadow-sm mb-4 stats-card">
-                  <Card.Header className="bg-white border-bottom-0 pt-4">
-                    <h5 className="mb-0 fw-bold">Review Stats</h5>
-                  </Card.Header>
-                  <Card.Body className="text-center">
-                    <div className="stat-circle">
-                      <h3 className="mb-0 fw-bold">{profileData.numberOfReviews}</h3>
-                    </div>
-                    <h6 className="mb-4">Total Reviews</h6>
-                    <div className="d-flex justify-content-around">
-                      <div>
-                        <div className="stat-circle" style={{ width: "60px", height: "60px" }}>
-                          <h5 className="mb-0 fw-bold">24</h5>
-                        </div>
-                        <small>This Month</small>
-                      </div>
-                      <div>
-                        <div className="stat-circle" style={{ width: "60px", height: "60px" }}>
-                          <h5 className="mb-0 fw-bold">98%</h5>
-                        </div>
-                        <small>Positive</small>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-                <Card className="border-0 shadow-sm">
-                  <Card.Header className="bg-white border-bottom-0 pt-4">
-                    <h5 className="mb-0 fw-bold">Top Skills</h5>
-                  </Card.Header>
-                  <Card.Body>
-                    <ListGroup variant="flush">
-                      {["React.js", "Website Design", "Responsive Design", "Python"].map((skill, idx) => (
-                        <ListGroup.Item key={idx} className="px-0 d-flex justify-content-between align-items-center">
-                          <span>{skill}</span>
-                          <Badge bg="primary" pill>
-                            {5 - idx}
-                          </Badge>
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Tab>
+          {renderRoleBasedTabs()}
         </Tabs>
       </Container>
     </div>
   );
 };
-
 
 export default UserProfile;

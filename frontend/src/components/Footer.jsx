@@ -3,7 +3,7 @@
 import React from 'react';
 import '../styles/footer.css'; // Custom CSS for Footer
 
-const Footer = () => {
+function Footer() {
   return (
     <footer className="footer text-center text-md-start">
       <div className="container">
@@ -54,4 +54,4 @@ const Footer = () => {
   );
 }
 
-export default Footer;
+export { Footer };
