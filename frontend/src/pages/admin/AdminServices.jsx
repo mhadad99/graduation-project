@@ -3,7 +3,6 @@ import { Container, Row, Col, Card, Table, Badge, Button, Form, InputGroup, Aler
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices, updateService } from '../../redux/slices/serviceSlice';
 import { Search, CheckCircleFill, XCircleFill, Trash, Eye, PencilSquare } from 'react-bootstrap-icons';
-import api from '../../api/axiosConfig';
 
 const AdminServices = () => {
   const dispatch = useDispatch();
@@ -23,108 +22,18 @@ const AdminServices = () => {
   const [actionError, setActionError] = useState('');
   const [localLoading, setLocalLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-  
-  // Mock data for fallback
-  const mockServices = [
-    { 
-      id: 1, 
-      title: 'Web Development', 
-      description: 'Professional web development services using modern technologies', 
-      category: 'Development', 
-      price: 500, 
-      status: 'active', 
-      createdAt: '2023-01-20',
-      userId: 1,
-      userName: 'John Doe',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97'
-    },
-    { 
-      id: 2, 
-      title: 'Logo Design', 
-      description: 'Creative and professional logo design for your brand', 
-      category: 'Design', 
-      price: 200, 
-      status: 'active', 
-      createdAt: '2023-02-15',
-      userId: 2,
-      userName: 'Jane Smith',
-      image: 'https://images.unsplash.com/photo-1626785774573-354056afd6fc'
-    },
-    { 
-      id: 3, 
-      title: 'Content Writing', 
-      description: 'High-quality content writing for blogs and websites', 
-      category: 'Writing', 
-      price: 150, 
-      status: 'pending', 
-      createdAt: '2023-03-25',
-      userId: 3,
-      userName: 'Mike Johnson',
-      image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a'
-    },
-    { 
-      id: 4, 
-      title: 'SEO Optimization', 
-      description: 'Improve your website ranking with our SEO services', 
-      category: 'Marketing', 
-      price: 300, 
-      status: 'active', 
-      createdAt: '2023-04-10',
-      userId: 4,
-      userName: 'Sarah Williams',
-      image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'
-    },
-    { 
-      id: 5, 
-      title: 'Mobile App Development', 
-      description: 'Native and cross-platform mobile app development', 
-      category: 'Development', 
-      price: 800, 
-      status: 'rejected', 
-      createdAt: '2023-05-05',
-      userId: 5,
-      userName: 'David Brown',
-      rejectionReason: 'Service description is too vague',
-      image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3'
-    },
-    { 
-      id: 6, 
-      title: 'UI/UX Design', 
-      description: 'User-centered design for websites and applications', 
-      category: 'Design', 
-      price: 400, 
-      status: 'pending', 
-      createdAt: '2023-06-18',
-      userId: 6,
-      userName: 'Emily Davis',
-      image: 'https://images.unsplash.com/photo-1559028012-481c04fa702d'
-    },
-    { 
-      id: 7, 
-      title: 'Social Media Marketing', 
-      description: 'Grow your brand with effective social media strategies', 
-      category: 'Marketing', 
-      price: 350, 
-      status: 'active', 
-      createdAt: '2023-07-22',
-      userId: 7,
-      userName: 'Alex Wilson',
-      image: 'https://images.unsplash.com/photo-1611926653458-09294b3142bf'
-    },
-    { 
-      id: 8, 
-      title: 'Video Editing', 
-      description: 'Professional video editing for all your needs', 
-      category: 'Multimedia', 
-      price: 250, 
-      status: 'pending', 
-      createdAt: '2023-08-30',
-      userId: 8,
-      userName: 'Olivia Taylor',
-      image: 'https://images.unsplash.com/photo-1574717024453-4b799315345d'
+
+  useEffect(() => {
+    // Derive unique categories from loaded services
+    if (services && services.length > 0) {
+      const uniqueCategories = [...new Set(services.map(s => s.category).filter(Boolean))];
+      setCategories(uniqueCategories.map(cat => ({ name: cat, value: cat, id: cat })));
+    } else {
+      dispatch(fetchServices());
+      setCategories([]);
     }
-  ];
-  
+  }, [services, dispatch]);
+
   // Apply search filter
   const applySearchFilter = (services, term) => {
     if (!term || term.trim() === '') return services;
@@ -206,38 +115,15 @@ const AdminServices = () => {
         let servicesData = [];
         try {
           console.log('Fetching services from API...');
-          const response = await api.get('/services');
-          servicesData = response.data;
+          const response = await dispatch(fetchServices()).unwrap();
+          servicesData = response;
           console.log('Successfully fetched services:', servicesData.length);
-          
-          // Process services to ensure they have a category field
-          servicesData = servicesData.map(service => {
-            // If service has no category but has tags, use the first tag as category
-            if (!service.category && service.tags && service.tags.length > 0) {
-              return { ...service, category: service.tags[0] };
-            }
-            return service;
-          });
-          
-          // Extract unique categories
-          const uniqueCategories = [...new Set(
-            servicesData
-              .map(service => service.category || (service.tags && service.tags.length > 0 ? service.tags[0] : null))
-              .filter(Boolean)
-          )];
-          console.log('Extracted categories:', uniqueCategories);
-          setCategories(uniqueCategories);
         } catch (err) {
-          console.warn('Error fetching services from API, using mock data:', err.message);
-          servicesData = mockServices;
-          
-          // Extract unique categories from mock data
-          const uniqueCategories = [...new Set(mockServices.map(service => service.category))].filter(Boolean);
-          setCategories(uniqueCategories);
+          console.error('Error fetching services from API:', err);
+          setActionError('Failed to load services data. Please try again.');
+          setLocalLoading(false);
+          return;
         }
-        
-        // Also dispatch Redux action
-        dispatch(fetchServices());
         
         // Set filtered services
         setFilteredServices(servicesData);
@@ -245,7 +131,6 @@ const AdminServices = () => {
       } catch (err) {
         console.error('Error in service data processing:', err);
         setActionError('Failed to load services data. Please try again.');
-        setFilteredServices(mockServices);
         setLocalLoading(false);
       }
     };
@@ -505,7 +390,7 @@ const AdminServices = () => {
                   >
                     <option value="all">All Categories</option>
                     {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
+                      <option key={category.id} value={category.value}>{category.name}</option>
                     ))}
                   </Form.Select>
                 </Col>

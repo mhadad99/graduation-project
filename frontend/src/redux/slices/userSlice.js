@@ -1,61 +1,43 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axiosConfig';
-import { mockLogin } from '../../utils/apiUtils';
 
 // Async thunks for user operations
 export const fetchUsers = createAsyncThunk(
   'user/fetchUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/users');
-      return response.data;
+      const response = await fetch('/users');
+      return response.json();
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch users' });
+      return rejectWithValue(error.message || { message: 'Failed to fetch users' });
     }
   }
 );
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  async (credentials, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue, dispatch }) => {
     try {
       console.log('Attempting login with:', credentials);
-      
-      try {
-        // Try to login with the real API first
-        const response = await api.post('/login', credentials);
-        
-        // Store token in localStorage
-        if (response.data.token) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-        }
-        
-        return response.data;
-      } catch (apiError) {
-        console.warn('API login failed, trying mock login:', apiError.message);
-        
-        // If API fails, try mock login
-        const mockResult = mockLogin(credentials.email, credentials.password);
-        
-        if (mockResult.success) {
-          // Store mock token in localStorage
-          localStorage.setItem('token', mockResult.token);
-          localStorage.setItem('user', JSON.stringify(mockResult.user));
-          
-          console.log('Mock login successful:', mockResult.user.name);
-          return {
-            user: mockResult.user,
-            token: mockResult.token
-          };
-        } else {
-          // Mock login also failed
-          return rejectWithValue(mockResult.message);
-        }
+      // Use JSON server (db.json) for authentication
+      const response = await fetch(`http://localhost:5001/users?email=${encodeURIComponent(credentials.email)}&password=${encodeURIComponent(credentials.password)}`);
+      if (!response.ok) {
+        throw new Error('Login failed.');
       }
+      const users = await response.json();
+      if (!users || users.length === 0) {
+        throw new Error('Invalid email or password.');
+      }
+      const user = users[0];
+      // Set user in localStorage (no token with JSON server)
+      localStorage.setItem('user', JSON.stringify(user));
+      if (user && user.id) {
+        const role = await detectUserRole(user.id);
+        dispatch(setUserRole(role));
+      }
+      return { user };
     } catch (error) {
       console.error('Login error:', error);
-      return rejectWithValue(error.response?.data?.message || 'Login failed. Please try again.');
+      return rejectWithValue(error.message || 'Login failed. Please try again.');
     }
   }
 );
@@ -65,31 +47,75 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       console.log('Attempting registration with:', userData);
-      
       // Check if user with this email already exists
-      const checkResponse = await api.get(`/users?email=${userData.email}`);
-      if (checkResponse.data.length > 0) {
-        return rejectWithValue({ message: 'User with this email already exists' });
+      const checkResponse = await fetch('http://localhost:5001/users?email=' + encodeURIComponent(userData.email));
+      if (checkResponse.ok) {
+        const checkData = await checkResponse.json();
+        if (checkData.length > 0) {
+          return rejectWithValue({ message: 'User with this email already exists' });
+        }
       }
-      
-      // Add additional user fields
       const newUser = {
         ...userData,
-        id: Date.now(), // Generate a unique ID
+        id: String(Date.now()), // Ensure ID is always a string
         joinDate: new Date().toISOString(),
         lastSeen: new Date().toISOString(),
+        status: 'pending',
         isVerified: false,
-        profileImage: 'https://i.imgur.com/JFHjdNZ.jpeg' // Default profile image
+        isDeleted: false
+        // REMOVE 'role' from user object, only relation will be in role table
       };
-      
-      // Create the new user directly
-      const response = await api.post('/users', newUser);
-      console.log('Registration successful:', response.data);
-      
-      return { success: true, message: 'Registration successful' };
+      const response = await fetch('http://localhost:5001/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Registration failed.');
+      }
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        data = { success: true, message: 'Registration successful' };
+      }
+
+      // Add user to the correct role collection (relation only)
+      if (userData.role === 'freelancer') {
+        await fetch('http://localhost:5001/freelancers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: newUser.id,
+            // Add default freelancer-only fields here
+            skillsId: '',
+            experienceLevel: '',
+            cv: '',
+            is_tested: false,
+            job_title: '',
+            isDeleted: false,
+            status: 'pending'
+          })
+        });
+      } else if (userData.role === 'client') {
+        await fetch('http://localhost:5001/clients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: newUser.id,
+            // Add default client-only fields here
+            companyName: '',
+            companyType: '',
+            isDeleted: false,
+            status: 'pending'
+          })
+        });
+      }
+      return data;
     } catch (error) {
       console.error('Registration error:', error);
-      return rejectWithValue(error.response?.data || { message: 'Registration failed' });
+      return rejectWithValue(error.message || { message: 'Registration failed' });
     }
   }
 );
@@ -100,45 +126,41 @@ export const fetchUserProfile = createAsyncThunk(
     try {
       // First check if the user is already in the Redux store
       const { users, currentUser } = getState().user;
-      
       // Check if the user is already in the users array
       const existingUser = users.find(u => u.id.toString() === userId.toString());
       if (existingUser) {
         return existingUser;
       }
-      
       // Check if the requested user is the current user
       if (currentUser && currentUser.id.toString() === userId.toString()) {
         return currentUser;
       }
-      
       // Check localStorage before making an API call
       const localUser = JSON.parse(localStorage.getItem('user'));
       if (localUser && localUser.id.toString() === userId.toString()) {
         return localUser;
       }
-      
       // If we still don't have the user, make the API call
       console.log('Fetching user profile for userId:', userId);
-      const response = await api.get(`/users/${userId}`);
-      
-      if (response.data) {
-        return response.data;
+      const response = await fetch(`/users/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
       }
-      
       // If the specific user endpoint fails, try getting all users
-      const allUsersResponse = await api.get('/users');
-      const user = allUsersResponse.data.find(u => u.id.toString() === userId.toString());
-      
-      if (user) {
-        return user;
+      const allUsersResponse = await fetch('/users');
+      if (allUsersResponse.ok) {
+        const allUsersData = await allUsersResponse.json();
+        const user = allUsersData.find(u => u.id.toString() === userId.toString());
+        if (user) {
+          return user;
+        }
       }
-      
       console.error('User not found with ID:', userId);
       return rejectWithValue({ message: 'User profile not found' });
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch user profile' });
+      return rejectWithValue(error.message || { message: 'Failed to fetch user profile' });
     }
   }
 );
@@ -149,42 +171,39 @@ export const updateUserProfile = createAsyncThunk(
     try {
       try {
         // Try to update with the real API first
-        const response = await api.put(`/users/${userId}`, userData);
-        const updatedUser = response.data;
-        
+        const response = await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData),
+        });
+        const updatedUser = await response.json();
         // Update the user in localStorage
         const localStorageUser = JSON.parse(localStorage.getItem('user'));
         if (localStorageUser && localStorageUser.id === userId) {
           console.info('Updating user in localStorage');
           localStorage.setItem('user', JSON.stringify(updatedUser));
         }
-        
         console.info('User profile updated successfully');
         return updatedUser;
       } catch (apiError) {
         // Only log in development mode and use info level
         if (process.env.NODE_ENV === 'development') {
-          console.info('API update failed, using mock update. Offline mode active.');
+          console.info('API update failed:', apiError.message || 'Unknown error');
         }
-        
         // If API fails, update locally using the current state
         const { users } = getState().user;
         const userToUpdate = users.find(user => user.id === userId);
-        
         if (!userToUpdate) {
           throw new Error(`User with ID ${userId} not found`);
         }
-        
         // Create updated user by merging current user with updates
         const mockUpdatedUser = { ...userToUpdate, ...userData };
-        
         // If this is the current user, update localStorage
         const localStorageUser = JSON.parse(localStorage.getItem('user'));
         if (localStorageUser && localStorageUser.id === userId) {
           console.info('Updating user in localStorage (offline mode)');
           localStorage.setItem('user', JSON.stringify(mockUpdatedUser));
         }
-        
         console.info('User profile updated successfully (offline mode)');
         return mockUpdatedUser;
       }
@@ -197,6 +216,33 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
+
+const detectUserRole = async (userId) => {
+  if (!userId) return 'unknown';
+
+  // Check admin
+  const adminRes = await fetch(`/admins?userId=${userId}`);
+  if (adminRes.ok) {
+    const admins = await adminRes.json();
+    if (admins.length > 0) return 'admin';
+  }
+
+  // Check freelancer
+  const freelancerRes = await fetch(`/freelancers?userId=${userId}`);
+  if (freelancerRes.ok) {
+    const freelancers = await freelancerRes.json();
+    if (freelancers.length > 0) return 'freelancer';
+  }
+
+  // Check client
+  const clientRes = await fetch(`/clients?userId=${userId}`);
+  if (clientRes.ok) {
+    const clients = await clientRes.json();
+    if (clients.length > 0) return 'client';
+  }
+
+  return 'unknown';
+};
 
 const initialState = {
   currentUser: null,
@@ -218,26 +264,35 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    logout: (state) => {
+    logout(state) {
       state.currentUser = null;
       state.userRole = null;
       state.isAuthenticated = false;
+      state.token = null;
+      // Remove all user-related data from localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('profile');
+      localStorage.removeItem('portfolio');
+      localStorage.removeItem('userRatings');
+      localStorage.removeItem('notifications');
+      localStorage.removeItem('messages');
+      localStorage.removeItem('conversations');
+      localStorage.removeItem('savedServices');
+      // If you have other user-related keys, add them here
     },
-    setUserRole: (state, action) => {
+    setUserRole(state, action) {
       state.userRole = action.payload;
     },
-    initializeFromLocalStorage: (state, action) => {
-      // Ensure we have all required fields
-      return { 
-        ...state, 
-        currentUser: action.payload.currentUser || null,
-        userRole: action.payload.userRole || null,
-        isAuthenticated: action.payload.isAuthenticated || false,
-        loading: false,
-        error: null
-      };
+    initializeFromLocalStorage(state, action) {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      if (token && user) {
+        state.token = token;
+        state.currentUser = JSON.parse(user);
+        state.isAuthenticated = true;
+      }
     },
   },
   extraReducers: (builder) => {

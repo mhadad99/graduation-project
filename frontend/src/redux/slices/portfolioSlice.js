@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axiosConfig';
 
 // Async thunks for portfolio operations
 export const fetchUserPortfolio = createAsyncThunk(
@@ -7,10 +6,11 @@ export const fetchUserPortfolio = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       // Get all portfolio items and filter by userId
-      const response = await api.get('/portfolio');
-      return response.data.filter(item => item.userId === parseInt(userId));
+      const response = await fetch('/portfolio');
+      const data = await response.json();
+      return data.filter(item => item.userId === parseInt(userId));
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch user portfolio' });
+      return rejectWithValue(error.message || { message: 'Failed to fetch user portfolio' });
     }
   }
 );
@@ -19,10 +19,15 @@ export const addPortfolioItem = createAsyncThunk(
   'portfolio/addItem',
   async (portfolioData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/portfolio', portfolioData);
-      return response.data;
+      const response = await fetch('/portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(portfolioData),
+      });
+      const data = await response.json();
+      return data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to add portfolio item' });
+      return rejectWithValue(error.message || { message: 'Failed to add portfolio item' });
     }
   }
 );
@@ -31,10 +36,15 @@ export const updatePortfolioItem = createAsyncThunk(
   'portfolio/updateItem',
   async ({ itemId, itemData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/portfolio/${itemId}`, itemData);
-      return response.data;
+      const response = await fetch(`/portfolio/${itemId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(itemData),
+      });
+      const data = await response.json();
+      return data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to update portfolio item' });
+      return rejectWithValue(error.message || { message: 'Failed to update portfolio item' });
     }
   }
 );
@@ -43,10 +53,10 @@ export const deletePortfolioItem = createAsyncThunk(
   'portfolio/deleteItem',
   async (itemId, { rejectWithValue }) => {
     try {
-      await api.delete(`/portfolio/${itemId}`);
+      await fetch(`/portfolio/${itemId}`, { method: 'DELETE' });
       return itemId;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to delete portfolio item' });
+      return rejectWithValue(error.message || { message: 'Failed to delete portfolio item' });
     }
   }
 );

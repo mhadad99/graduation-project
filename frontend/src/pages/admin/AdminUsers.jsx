@@ -3,7 +3,6 @@ import { Container, Row, Col, Card, Table, Badge, Button, Form, InputGroup, Aler
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUsers, updateUserProfile } from '../../redux/slices/userSlice';
 import { Search, PersonFill, ThreeDotsVertical, CheckCircleFill, XCircleFill, Trash } from 'react-bootstrap-icons';
-import api from '../../api/axiosConfig';
 
 const AdminUsers = () => {
   const dispatch = useDispatch();
@@ -20,52 +19,28 @@ const AdminUsers = () => {
   const [actionError, setActionError] = useState('');
   const [localLoading, setLocalLoading] = useState(true);
   
-  // Mock data for fallback
-  const mockUsers = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'freelancer', status: 'active', joinDate: '2023-01-15', profileImage: 'https://randomuser.me/api/portraits/men/1.jpg' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'client', status: 'active', joinDate: '2023-02-20', profileImage: 'https://randomuser.me/api/portraits/women/2.jpg' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com', role: 'freelancer', status: 'inactive', joinDate: '2023-03-10', profileImage: 'https://randomuser.me/api/portraits/men/3.jpg' },
-    { id: 4, name: 'Sarah Williams', email: 'sarah@example.com', role: 'client', status: 'deleted', joinDate: '2023-04-05', profileImage: 'https://randomuser.me/api/portraits/women/4.jpg' },
-    { id: 5, name: 'David Brown', email: 'david@example.com', role: 'admin', status: 'active', joinDate: '2023-05-12', profileImage: 'https://randomuser.me/api/portraits/men/5.jpg' },
-    { id: 6, name: 'Emily Davis', email: 'emily@example.com', role: 'freelancer', status: 'active', joinDate: '2023-06-18', profileImage: 'https://randomuser.me/api/portraits/women/6.jpg' },
-    { id: 7, name: 'Alex Wilson', email: 'alex@example.com', role: 'client', status: 'active', joinDate: '2023-07-22', profileImage: 'https://randomuser.me/api/portraits/men/7.jpg' },
-    { id: 8, name: 'Olivia Taylor', email: 'olivia@example.com', role: 'freelancer', status: 'inactive', joinDate: '2023-08-30', profileImage: 'https://randomuser.me/api/portraits/women/8.jpg' }
-  ];
-  
   // Fetch users data
   useEffect(() => {
     setLocalLoading(true);
     
     const fetchData = async () => {
       try {
-        // Try to fetch from API first
-        let userData = [];
-        try {
-          console.log('Fetching users from API...');
-          const response = await api.get('/users');
-          userData = response.data;
-          console.log('Successfully fetched users:', userData.length);
-        } catch (err) {
-          console.warn('Error fetching users from API, using mock data:', err.message);
-          userData = mockUsers;
-        }
-        
         // Also dispatch Redux action
         dispatch(fetchUsers());
         
         // Set filtered users
-        setFilteredUsers(userData);
+        setFilteredUsers(users);
         setLocalLoading(false);
       } catch (err) {
         console.error('Error in user data processing:', err);
         setActionError('Failed to load users data. Please try again.');
-        setFilteredUsers(mockUsers);
+        setFilteredUsers([]);
         setLocalLoading(false);
       }
     };
     
     fetchData();
-  }, [dispatch]); // Only run on mount and when dispatch changes
+  }, [dispatch, users]); // Only run on mount and when dispatch or users changes
   
   // Apply filters
   useEffect(() => {

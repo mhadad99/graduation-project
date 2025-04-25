@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createService } from '../redux/slices/serviceSlice';
 import CreatableSelect from 'react-select/creatable';
-import api from '../api/axiosConfig';
 import { FiX } from 'react-icons/fi';
 
 const CreateProject = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useSelector(state => state.user);
-  const { loading, error } = useSelector(state => state.service);
+  const { services, loading, error } = useSelector(state => state.service);
 
   // Form state
   const [title, setTitle] = useState('');
@@ -31,26 +30,33 @@ const CreateProject = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  useEffect(() => {
+    // Derive unique categories from loaded services
+    if (services && services.length > 0) {
+      const uniqueCategories = [...new Set(services.map(s => s.category).filter(Boolean))];
+      setCategories(uniqueCategories.map(cat => ({ name: cat, value: cat, id: cat })));
+    } else {
+      dispatch({ type: 'service/fetchAll' }); // or dispatch(fetchServices()) if imported
+      setCategories([]);
+    }
+  }, [services, dispatch]);
+
   // Fetch all necessary data on component mount
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Fetch categories
-        const categoriesResponse = await api.get('/categories');
-        setCategories(categoriesResponse.data);
-        
         // Fetch project types
-        const typesResponse = await api.get('/projectTypes');
+        const typesResponse = await dispatch({ type: 'FETCH_PROJECT_TYPES' }).unwrap();
         setProjectTypes(typesResponse.data);
         setProjectType(typesResponse.data[0]?.value || '');
         
         // Fetch durations
-        const durationsResponse = await api.get('/projectDurations');
+        const durationsResponse = await dispatch({ type: 'FETCH_PROJECT_DURATIONS' }).unwrap();
         setDurations(durationsResponse.data);
         setDuration(durationsResponse.data[0]?.value || '');
         
         // Fetch experience levels
-        const levelsResponse = await api.get('/experienceLevels');
+        const levelsResponse = await dispatch({ type: 'FETCH_EXPERIENCE_LEVELS' }).unwrap();
         setExperienceLevels(levelsResponse.data);
         setExperienceLevel(levelsResponse.data[0]?.value || '');
       } catch (error) {
@@ -68,7 +74,7 @@ const CreateProject = () => {
       
       try {
         // Fetch skills related to the selected category from the server
-        const response = await api.get('/skills');
+        const response = await dispatch({ type: 'FETCH_SKILLS', payload: selectedCategory.id }).unwrap();
         const allSkills = response.data;
         
         // Filter skills by the selected category ID
@@ -115,8 +121,8 @@ const CreateProject = () => {
       title,
       description,
       price: parseFloat(budget),
-      tags: [selectedCategory.label, ...selectedSkills.map(skill => skill.label)],
-      category: selectedCategory.label,
+      tags: [selectedCategory.name, ...selectedSkills.map(skill => skill.label)],
+      category: selectedCategory.name,
       projectType,
       duration,
       experienceLevel,
@@ -205,14 +211,14 @@ const CreateProject = () => {
                         value={selectedCategory?.value || ''}
                         onChange={(e) => {
                           const cat = categories.find(c => c.value === e.target.value);
-                          setSelectedCategory(cat ? {id: cat.id, label: cat.label, value: cat.value} : null);
+                          setSelectedCategory(cat ? {id: cat.id, name: cat.name, value: cat.value} : null);
                         }}
                         isInvalid={formSubmitted && validationErrors.category}
                       >
                         <option value="">Select Category</option>
                         {categories.map((category, index) => (
                           <option key={index} value={category.value}>
-                            {category.label}
+                            {category.name}
                           </option>
                         ))}
                       </Form.Select>

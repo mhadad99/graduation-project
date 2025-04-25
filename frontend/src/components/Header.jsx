@@ -37,7 +37,6 @@ import { logout } from '../redux/slices/userSlice';
 import { fetchServices } from '../redux/slices/serviceSlice';
 import { fetchConversations } from '../redux/slices/chatSlice';
 import { fetchNotifications } from '../redux/slices/notificationSlice';
-import api from '../api/axiosConfig';
 import "../styles/header.css"; // Import your CSS file
 
 function Header() {
@@ -140,46 +139,17 @@ function Header() {
     }
   }, [isAuthenticated, currentUser, dispatch]);
   
-  // Fetch categories directly from the server
+  // Fetch categories from loaded services in Redux
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setCategoriesLoading(true);
-        
-        // Try to fetch from API
-        try {
-          const response = await api.get('/categories');
-          
-          // Format categories for display
-          const formattedCategories = response.data.map(category => category.name || category.label);
-          setCategories(formattedCategories);
-        } catch (apiError) {
-          console.warn('Error fetching categories from API, using mock data:', apiError.message);
-          
-          // Fallback to mock categories
-          const mockCategories = [
-            'Web Development',
-            'Mobile App Development',
-            'UI/UX Design',
-            'Data Science',
-            'Digital Marketing',
-            'Content Writing',
-            'Video Editing',
-            'Graphic Design'
-          ];
-          
-          setCategories(mockCategories);
-        }
-      } catch (error) {
-        console.error('Error in categories processing:', error);
-      } finally {
-        setCategoriesLoading(false);
-      }
-    };
-    
-    fetchCategories();
-  }, []);
-  
+    if (services && services.length > 0) {
+      const uniqueCategories = [...new Set(services.map(s => s.category).filter(Boolean))];
+      setCategories(uniqueCategories.map(cat => cat));
+    } else {
+      dispatch(fetchServices());
+      setCategories([]);
+    }
+  }, [services, dispatch]);
+
   // Toggle theme function
   const handleToggleTheme = () => {
     dispatch({ type: 'theme/toggleTheme' });

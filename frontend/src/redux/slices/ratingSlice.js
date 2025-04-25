@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axiosConfig';
 
 // Async thunks for rating operations
 export const fetchUserRatings = createAsyncThunk(
@@ -7,8 +6,8 @@ export const fetchUserRatings = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       // Get all user ratings and filter by userId
-      const response = await api.get('/userRatings');
-      const ratings = response.data.filter(rating => rating.userId === parseInt(userId));
+      const response = await fetch('/userRatings');
+      const ratings = await response.json().then(data => data.filter(rating => rating.userId === parseInt(userId)));
       
       // Calculate average rating
       let averageRating = 0;
@@ -32,8 +31,8 @@ export const fetchServiceRatings = createAsyncThunk(
   async (serviceId, { rejectWithValue }) => {
     try {
       // Get all service ratings and filter by serviceId
-      const response = await api.get('/serviceRatings');
-      const ratings = response.data.filter(rating => rating.serviceId === parseInt(serviceId));
+      const response = await fetch('/serviceRatings');
+      const ratings = await response.json().then(data => data.filter(rating => rating.serviceId === parseInt(serviceId)));
       
       // Calculate average rating
       let averageRating = 0;
@@ -56,8 +55,14 @@ export const submitUserRating = createAsyncThunk(
   'rating/submitUserRating',
   async (ratingData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/ratings/user', ratingData);
-      return response.data;
+      const response = await fetch('/ratings/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ratingData)
+      });
+      return await response.json();
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: 'Failed to submit user rating' });
     }
@@ -68,8 +73,14 @@ export const submitServiceRating = createAsyncThunk(
   'rating/submitServiceRating',
   async (ratingData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/ratings/service', ratingData);
-      return response.data;
+      const response = await fetch('/ratings/service', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ratingData)
+      });
+      return await response.json();
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: 'Failed to submit service rating' });
     }

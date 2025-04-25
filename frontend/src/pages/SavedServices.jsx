@@ -3,60 +3,43 @@ import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstr
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices } from '../redux/slices/serviceSlice';
-import api from '../api/axiosConfig';
 
 const SavedServices = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector(state => state.user);
   const { services, loading } = useSelector(state => state.service);
-  
+
   const [savedServices, setSavedServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     // Fetch all services if not already loaded
     if (!services.length) {
       dispatch(fetchServices());
     }
-    
+
     // Fetch user's saved services
     const fetchSavedServices = async () => {
-      try {
-        // In a real application, we would have an endpoint for this
-        // For demo purposes, we'll simulate this with a timeout
-        setTimeout(() => {
-          // Simulate saved services by taking a subset of all services
-          const savedIds = [1, 3]; // This would normally come from the user's data
-          const saved = services.filter(service => savedIds.includes(service.id));
-          setSavedServices(saved);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error('Error fetching saved services:', error);
+      if (!currentUser || !currentUser.savedServices) {
+        setSavedServices([]);
         setIsLoading(false);
+        return;
       }
+      // Match saved service IDs with loaded services
+      const matched = services.filter(service => currentUser.savedServices.includes(service.id));
+      setSavedServices(matched);
+      setIsLoading(false);
     };
-    
-    if (services.length > 0) {
-      fetchSavedServices();
-    }
+
+    fetchSavedServices();
   }, [dispatch, services, currentUser]);
-  
-  // Handle removing a service from saved list
-  const handleRemoveSaved = async (serviceId) => {
-    try {
-      // In a real app, we would call an API endpoint
-      // For demo, we'll just update the local state
-      setSavedServices(prev => prev.filter(service => service.id !== serviceId));
-      
-      // Show success message or notification here
-    } catch (error) {
-      console.error('Error removing saved service:', error);
-      // Show error message
-    }
+
+  const handleRemoveSaved = (serviceId) => {
+    // Implement removal logic as needed
+    setSavedServices(prev => prev.filter(service => service.id !== serviceId));
   };
-  
-  if (loading || isLoading) {
+
+  if (isLoading) {
     return (
       <Container className="py-5 text-center">
         <Spinner animation="border" role="status">
@@ -65,7 +48,7 @@ const SavedServices = () => {
       </Container>
     );
   }
-  
+
   if (!currentUser) {
     return (
       <Container className="py-5 text-center">
@@ -74,7 +57,7 @@ const SavedServices = () => {
       </Container>
     );
   }
-  
+
   return (
     <Container className="py-5">
       <h2 className="mb-4">Saved Services</h2>

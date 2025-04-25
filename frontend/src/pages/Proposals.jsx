@@ -87,7 +87,7 @@ const Proposals = () => {
     const newItem = {
       id: Date.now(),
       userId: currentUser?.id || 1,
-      clientId: 2, // Mock client ID
+      clientId: currentUser?.clientId, // Use real client ID from the server/db.json
       ...newProposal,
       status: 'pending',
       createdAt: new Date().toISOString()

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card, Spinner, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Spinner, InputGroup, Badge } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import ServiceCard from '../components/ServiceCard';
 import { fetchServices } from '../redux/slices/serviceSlice';
-import api from '../api/axiosConfig';
 
 const ServicesPage = () => {
   const dispatch = useDispatch();
@@ -56,25 +55,15 @@ const ServicesPage = () => {
     dispatch(fetchServices());
   }, [dispatch]);
   
-  // Fetch categories from the server
+  // Derive unique categories from loaded services
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get('/categories');
-        // Format categories for display in the filter sidebar
-        const formattedCategories = response.data.map(category => ({
-          name: category.label,
-          value: category.value,
-          id: category.id
-        }));
-        setCategories(formattedCategories);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    
-    fetchCategories();
-  }, []);
+    if (services && services.length > 0) {
+      const uniqueCategories = [...new Set(services.map(s => s.category).filter(Boolean))];
+      setCategories(uniqueCategories.map(cat => ({ name: cat, value: cat, id: cat })));
+    } else {
+      setCategories([]);
+    }
+  }, [services]);
   
   // Apply filters and sorting
   useEffect(() => {
@@ -244,7 +233,7 @@ const ServicesPage = () => {
                       key={index}
                       type="radio"
                       id={`category-${index}`}
-                      label={`${category.name} (${category.count})`}
+                      label={`${category.name} `}
                       name="category"
                       checked={selectedCategory === category.name}
                       onChange={() => setSelectedCategory(category.name)}
@@ -328,7 +317,7 @@ const ServicesPage = () => {
                         key={index}
                         type="radio"
                         id={`category-mobile-${index}`}
-                        label={`${category.name} (${category.count})`}
+                        label={`${category.name} `}
                         name="category-mobile"
                         checked={selectedCategory === category.name}
                         onChange={() => {

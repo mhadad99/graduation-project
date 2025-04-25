@@ -18,6 +18,7 @@ export const initializeAuth = (store) => {
         currentUser: user,
         userRole: user.role,
         isAuthenticated: true,
+        token: token,
         loading: false,
         error: null
       };

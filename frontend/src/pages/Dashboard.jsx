@@ -42,70 +42,6 @@ const Dashboard = () => {
     }
   }, [dispatch, isAuthenticated, currentUser, userRole]);
   
-  // Mock data for dashboard stats
-  const stats = {
-    freelancer: {
-      earnings: 1250,
-      pendingEarnings: 450,
-      completedServices: 8,
-      activeServices: 3,
-      averageRating: 4.8
-    },
-    client: {
-      totalSpent: 2500,
-      activeProjects: 2,
-      completedProjects: 5,
-      savedFreelancers: 7
-    }
-  };
-  
-  // Mock notifications
-  const notifications = [
-    {
-      id: 1,
-      type: 'message',
-      content: 'Sarah Johnson sent you a message',
-      time: '2 hours ago',
-      read: false
-    },
-    {
-      id: 2,
-      type: 'proposal',
-      content: 'Your proposal for "Website Redesign" was accepted',
-      time: '1 day ago',
-      read: true
-    },
-    {
-      id: 3,
-      type: 'service',
-      content: 'New review on your "UI/UX Design" service',
-      time: '3 days ago',
-      read: true
-    }
-  ];
-  
-  // Mock recent activities
-  const recentActivities = [
-    {
-      id: 1,
-      action: 'Created a new service',
-      target: 'Professional Website Development',
-      time: '2024-04-20T14:30:00Z'
-    },
-    {
-      id: 2,
-      action: 'Received a 5-star rating',
-      target: 'UI/UX Design service',
-      time: '2024-04-18T09:15:00Z'
-    },
-    {
-      id: 3,
-      action: 'Submitted a proposal',
-      target: 'E-commerce Website Development',
-      time: '2024-04-15T16:45:00Z'
-    }
-  ];
-  
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -169,9 +105,9 @@ const Dashboard = () => {
                   <h6 className="mb-0 text-muted">Total Earnings</h6>
                   <Cash size={24} className="text-success" />
                 </div>
-                <h3 className="mb-0 mt-2 fw-bold">${stats.freelancer.earnings}</h3>
+                <h3 className="mb-0 mt-2 fw-bold">${currentUser?.totalEarnings || 0}</h3>
                 <div className="mt-3 small text-muted">
-                  <span className="text-success fw-bold">${stats.freelancer.pendingEarnings}</span> pending clearance
+                  <span className="text-success fw-bold">${currentUser?.pendingEarnings || 0}</span> pending clearance
                 </div>
               </Card.Body>
             </Card>
@@ -185,7 +121,7 @@ const Dashboard = () => {
                 </div>
                 <h3 className="mb-0 mt-2 fw-bold">{userServices.length || 0}</h3>
                 <div className="mt-3 small text-muted">
-                  <span className="text-primary fw-bold">{stats.freelancer.activeServices}</span> active services
+                  <span className="text-primary fw-bold">{currentUser?.activeServices || 0}</span> active services
                 </div>
               </Card.Body>
             </Card>
@@ -197,7 +133,7 @@ const Dashboard = () => {
                   <h6 className="mb-0 text-muted">Rating</h6>
                   <Star size={24} className="text-warning" />
                 </div>
-                <h3 className="mb-0 mt-2 fw-bold">{stats.freelancer.averageRating}</h3>
+                <h3 className="mb-0 mt-2 fw-bold">{currentUser?.averageRating || 0}</h3>
                 <div className="mt-3 small text-muted">
                   Based on <span className="text-warning fw-bold">{currentUser?.numberOfReviews || 0}</span> reviews
                 </div>
@@ -369,9 +305,9 @@ const Dashboard = () => {
                   <h6 className="mb-0 text-muted">Total Spent</h6>
                   <Cash size={24} className="text-primary" />
                 </div>
-                <h3 className="mb-0 mt-2 fw-bold">${stats.client.totalSpent}</h3>
+                <h3 className="mb-0 mt-2 fw-bold">${currentUser?.totalSpent || 0}</h3>
                 <div className="mt-3 small text-muted">
-                  On <span className="text-primary fw-bold">{stats.client.completedProjects}</span> completed projects
+                  On <span className="text-primary fw-bold">{currentUser?.completedProjects || 0}</span> completed projects
                 </div>
               </Card.Body>
             </Card>
@@ -383,7 +319,7 @@ const Dashboard = () => {
                   <h6 className="mb-0 text-muted">Active Projects</h6>
                   <Briefcase size={24} className="text-success" />
                 </div>
-                <h3 className="mb-0 mt-2 fw-bold">{stats.client.activeProjects}</h3>
+                <h3 className="mb-0 mt-2 fw-bold">{currentUser?.activeProjects || 0}</h3>
                 <div className="mt-3 small text-muted">
                   <span className="text-success fw-bold">1</span> due this week
                 </div>
@@ -411,7 +347,7 @@ const Dashboard = () => {
                   <h6 className="mb-0 text-muted">Saved Freelancers</h6>
                   <PeopleFill size={24} className="text-warning" />
                 </div>
-                <h3 className="mb-0 mt-2 fw-bold">{stats.client.savedFreelancers}</h3>
+                <h3 className="mb-0 mt-2 fw-bold">{currentUser?.savedFreelancers || 0}</h3>
                 <div className="mt-3 small text-muted">
                   <span className="text-warning fw-bold">3</span> with new services
                 </div>
@@ -560,9 +496,9 @@ const Dashboard = () => {
         <div className="d-flex">
           <Button variant="outline-primary" className="me-2">
             <Bell className="me-2" /> Notifications
-            {notifications.filter(n => !n.read).length > 0 && (
+            {unreadCount > 0 && (
               <Badge bg="danger" className="ms-2" pill>
-                {notifications.filter(n => !n.read).length}
+                {unreadCount}
               </Badge>
             )}
           </Button>
@@ -585,7 +521,7 @@ const Dashboard = () => {
             <Card.Body>
               <h5 className="fw-bold mb-4">Your Recent Activities</h5>
               <ListGroup variant="flush">
-                {recentActivities.map(activity => (
+                {currentUser?.recentActivities?.map(activity => (
                   <ListGroup.Item key={activity.id} className="px-0 py-3 border-bottom">
                     <div className="d-flex">
                       <div className="activity-icon me-3">
@@ -610,9 +546,9 @@ const Dashboard = () => {
         <Tab eventKey="notifications" title={
           <span>
             Notifications
-            {notifications.filter(n => !n.read).length > 0 && (
+            {unreadCount > 0 && (
               <Badge bg="danger" className="ms-2" pill>
-                {notifications.filter(n => !n.read).length}
+                {unreadCount}
               </Badge>
             )}
           </span>
@@ -626,7 +562,7 @@ const Dashboard = () => {
                 </Button>
               </div>
               <ListGroup variant="flush">
-                {notifications.map(notification => (
+                {currentUser?.notifications?.map(notification => (
                   <ListGroup.Item 
                     key={notification.id} 
                     className={`px-0 py-3 border-bottom ${!notification.read ? 'bg-light bg-opacity-50' : ''}`}

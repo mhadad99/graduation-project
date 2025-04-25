@@ -112,14 +112,13 @@ const Chat = () => {
     return true;
   });
   
-  // Get other participant's info (mock data for now)
+  // Get other participant's info
   const getParticipantInfo = (conversation) => {
     const participantId = conversation.participants.find(id => id !== currentUser.id);
-    // In a real app, you would fetch this from your users data
     return {
       id: participantId,
-      name: participantId === 1 ? 'Ayman Samir' : 'Sarah Johnson',
-      avatar: participantId === 1 ? 'https://i.imgur.com/6AglEUF.jpeg' : 'https://i.imgur.com/JFHjdNZ.jpeg',
+      name: conversation.participants.find(id => id !== currentUser.id).name,
+      avatar: conversation.participants.find(id => id !== currentUser.id).avatar,
       isOnline: true
     };
   };

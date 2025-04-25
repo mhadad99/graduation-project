@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axiosConfig';
 
 // Async thunks for chat operations
 export const fetchConversations = createAsyncThunk(
   'chat/fetchConversations',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/users/${userId}/conversations`);
-      return response.data;
+      const response = await fetch(`/users/${userId}/conversations`);
+      return response.json();
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch conversations' });
+      return rejectWithValue({ message: 'Failed to fetch conversations' });
     }
   }
 );
@@ -18,10 +17,10 @@ export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
   async (conversationId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/conversations/${conversationId}/messages`);
-      return response.data;
+      const response = await fetch(`/conversations/${conversationId}/messages`);
+      return response.json();
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch messages' });
+      return rejectWithValue({ message: 'Failed to fetch messages' });
     }
   }
 );
@@ -30,10 +29,14 @@ export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (messageData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/messages', messageData);
-      return response.data;
+      const response = await fetch('/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messageData),
+      });
+      return response.json();
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to send message' });
+      return rejectWithValue({ message: 'Failed to send message' });
     }
   }
 );
@@ -42,10 +45,14 @@ export const createConversation = createAsyncThunk(
   'chat/createConversation',
   async (conversationData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/conversations', conversationData);
-      return response.data;
+      const response = await fetch('/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(conversationData),
+      });
+      return response.json();
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to create conversation' });
+      return rejectWithValue({ message: 'Failed to create conversation' });
     }
   }
 );

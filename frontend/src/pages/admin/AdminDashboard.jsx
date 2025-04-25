@@ -14,9 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUsers } from '../../redux/slices/userSlice';
 import { fetchServices } from '../../redux/slices/serviceSlice';
-import api from '../../api/axiosConfig';
 import Chart from 'react-apexcharts';
-import { mockData } from '../../utils/apiUtils';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -54,31 +52,31 @@ const AdminDashboard = () => {
       // Fetch users directly for dashboard
       let usersData = [];
       try {
-        const usersResponse = await api.get('/users');
-        usersData = usersResponse.data;
+        const usersResponse = await dispatch(fetchUsers());
+        usersData = usersResponse.payload;
       } catch (err) {
-        console.warn('Failed to fetch users from API, using mock data:', err.message);
-        usersData = mockData.users;
+        console.warn('Failed to fetch users from API:', err.message);
+        usersData = reduxUsers;
       }
       
       // Fetch services directly for dashboard
       let servicesData = [];
       try {
-        const servicesResponse = await api.get('/services');
-        servicesData = servicesResponse.data;
+        const servicesResponse = await dispatch(fetchServices());
+        servicesData = servicesResponse.payload;
       } catch (err) {
-        console.warn('Failed to fetch services from API, using mock data:', err.message);
-        servicesData = mockData.services;
+        console.warn('Failed to fetch services from API:', err.message);
+        servicesData = reduxServices;
       }
       
       // Fetch proposals directly for dashboard
       let proposalsData = [];
       try {
-        const proposalsResponse = await api.get('/proposals');
-        proposalsData = proposalsResponse.data;
+        const proposalsResponse = await dispatch(fetchUsers());
+        proposalsData = proposalsResponse.payload;
       } catch (err) {
-        console.warn('Failed to fetch proposals from API, using mock data:', err.message);
-        proposalsData = mockData.proposals;
+        console.warn('Failed to fetch proposals from API:', err.message);
+        proposalsData = [];
       }
       
       // Update state with fetched data

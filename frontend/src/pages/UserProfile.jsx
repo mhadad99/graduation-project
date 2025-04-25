@@ -25,12 +25,6 @@ import {
   ReviewsTab
 } from "../components/profile";
 
-// Import mock data for fallback
-import { mockUsers, mockServices, mockPortfolioItems, mockRatings } from "../utils/apiUtils";
-
-// Import API
-import api from "../api/axiosConfig";
-
 // Import styles
 import "../styles/UserProfile.css";
 
@@ -71,29 +65,6 @@ const UserProfile = () => {
       setEffectiveUserId(urlUserId);
     }
   }, [urlUserId, currentUser]);
-  
-  // Sample data for skills and qualities
-  const skills = [
-    "Professional landing page design",
-    "Responsive and fast loading",
-    "Custom website development",
-    "React.js",
-    "Website optimization",
-    "API integration",
-    "Converting wireframes into websites",
-    "MongoDB database design",
-    "Python & Django",
-    "UI/UX Design",
-  ];
-
-  const qualities = [
-    "Attention to detail",
-    "Clean design and high-quality performance",
-    "Commitment to deadlines",
-    "Efficient and professional workflow",
-    "Clear communication",
-    "Understanding client requirements",
-  ];
   
   // Determine if this is the current user's profile
   useEffect(() => {
@@ -144,12 +115,6 @@ const UserProfile = () => {
       } catch (err) {
         console.error('Error fetching profile data:', err);
         setError('Failed to load profile data. Please try again later.');
-        
-        // Use mock data as fallback
-        setProfileData(mockUsers.find(user => user.id.toString() === effectiveUserId));
-        dispatch(fetchUserServices(effectiveUserId));
-        dispatch(fetchUserPortfolio(effectiveUserId));
-        dispatch(fetchUserRatings(effectiveUserId));
       } finally {
         // Set loading to false after a short delay to ensure data is displayed
         setTimeout(() => {
@@ -268,8 +233,6 @@ const UserProfile = () => {
       <Tab key="about" eventKey="about" title={<span><PersonFill className="me-2" /> About</span>}>
         <AboutTab 
           profileData={profileData} 
-          skills={skills} 
-          qualities={qualities} 
         />
       </Tab>
     );
@@ -280,7 +243,7 @@ const UserProfile = () => {
       roleTabs.unshift(
         <Tab key="services" eventKey="services" title={<span><Briefcase className="me-2" /> Services</span>}>
           <ServicesTab 
-            services={userServices || mockServices} 
+            services={userServices} 
             isLoading={servicesLoading} 
             isMyProfile={isMyProfile} 
           />
@@ -291,7 +254,7 @@ const UserProfile = () => {
       roleTabs.push(
         <Tab key="portfolio" eventKey="portfolio" title={<span><Collection className="me-2" /> Portfolio</span>}>
           <PortfolioTab 
-            portfolioItems={portfolioItems || mockPortfolioItems} 
+            portfolioItems={portfolioItems} 
             isLoading={portfolioLoading} 
             isMyProfile={isMyProfile} 
             onAddItem={handleAddPortfolioItem}
@@ -319,7 +282,7 @@ const UserProfile = () => {
             
             {userServices && userServices.length > 0 ? (
               <ServicesTab 
-                services={userServices || mockServices} 
+                services={userServices} 
                 isLoading={servicesLoading} 
                 isMyProfile={isMyProfile} 
                 displayAsProjects={true}
@@ -353,7 +316,7 @@ const UserProfile = () => {
       <Tab key="reviews" eventKey="reviews" title={<span><Star className="me-2" /> Reviews</span>}>
         <ReviewsTab 
           profileData={profileData} 
-          testimonials={userRatings || mockRatings} 
+          testimonials={userRatings} 
           isLoading={ratingsLoading} 
           isMyProfile={isMyProfile} 
           onSubmitReview={handleSubmitReview}

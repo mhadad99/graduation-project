@@ -1,28 +1,310 @@
 {
   "users": [
     {
-      "status": "active",
-      "id": 1
+      "id": "1",
+      "first_name": "John",
+      "second_name": "Doe",
+      "email": "john.doe@example.com",
+      "password": "hashedpassword1",
+      "selfie_verification": true,
+      "user_name": "johndoe",
+      "photo": "profile1.jpg",
+      "birth_date": "1985-05-15",
+      "isDeleted": false,
+      "is_registered": true,
+      "is_verified": true,
+      "phone": "555-123-4567",
+      "last_scene": "2025-04-22T15:30:00",
+      "address": "123 Main St, City, Country",
+      "status": "active"
     },
     {
-      "status": "active",
-      "id": 2
+      "id": "2",
+      "first_name": "Jane",
+      "second_name": "Smith",
+      "email": "jane.smith@example.com",
+      "password": "hashedpassword2",
+      "selfie_verification": true,
+      "user_name": "janesmith",
+      "photo": "profile2.jpg",
+      "birth_date": "1990-08-21",
+      "isDeleted": false,
+      "is_registered": true,
+      "is_verified": true,
+      "phone": "555-987-6543",
+      "last_scene": "2025-04-23T09:45:00",
+      "address": "456 Elm St, Town, Country",
+      "status": "active"
     },
     {
-      "deleted": true,
-      "id": 3
+      "id": "3",
+      "first_name": "Michael",
+      "second_name": "Johnson",
+      "email": "michael.j@example.com",
+      "password": "hashedpassword3",
+      "selfie_verification": false,
+      "user_name": "michaelj",
+      "photo": "profile3.jpg",
+      "birth_date": "1982-02-10",
+      "isDeleted": false,
+      "is_registered": true,
+      "is_verified": true,
+      "phone": "555-456-7890",
+      "last_scene": "2025-04-20T18:15:00",
+      "address": "789 Oak Ave, Village, Country",
+      "status": "active"
     },
     {
+      "id": "1745590129053",
+      "name": "Ayman",
+      "email": "ayman@tanfeez.com",
+      "password": "123654789",
+      "isVerified": true,
+      "profileImage": "https://i.imgur.com/JFHjdNZ.jpeg",
+      "lastSeen": "2025-04-25T14:08:49.055Z",
+      "joinDate": "2025-04-25T14:08:49.053Z"
+    },
+    {
+      "id": "1745610847670",
+      "name": "ayman samir",
+      "email": "ayman@gmail.com",
+      "password": "123654789",
+      "isVerified": false,
+      "profileImage": "https://i.imgur.com/8MKXyDV.jpeg",
+      "lastSeen": "2025-04-25T19:54:07.670Z",
+      "joinDate": "2025-04-25T19:54:07.670Z",
       "status": "active",
-      "id": 4
+      "isDeleted": false
+    }
+  ],
+  "admins": [
+    {
+      "id": "1",
+      "userId": "1",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "freelancers": [
+    {
+      "id": "f1",
+      "userId": "2",
+      "skillsId": "3",
+      "experienceLevel": "senior",
+      "cv": "jane_smith_resume.pdf",
+      "is_tested": true,
+      "job_title": "full_stack_developer",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "f2",
+      "userId": "1745590129053",
+      "skillsId": "2",
+      "experienceLevel": "intermediate",
+      "cv": "ayman_resume.pdf",
+      "is_tested": false,
+      "job_title": "designer",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "clients": [
+    {
+      "id": "c1",
+      "userId": "3",
+      "companyName": "Johnson Enterprises",
+      "companyType": "Design",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "c2",
+      "userId": "1745610847670",
+      "companyName": "Ayman Samir Ltd.",
+      "companyType": "E-commerce",
+      "isDeleted": false,
+      "status": "pending"
+    }
+  ],
+  "skills": [
+    {
+      "id": "1",
+      "label": "JavaScript",
+      "value": "javascript",
+      "categoryId": "1",
+      "name": "JavaScript",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "label": "Graphic Design",
+      "value": "graphic-design",
+      "categoryId": "4",
+      "name": "Graphic Design",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "label": "React",
+      "value": "react",
+      "categoryId": "1",
+      "name": "React",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "4",
+      "label": "Node.js",
+      "value": "nodejs",
+      "categoryId": "1",
+      "name": "Node.js",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "5",
+      "label": "UI/UX Design",
+      "value": "ui-ux-design",
+      "categoryId": "3",
+      "name": "UI/UX Design",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "6",
+      "label": "Python",
+      "value": "python",
+      "categoryId": "1",
+      "name": "Python",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "7",
+      "label": "Flutter",
+      "value": "flutter",
+      "categoryId": "2",
+      "name": "Flutter",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "8",
+      "label": "Content Writing",
+      "value": "content-writing",
+      "categoryId": "5",
+      "name": "Content Writing",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "label": "Web Development",
+      "value": "web-development",
+      "icon": "code",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "label": "Mobile Development",
+      "value": "mobile-development",
+      "icon": "mobile-alt",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "label": "UI/UX Design",
+      "value": "ui-ux-design",
+      "icon": "pencil-ruler",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "4",
+      "label": "Graphic Design",
+      "value": "graphic-design",
+      "icon": "paint-brush",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "5",
+      "label": "Writing & Translation",
+      "value": "writing-translation",
+      "icon": "pen",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "6",
+      "label": "Video & Animation",
+      "value": "video-animation",
+      "icon": "video",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "freelancerSkills": [
+    {
+      "id": "1",
+      "skillsId": "3",
+      "freelancerId": "f1",
+      "isDeleted": false,
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "skillsId": "2",
+      "freelancerId": "f2",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "E-commerce Website Development",
+      "start_date": "2025-01-15T00:00:00",
+      "end_date": "2025-04-15T00:00:00",
+      "freelancerId": "f1",
+      "clientId": "c1",
+      "duration": "3 months",
+      "progress": "completed",
+      "isDeleted": false,
+      "description": "Develop a fully functional e-commerce website with user authentication, product catalog, and payment processing.",
+      "projectType": "one-time",
+      "projectDuration": "1-3-months",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "name": "Company Logo Redesign",
+      "start_date": "2025-03-10T00:00:00",
+      "end_date": "2025-03-25T00:00:00",
+      "freelancerId": "f2",
+      "clientId": "c2",
+      "duration": "15 days",
+      "progress": "in_progress",
+      "isDeleted": false,
+      "description": "Redesign company logo to reflect new brand identity and values.",
+      "projectType": "one-time",
+      "projectDuration": "less-than-1-week",
+      "status": "pending"
     }
   ],
   "services": [
     {
-      "id": 1,
-      "userId": 1,
-      "title": "Professional Website Development",
-      "description": "Custom, responsive websites built with modern frameworks like React and Next.js",
+      "id": "1",
+      "userId": "2",
+      "title": "Web Application Development",
+      "description": "Full-stack web application development using React, Node.js, and MongoDB",
       "longDescription": "I will create a professional, responsive website tailored to your business needs. Using modern frameworks like React and Next.js, I ensure fast loading times, SEO optimization, and a seamless user experience across all devices. My services include custom design, development, testing, and deployment. I also provide post-launch support and maintenance options.",
       "price": 500,
       "deliveryTime": "5 days",
@@ -30,104 +312,45 @@
       "tags": [
         "Web Development",
         "React",
-        "Responsive"
+        "Node.js"
       ],
       "featured": true,
-      "createdAt": "2024-03-10T12:00:00Z",
-      "averageRating": 4.9,
-      "numberOfReviews": 28,
+      "createdAt": "2025-01-01T00:00:00",
+      "averageRating": 4.8,
+      "numberOfReviews": 15,
       "status": "active",
-      "adminReviewed": true
+      "adminReviewed": true,
+      "youtubeUrl": "https://www.youtube.com/watch?v=example1",
+      "isDeleted": false
     },
     {
-      "id": 2,
-      "userId": 1,
-      "title": "UI/UX Design",
-      "description": "User-friendly interfaces with modern aesthetics and optimal user experience",
-      "longDescription": "I specialize in creating intuitive, visually appealing user interfaces that enhance user experience. My design process includes user research, wireframing, prototyping, and usability testing to ensure your product meets user needs while achieving business goals. I deliver Figma designs, interactive prototypes, and comprehensive design systems that can be easily implemented by developers.",
-      "price": 300,
+      "id": "2",
+      "userId": "1745590129053",
+      "title": "Logo Design",
+      "description": "Professional logo design with unlimited revisions and source files included",
+      "longDescription": "I specialize in creating unique, memorable logos that capture your brand's essence. My design process includes thorough research, multiple concept presentations, and unlimited revisions until you're completely satisfied. You'll receive all necessary file formats, including vector files for print and web-optimized versions.",
+      "price": 200,
       "deliveryTime": "3 days",
       "image": "https://i.imgur.com/thdopBi.jpeg",
       "tags": [
-        "Design",
-        "UI/UX",
-        "Wireframing"
+        "Graphic Design",
+        "Branding",
+        "Logo"
       ],
       "featured": false,
-      "createdAt": "2024-03-15T12:00:00Z",
-      "averageRating": 4.7,
-      "numberOfReviews": 15,
-      "status": "active",
-      "adminReviewed": true
-    },
-    {
-      "id": 3,
-      "userId": 1,
-      "title": "SEO Optimization",
-      "description": "Improve website visibility and ranking on search engines with data-driven strategies",
-      "longDescription": "Boost your website's visibility and drive organic traffic with my comprehensive SEO services. I conduct thorough keyword research, on-page optimization, technical SEO audits, and content strategy development. My data-driven approach ensures measurable results, with regular reporting and analytics to track progress. I also provide recommendations for ongoing optimization to maintain and improve rankings.",
-      "price": 200,
-      "deliveryTime": "4 days",
-      "image": "https://i.imgur.com/thdopBi.jpeg",
-      "tags": [
-        "SEO",
-        "Marketing",
-        "Analytics"
-      ],
-      "featured": false,
-      "createdAt": "2024-03-20T12:00:00Z",
+      "createdAt": "2025-02-15T00:00:00",
       "averageRating": 4.5,
-      "numberOfReviews": 10,
-      "status": "active",
-      "adminReviewed": true
-    },
-    {
-      "userId": 1,
-      "title": "bootstrap landing page",
-      "description": "figma to bootstrap landing page",
-      "longDescription": "figma to bootstrap landing page",
-      "price": 10,
-      "deliveryTime": "7 days",
-      "image": {},
-      "tags": [
-        "bootstrap",
-        "html",
-        "css"
-      ],
-      "featured": false,
-      "createdAt": "2025-04-24T12:55:35.227Z",
-      "averageRating": 0,
-      "numberOfReviews": 0,
-      "youtubeUrl": "https://www.youtube.com/watch?v=X8ztf_DEZrs",
-      "status": "active",
-      "adminReviewed": true,
-      "id": 4
-    },
-    {
-      "userId": 1,
-      "title": "new test",
-      "description": "aaa",
-      "longDescription": "aaa",
-      "price": 24,
-      "deliveryTime": "7 days",
-      "image": {},
-      "tags": [
-        "samsung"
-      ],
-      "featured": false,
-      "createdAt": "2025-04-24T13:01:18.935Z",
-      "averageRating": 0,
-      "numberOfReviews": 0,
-      "youtubeUrl": "https://www.youtube.com/watch?v=X8ztf_DEZrs",
+      "numberOfReviews": 8,
       "status": "pending",
       "adminReviewed": false,
-      "id": 5
+      "youtubeUrl": "https://www.youtube.com/watch?v=example2",
+      "isDeleted": false
     }
   ],
   "portfolio": [
     {
-      "id": 1,
-      "userId": 1,
+      "id": "1",
+      "userId": "2",
       "title": "E-commerce Website",
       "description": "A fully functional e-commerce platform built with React, Node.js, and MongoDB",
       "image": "https://i.imgur.com/thdopBi.jpeg",
@@ -138,484 +361,247 @@
         "MongoDB",
         "E-commerce"
       ],
-      "createdAt": "2024-01-15T12:00:00Z"
+      "createdAt": "2024-01-15T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
     },
     {
-      "id": 2,
-      "userId": 1,
-      "title": "Travel Agency Website",
-      "description": "Modern, responsive website for a luxury travel agency with booking functionality",
+      "id": "2",
+      "userId": "1745590129053",
+      "title": "Company Logo Redesign",
+      "description": "Redesign of company logo to reflect new brand identity and values",
       "image": "https://i.imgur.com/thdopBi.jpeg",
-      "link": "https://example-travel.com",
+      "link": "https://behance.net/example-logo",
       "tags": [
-        "React",
-        "Bootstrap",
-        "Responsive",
-        "Travel"
+        "Logo Design",
+        "Branding",
+        "Graphic Design"
       ],
-      "createdAt": "2024-02-10T12:00:00Z"
+      "createdAt": "2024-02-10T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "freelancer_ratings": [
+    {
+      "id": "1",
+      "projectId": "1",
+      "freelancerId": "f1",
+      "clientId": "c1",
+      "rating": 5,
+      "isDeleted": false,
+      "status": "active"
     },
     {
-      "id": 3,
-      "userId": 1,
-      "title": "Restaurant Management System",
-      "description": "Full-stack application for restaurant management including inventory, orders, and staff scheduling",
-      "image": "https://i.imgur.com/thdopBi.jpeg",
-      "link": "https://example-restaurant.com",
-      "tags": [
-        "React",
-        "Express",
-        "MySQL",
-        "Management System"
-      ],
-      "createdAt": "2024-03-05T12:00:00Z"
+      "id": "2",
+      "projectId": "2",
+      "freelancerId": "f2",
+      "clientId": "c2",
+      "rating": 4,
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "client_ratings": [
+    {
+      "id": "1",
+      "projectId": "1",
+      "clientId": "c1",
+      "freelancerId": "f1",
+      "rating": 5,
+      "isDeleted": false,
+      "status": "active"
     },
     {
-      "id": 4,
-      "userId": 1,
-      "title": "Fitness Tracking App",
-      "description": "Mobile-responsive web application for tracking workouts, nutrition, and fitness goals",
-      "image": "https://i.imgur.com/thdopBi.jpeg",
-      "link": "https://example-fitness.com",
-      "tags": [
-        "React",
-        "Firebase",
-        "Fitness",
-        "Mobile-first"
-      ],
-      "createdAt": "2024-03-25T12:00:00Z"
+      "id": "2",
+      "projectId": "2",
+      "clientId": "c2",
+      "freelancerId": "f2",
+      "rating": 4,
+      "isDeleted": false,
+      "status": "active"
+    }
+  ],
+  "project_proposals": [
+    {
+      "id": "1",
+      "freelancerId": "f1",
+      "projectId": "1",
+      "message": "I have extensive experience building e-commerce platforms with React and Node.js. I can deliver a robust solution within your timeframe.",
+      "isApproved": true,
+      "status": "accepted",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "freelancerId": "f2",
+      "projectId": "2",
+      "message": "I specialize in brand identity and have created logos for multiple tech companies. I'd love to help refresh your company's visual identity.",
+      "isApproved": true,
+      "status": "accepted",
+      "isDeleted": false
     }
   ],
   "proposals": [
     {
-      "id": 1,
-      "userId": 1,
-      "clientId": 2,
+      "id": "1",
+      "userId": "2",
+      "clientId": "c2",
       "projectTitle": "Company Website Redesign",
       "description": "Proposal for redesigning the TechStart company website with modern design and improved functionality",
       "price": 1200,
       "deliveryTime": "14 days",
       "status": "pending",
-      "createdAt": "2024-04-01T12:00:00Z"
+      "createdAt": "2024-04-01T12:00:00Z",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "userId": "1745590129053",
+      "clientId": "c1",
+      "projectTitle": "Mobile App Development",
+      "description": "Proposal for creating a cross-platform mobile application for inventory management",
+      "price": 2500,
+      "deliveryTime": "30 days",
+      "status": "accepted",
+      "createdAt": "2024-03-15T12:00:00Z",
+      "isDeleted": false
     }
   ],
   "conversations": [
     {
-      "id": 1,
+      "id": "1",
       "participants": [
-        1,
-        2
+        "2",
+        "3"
       ],
-      "serviceId": 1,
+      "serviceId": "1",
+      "projectId": "1",
       "lastMessage": "I'd like to discuss the details of the website project",
-      "lastMessageTime": "2024-04-10T15:30:00Z",
-      "unreadCount": 2
+      "lastMessageTime": "2025-04-23T15:30:00Z",
+      "unreadCount": 2,
+      "status": "active",
+      "isDeleted": false
+    },
+    {
+      "id": "2",
+      "participants": [
+        "1745590129053",
+        "1745610847670"
+      ],
+      "serviceId": null,
+      "projectId": "2",
+      "lastMessage": "Can you provide more samples of your previous work?",
+      "lastMessageTime": "2025-04-22T10:15:00Z",
+      "unreadCount": 0,
+      "status": "active",
+      "isDeleted": false
     }
   ],
   "messages": [
     {
-      "id": 1,
-      "conversationId": 1,
-      "senderId": 2,
-      "receiverId": 1,
-      "content": "Hi John, I'm interested in your website development service. Can we discuss the details?",
-      "timestamp": "2024-04-10T15:25:00Z",
-      "read": true
+      "id": "1",
+      "conversationId": "1",
+      "senderId": "3",
+      "receiverId": "2",
+      "content": "Hi Jane, I'm interested in your web development service. Can we discuss the details?",
+      "timestamp": "2025-04-23T15:20:00Z",
+      "status": "active",
+      "isDeleted": false
     },
     {
-      "id": 2,
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "Hello Jane! I'd be happy to discuss your project. What kind of website are you looking to build?",
-      "timestamp": "2024-04-10T15:28:00Z",
-      "read": true
+      "id": "2",
+      "conversationId": "1",
+      "senderId": "2",
+      "receiverId": "3",
+      "content": "Hello Michael! I'd be happy to discuss your project. What kind of website are you looking to build?",
+      "timestamp": "2025-04-23T15:25:00Z",
+      "status": "active",
+      "isDeleted": false
     },
     {
-      "id": 3,
-      "conversationId": 1,
-      "senderId": 2,
-      "receiverId": 1,
+      "id": "3",
+      "conversationId": "1",
+      "senderId": "3",
+      "receiverId": "2",
       "content": "I'd like to discuss the details of the website project",
-      "timestamp": "2024-04-10T15:30:00Z",
-      "read": false
+      "timestamp": "2025-04-23T15:30:00Z",
+      "status": "active",
+      "isDeleted": false
     },
     {
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "sure!!",
-      "tempId": "temp-1745478791366",
-      "id": 4
+      "id": "4",
+      "conversationId": "2",
+      "senderId": "1745610847670",
+      "receiverId": "1745590129053",
+      "content": "Hi Ayman, I saw your portfolio and I'm impressed with your work.",
+      "timestamp": "2025-04-22T10:10:00Z",
+      "status": "active",
+      "isDeleted": false
     },
     {
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "\"sure\"",
-      "tempId": "temp-1745478803145",
-      "id": 5
+      "id": "5",
+      "conversationId": "2",
+      "senderId": "1745590129053",
+      "receiverId": "1745610847670",
+      "content": "Thank you! I'd be happy to discuss any projects you have in mind.",
+      "timestamp": "2025-04-22T10:12:00Z",
+      "status": "active",
+      "isDeleted": false
     },
     {
-      "conversationId": 1,
-      "senderId": 3,
-      "receiverId": 1,
-      "content": "aaa",
-      "tempId": "temp-1745480257785",
-      "id": 6
+      "id": "6",
+      "conversationId": "2",
+      "senderId": "1745610847670",
+      "receiverId": "1745590129053",
+      "content": "Can you provide more samples of your previous work?",
+      "timestamp": "2025-04-22T10:15:00Z",
+      "status": "active",
+      "isDeleted": false
+    }
+  ],
+  "service_ratings": [
+    {
+      "id": "1",
+      "serviceId": "1",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Excellent service! The website was delivered ahead of schedule with all requested features.",
+      "createdAt": "2025-03-20T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
     },
     {
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "okay from ayman",
-      "tempId": "temp-1745487858398",
-      "id": 7
-    },
-    {
-      "conversationId": 1,
-      "senderId": 2,
-      "receiverId": 1,
-      "content": "thanks from the client jane",
-      "tempId": "temp-1745487972546",
-      "id": 8
-    },
-    {
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "welcome from ayman freelance",
-      "tempId": "temp-1745489809418",
-      "id": 9
-    },
-    {
-      "conversationId": 1,
-      "senderId": 1,
-      "receiverId": 2,
-      "content": "i mean john",
-      "tempId": "temp-1745489828827",
-      "id": 10
-    },
-    {
-      "conversationId": 1,
-      "senderId": 3,
-      "receiverId": 1,
-      "content": "jjj",
-      "tempId": "temp-1745521396682",
-      "id": 11
+      "id": "2",
+      "serviceId": "2",
+      "userId": "1745610847670",
+      "rating": 4,
+      "comment": "Great design work. The logo perfectly captures our brand identity.",
+      "createdAt": "2025-03-05T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
     }
   ],
   "userRatings": [
     {
-      "id": 1,
-      "userId": 1,
-      "raterId": 2,
+      "id": "1",
+      "userId": "2",
+      "raterId": "3",
       "rating": 5,
-      "comment": "John delivered an exceptional website that perfectly matched our brand identity. His attention to detail and responsive design skills are outstanding.",
-      "createdAt": "2024-03-15T12:00:00Z"
+      "comment": "Jane delivered an exceptional website that perfectly matched our brand identity. Her attention to detail and responsive design skills are outstanding.",
+      "createdAt": "2025-03-15T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
     },
     {
-      "id": 2,
-      "userId": 1,
-      "raterId": 3,
-      "rating": 5,
-      "comment": "Working with John was a breeze. He understood our requirements quickly and delivered a beautiful, high-performance website ahead of schedule.",
-      "createdAt": "2024-02-08T12:00:00Z"
-    },
-    {
-      "id": 3,
-      "userId": 1,
-      "raterId": 4,
+      "id": "2",
+      "userId": "1745590129053",
+      "raterId": "1745610847670",
       "rating": 4,
-      "comment": "Great communication and exceptional work. The website John built for us has significantly improved our conversion rates.",
-      "createdAt": "2024-01-20T12:00:00Z"
-    }
-  ],
-  "serviceRatings": [
-    {
-      "id": 1,
-      "serviceId": 1,
-      "userId": 2,
-      "rating": 5,
-      "comment": "The website development service was excellent. John delivered exactly what I needed, with great attention to detail and responsiveness.",
-      "createdAt": "2024-03-20T12:00:00Z"
-    },
-    {
-      "id": 2,
-      "serviceId": 1,
-      "userId": 3,
-      "rating": 5,
-      "comment": "Outstanding service! The website was delivered ahead of schedule and exceeded my expectations in terms of design and functionality.",
-      "createdAt": "2024-03-10T12:00:00Z"
-    },
-    {
-      "id": 3,
-      "serviceId": 2,
-      "userId": 2,
-      "rating": 4,
-      "comment": "Great UI/UX design work. The interfaces are intuitive and visually appealing. Would recommend.",
-      "createdAt": "2024-03-25T12:00:00Z"
-    }
-  ],
-  "auth": {
-    "login": {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huQGV4YW1wbGUuY29tIiwicm9sZSI6ImZyZWVsYW5jZXIifQ.7JWj7K8fQDfqBbDA_9U_h7rJTNQFDjU9LR-0XVrjzVI"
-    },
-    "register": {
-      "success": true
-    }
-  },
-  "categories": [
-    {
-      "id": 1,
-      "label": "Web Development",
-      "value": "web-development",
-      "icon": "code"
-    },
-    {
-      "id": 2,
-      "label": "Mobile Development",
-      "value": "mobile-development",
-      "icon": "mobile-alt"
-    },
-    {
-      "id": 3,
-      "label": "UI/UX Design",
-      "value": "ui-ux-design",
-      "icon": "pencil-ruler"
-    },
-    {
-      "id": 4,
-      "label": "Graphic Design",
-      "value": "graphic-design",
-      "icon": "paint-brush"
-    },
-    {
-      "id": 5,
-      "label": "Writing & Translation",
-      "value": "writing-translation",
-      "icon": "pen"
-    },
-    {
-      "id": 6,
-      "label": "Video & Animation",
-      "value": "video-animation",
-      "icon": "video"
-    },
-    {
-      "id": 7,
-      "label": "Music & Audio",
-      "value": "music-audio",
-      "icon": "music"
-    },
-    {
-      "id": 8,
-      "label": "Marketing",
-      "value": "marketing",
-      "icon": "bullhorn"
-    },
-    {
-      "id": 9,
-      "label": "Business",
-      "value": "business",
-      "icon": "briefcase"
-    },
-    {
-      "id": 10,
-      "label": "Data Science",
-      "value": "data-science",
-      "icon": "chart-bar"
-    }
-  ],
-  "skills": [
-    {
-      "id": 1,
-      "label": "JavaScript",
-      "value": "javascript",
-      "categoryId": 1
-    },
-    {
-      "id": 2,
-      "label": "React",
-      "value": "react",
-      "categoryId": 1
-    },
-    {
-      "id": 3,
-      "label": "Angular",
-      "value": "angular",
-      "categoryId": 1
-    },
-    {
-      "id": 4,
-      "label": "Vue.js",
-      "value": "vuejs",
-      "categoryId": 1
-    },
-    {
-      "id": 5,
-      "label": "Node.js",
-      "value": "nodejs",
-      "categoryId": 1
-    },
-    {
-      "id": 6,
-      "label": "PHP",
-      "value": "php",
-      "categoryId": 1
-    },
-    {
-      "id": 7,
-      "label": "Python",
-      "value": "python",
-      "categoryId": 1
-    },
-    {
-      "id": 8,
-      "label": "React Native",
-      "value": "react-native",
-      "categoryId": 2
-    },
-    {
-      "id": 9,
-      "label": "Flutter",
-      "value": "flutter",
-      "categoryId": 2
-    },
-    {
-      "id": 10,
-      "label": "Swift",
-      "value": "swift",
-      "categoryId": 2
-    },
-    {
-      "id": 11,
-      "label": "Kotlin",
-      "value": "kotlin",
-      "categoryId": 2
-    },
-    {
-      "id": 12,
-      "label": "UI Design",
-      "value": "ui-design",
-      "categoryId": 3
-    },
-    {
-      "id": 13,
-      "label": "UX Design",
-      "value": "ux-design",
-      "categoryId": 3
-    },
-    {
-      "id": 14,
-      "label": "Figma",
-      "value": "figma",
-      "categoryId": 3
-    },
-    {
-      "id": 15,
-      "label": "Adobe XD",
-      "value": "adobe-xd",
-      "categoryId": 3
-    },
-    {
-      "id": 16,
-      "label": "Photoshop",
-      "value": "photoshop",
-      "categoryId": 4
-    },
-    {
-      "id": 17,
-      "label": "Illustrator",
-      "value": "illustrator",
-      "categoryId": 4
-    },
-    {
-      "id": 18,
-      "label": "Content Writing",
-      "value": "content-writing",
-      "categoryId": 5
-    },
-    {
-      "id": 19,
-      "label": "Copywriting",
-      "value": "copywriting",
-      "categoryId": 5
-    },
-    {
-      "id": 20,
-      "label": "Translation",
-      "value": "translation",
-      "categoryId": 5
-    }
-  ],
-  "experienceLevels": [
-    {
-      "id": 1,
-      "label": "Entry Level",
-      "value": "entry",
-      "description": "Looking for someone relatively new to this field"
-    },
-    {
-      "id": 2,
-      "label": "Intermediate",
-      "value": "intermediate",
-      "description": "Looking for substantial experience in this field"
-    },
-    {
-      "id": 3,
-      "label": "Expert",
-      "value": "expert",
-      "description": "Looking for comprehensive and deep expertise in this field"
-    }
-  ],
-  "projectDurations": [
-    {
-      "id": 1,
-      "label": "Less than 1 week",
-      "value": "less-than-1-week"
-    },
-    {
-      "id": 2,
-      "label": "1-2 weeks",
-      "value": "1-2-weeks"
-    },
-    {
-      "id": 3,
-      "label": "2-4 weeks",
-      "value": "2-4-weeks"
-    },
-    {
-      "id": 4,
-      "label": "1-3 months",
-      "value": "1-3-months"
-    },
-    {
-      "id": 5,
-      "label": "3-6 months",
-      "value": "3-6-months"
-    },
-    {
-      "id": 6,
-      "label": "More than 6 months",
-      "value": "more-than-6-months"
-    }
-  ],
-  "projectTypes": [
-    {
-      "id": 1,
-      "label": "One-time project",
-      "value": "one-time"
-    },
-    {
-      "id": 2,
-      "label": "Ongoing project",
-      "value": "ongoing"
-    },
-    {
-      "id": 3,
-      "label": "Complex project",
-      "value": "complex"
+      "comment": "Great communication and professional work. Would hire again.",
+      "createdAt": "2025-02-10T12:00:00Z",
+      "isDeleted": false,
+      "status": "active"
     }
   ]
 }

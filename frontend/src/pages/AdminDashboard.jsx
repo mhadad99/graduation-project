@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchServices, updateService } from '../redux/slices/serviceSlice';
 import { fetchUsers } from '../redux/slices/userSlice';
-import api from '../api/axiosConfig';
 import { FiCheck, FiX, FiEye, FiEdit } from 'react-icons/fi';
 
 const AdminDashboard = () => {

@@ -1,15 +1,14 @@
 /** @format */
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../api/axiosConfig";
 
 // Async thunks for service operations
 export const fetchServices = createAsyncThunk(
   "service/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/services");
-      return response.data;
+      const response = await fetch("/services");
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to fetch services" }
@@ -22,8 +21,8 @@ export const fetchServiceById = createAsyncThunk(
   "service/fetchById",
   async (serviceId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/services/${serviceId}`);
-      return response.data;
+      const response = await fetch(`/services/${serviceId}`);
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to fetch service" }
@@ -36,8 +35,12 @@ export const createService = createAsyncThunk(
   "service/create",
   async (serviceData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/services", serviceData);
-      return response.data;
+      const response = await fetch("/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(serviceData),
+      });
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to create service" }
@@ -48,36 +51,17 @@ export const createService = createAsyncThunk(
 
 export const updateService = createAsyncThunk(
   "service/updateService",
-  async (payload, { rejectWithValue, getState }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      try {
-        // Try to update with the real API first
-        const response = await api.put(`/services/${payload.id}`, payload);
-        if (process.env.NODE_ENV === 'development') {
-          console.info('Service updated successfully');
-        }
-        return response.data;
-      } catch (apiError) {
-        if (process.env.NODE_ENV === 'development') {
-          console.info('API update failed, using mock update. Offline mode active.');
-        }
-        
-        // If API fails, update locally using the current state
-        const { services } = getState().service;
-        const serviceToUpdate = services.find(service => service.id === payload.id);
-        
-        if (!serviceToUpdate) {
-          throw new Error(`Service with ID ${payload.id} not found`);
-        }
-        
-        // Create updated service by merging current service with updates
-        const mockUpdatedService = { ...serviceToUpdate, ...payload };
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.info('Service updated successfully (offline mode)');
-        }
-        return mockUpdatedService;
+      const response = await fetch(`/services/${payload.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (process.env.NODE_ENV === 'development') {
+        console.info('Service updated successfully');
       }
+      return response.json();
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.info('Error updating service:', error.message || 'Unknown error');
@@ -89,24 +73,13 @@ export const updateService = createAsyncThunk(
 
 export const deleteService = createAsyncThunk(
   "service/delete",
-  async (serviceId, { rejectWithValue, getState }) => {
+  async (serviceId, { rejectWithValue }) => {
     try {
-      try {
-        // Try to delete with the real API first
-        await api.delete(`/services/${serviceId}`);
-        if (process.env.NODE_ENV === 'development') {
-          console.info('Service deleted successfully');
-        }
-        return serviceId;
-      } catch (apiError) {
-        if (process.env.NODE_ENV === 'development') {
-          console.info('API delete failed, using mock delete. Offline mode active.');
-        }
-        
-        // If API fails, just return the ID to simulate successful deletion
-        // The reducer will handle removing it from the state
-        return serviceId;
+      await fetch(`/services/${serviceId}`, { method: "DELETE" });
+      if (process.env.NODE_ENV === 'development') {
+        console.info('Service deleted successfully');
       }
+      return serviceId;
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.info('Error deleting service:', error.message || 'Unknown error');
@@ -120,8 +93,12 @@ export const submitProposal = createAsyncThunk(
   "service/submitProposal",
   async (proposalData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/proposals", proposalData);
-      return response.data;
+      const response = await fetch("/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(proposalData),
+      });
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to submit proposal" }
@@ -134,8 +111,12 @@ export const createProposal = createAsyncThunk(
   "service/createProposal",
   async (proposalData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/proposals", proposalData);
-      return response.data;
+      const response = await fetch("/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(proposalData),
+      });
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to create proposal" }
@@ -149,8 +130,9 @@ export const fetchUserServices = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       // Get all services and filter by userId
-      const response = await api.get("/services");
-      return response.data.filter(
+      const response = await fetch("/services");
+      const services = await response.json();
+      return services.filter(
         (service) => service.userId === parseInt(userId)
       );
     } catch (error) {
@@ -165,8 +147,8 @@ export const fetchProposals = createAsyncThunk(
   "service/fetchProposals",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/users/${userId}/proposals`);
-      return response.data;
+      const response = await fetch(`/users/${userId}/proposals`);
+      return response.json();
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to fetch proposals" }

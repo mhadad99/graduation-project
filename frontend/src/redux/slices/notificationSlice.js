@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api/axiosConfig';
 
 // Async thunks for notification operations
 export const fetchNotifications = createAsyncThunk(
@@ -11,8 +10,8 @@ export const fetchNotifications = createAsyncThunk(
       // to simulate notifications
       
       // Fetch unread messages
-      const messagesResponse = await api.get('/messages');
-      const messages = messagesResponse.data || [];
+      const messagesResponse = await fetch('/messages');
+      const messages = await messagesResponse.json() || [];
       
       // Filter messages where the user is the receiver and the message is unread
       const unreadMessages = messages.filter(
@@ -20,8 +19,8 @@ export const fetchNotifications = createAsyncThunk(
       );
       
       // Fetch proposals (for freelancers)
-      const proposalsResponse = await api.get('/proposals');
-      const proposals = proposalsResponse.data || [];
+      const proposalsResponse = await fetch('/proposals');
+      const proposals = await proposalsResponse.json() || [];
       
       // Filter proposals relevant to the user
       const userProposals = proposals.filter(
@@ -57,7 +56,7 @@ export const fetchNotifications = createAsyncThunk(
       
       return notifications;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch notifications' });
+      return rejectWithValue({ message: 'Failed to fetch notifications' });
     }
   }
 );
@@ -69,17 +68,17 @@ export const markNotificationAsRead = createAsyncThunk(
       // For message notifications, update the message read status
       if (notificationId.startsWith('msg-')) {
         const messageId = notificationId.replace('msg-', '');
-        const messageResponse = await api.get(`/messages/${messageId}`);
-        const message = messageResponse.data;
+        const messageResponse = await fetch(`/messages/${messageId}`);
+        const message = await messageResponse.json();
         
         if (message) {
-          await api.patch(`/messages/${messageId}`, { read: true });
+          await fetch(`/messages/${messageId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ read: true }) });
         }
       }
       
       return notificationId;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to mark notification as read' });
+      return rejectWithValue({ message: 'Failed to mark notification as read' });
     }
   }
 );

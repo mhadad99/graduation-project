@@ -3,8 +3,7 @@ import { Container, Row, Col, Form, Button, Card, Badge, Alert, Spinner } from '
 import { FiUpload, FiDollarSign, FiTag, FiList, FiX, FiImage, FiInfo, FiYoutube } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createService, fetchServiceById, updateService } from '../redux/slices/serviceSlice';
-import api from '../api/axiosConfig';
+import { createService, fetchServiceById, updateService, fetchServices } from '../redux/slices/serviceSlice';
 import '../styles/CreateService.css';
 
 const CreateService = () => {
@@ -44,31 +43,28 @@ const CreateService = () => {
   const [youtubeVideoId, setYoutubeVideoId] = useState('');
   const [youtubeError, setYoutubeError] = useState('');
   
-  // State for categories from API
+  // State for categories from services
   const [categories, setCategories] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   
+  useEffect(() => {
+    // Derive unique categories from loaded services
+    if (services && services.length > 0) {
+      const uniqueCategories = [...new Set(services.map(s => s.category).filter(Boolean))];
+      setCategories(uniqueCategories.map(cat => ({ name: cat, value: cat, id: cat })));
+    } else {
+      // Optionally fetch all services if not loaded
+      dispatch(fetchServices());
+      setCategories([]);
+    }
+  }, [services, dispatch]);
+
   // Redirect if not authenticated or not a freelancer
   useEffect(() => {
     if (!isAuthenticated || (currentUser && currentUser.role !== 'freelancer')) {
       navigate('/login');
     }
   }, [isAuthenticated, currentUser, navigate]);
-  
-  // Fetch categories from server
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get('/categories');
-        const categoryLabels = response.data.map(category => category.label);
-        setCategories(categoryLabels);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    
-    fetchCategories();
-  }, []);
   
   // Fetch service data if editing
   useEffect(() => {
@@ -371,7 +367,7 @@ const CreateService = () => {
                     >
                       <option value="">Select a category</option>
                       {categories.map((category, index) => (
-                        <option key={index} value={category}>{category}</option>
+                        <option key={index} value={category.name}>{category.name}</option>
                       ))}
                     </Form.Select>
                     <Form.Control.Feedback type="invalid">
