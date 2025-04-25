@@ -6,7 +6,7 @@ import { store } from "./redux/store"; // adjust path if needed
 import { MainLayout } from "./layout/MainLayout";
 import "./styles/designSystem.css";
 import './styles/theme.css';
-
+// import './styles/components/ReviewsTab.css';
 
 // Initialize theme from localStorage
 const savedTheme = localStorage.getItem('theme') || 'light';

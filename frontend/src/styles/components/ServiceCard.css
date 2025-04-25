@@ -1,0 +1,30 @@
+.service-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card .card-img-top {
+    border-top-left-radius: var(--bs-card-border-radius);
+    border-top-right-radius: var(--bs-card-border-radius);
+}
+
+.service-card .card-body {
+    padding: 1.5rem;
+}
+
+.service-card .card-title {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.service-card .text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+.service-card .badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
