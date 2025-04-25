@@ -1,5 +1,5 @@
 /** @format */
-
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
@@ -21,10 +21,16 @@ import {
   FaBell,
   FaTruck,
   FaBars,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import "../styles/header.css"; // Import your CSS file
 
 export const Header = ({ isLoggedIn = false }) => {
+  // Redux state for theme management
+  const { theme } = useSelector(state => state.theme);
+  const dispatch = useDispatch();
+
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
     categories: false,
@@ -249,6 +255,12 @@ export const Header = ({ isLoggedIn = false }) => {
     ) : null;
   };
 
+
+    // Toggle theme function
+    const handleToggleTheme = () => {
+      dispatch({ type: 'theme/toggleTheme' });
+    };
+
   return (
     <header className="header-component">
       <Navbar bg="dark" variant="dark" expand="lg" className="py-2">
@@ -299,6 +311,18 @@ export const Header = ({ isLoggedIn = false }) => {
             id="basic-navbar-nav"
             className="justify-content-end">
             <Nav className="align-items-center nav-icons-container">
+                  {/* Theme Toggle Button */}
+                <div className="me-3">
+                <button
+                  className="theme-toggle-btn"
+                  onClick={handleToggleTheme}
+                  aria-label="Toggle theme"
+                  title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                >
+                  {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={18} />}
+                </button>
+              </div>
+
               {/* Search Button */}
               <div ref={refs.search} className="position-relative icon-wrapper">
                 <Nav.Link
