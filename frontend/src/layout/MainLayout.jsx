@@ -15,6 +15,7 @@ import About from "../pages/About";
 import LoginPage from "../pages/Login";
 import Settings from "../pages/Setting";
 import Chat from "../pages/Chat";
+import ServicesPage from "../pages/ServicesPage";
 
 
 export function MainLayout() {
@@ -36,6 +37,7 @@ export function MainLayout() {
         <Route path="/settings" element={<Settings />} />
         <Route path="chat" element={<Chat />} />
         <Route path="chat/:conversationId" element={<Chat />} />
+        <Route path="services" element={<ServicesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

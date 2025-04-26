@@ -1,11 +1,11 @@
-/** @format */
-
 import React from "react";
 import { Card, Button, Badge } from "react-bootstrap";
 import { Star, Clock, CheckCircle } from "react-bootstrap-icons";
-
+import { Link } from "react-router-dom";
+import "../../styles/components/ServiceCard.css"; // Adjust the path as necessary
 const ServiceCard = ({ service, isOwner }) => {
   const {
+    id,
     title,
     description,
     price,
@@ -17,51 +17,65 @@ const ServiceCard = ({ service, isOwner }) => {
   } = service;
 
   return (
-    <Card className="service-card h-100 border-0 shadow-sm">
-      <Card.Img
-        variant="top"
-        src={image}
-        alt={title}
-        style={{ height: "200px", objectFit: "cover" }}
-      />
-      <Card.Body>
-        <div className="d-flex justify-content-between align-items-start mb-2">
-          <Card.Title className="h5 mb-0">{title}</Card.Title>
-          {status !== "active" && (
-            <Badge bg={status === "pending" ? "warning" : "danger"}>
-              {status}
-            </Badge>
-          )}
-        </div>
-        <Card.Text className="text-muted mb-3">
+    <Card className="service-card h-100 border-0">
+      <div className="service-card-image-wrapper">
+        <Card.Img
+          variant="top"
+          src={image}
+          alt={title}
+          className="service-image"
+        />
+        {status !== "active" && (
+          <Badge 
+            bg={status === "pending" ? "warning" : "danger"}
+            className="status-badge"
+          >
+            {status}
+          </Badge>
+        )}
+      </div>
+      <Card.Body className="d-flex flex-column">
+        <Card.Title className="service-title mb-2">{title}</Card.Title>
+        <Card.Text className="service-description mb-3">
           {description.length > 100
             ? `${description.substring(0, 100)}...`
             : description}
         </Card.Text>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div className="d-flex align-items-center">
-            <Star className="text-warning me-1" />
-            <span>{rating}</span>
-            <span className="text-muted ms-1">({reviewCount})</span>
+        <div className="service-meta mb-3">
+          <div className="rating">
+            <Star className="star-icon" />
+            <span className="rating-value">{rating}</span>
+            <span className="review-count">({reviewCount})</span>
           </div>
-          <div className="d-flex align-items-center">
-            <Clock className="text-muted me-1" />
-            <span className="text-muted">{deliveryTime}</span>
+          <div className="delivery-time">
+            <Clock className="clock-icon" />
+            <span>{deliveryTime}</span>
           </div>
         </div>
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="h5 mb-0">
-            Starting at <span className="text-primary">${price}</span>
+        <div className="service-footer mt-auto">
+          <div className="price">
+            <span className="price-label">Starting at:</span>
+            <span className="price-value">${price}</span>
           </div>
           {isOwner ? (
-            <Button variant="outline-primary" size="sm">
-              Edit Service
-            </Button>
-          ) : (
-            <Button variant="primary" size="sm">
-              View Details
-            </Button>
-          )}
+          <Button 
+            variant="outline-primary" 
+            as={Link}
+            to={`/services/${id}/edit`}
+            className="service-action-btn"
+          >
+            Edit Service
+          </Button>
+        ) : (
+          <Button 
+            variant="primary" 
+            as={Link}
+            to={`/services/${id}`}
+            className="service-action-btn"
+          >
+            View Details
+          </Button>
+        )}
         </div>
       </Card.Body>
     </Card>
