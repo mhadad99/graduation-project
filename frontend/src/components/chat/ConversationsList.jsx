@@ -1,5 +1,3 @@
-/** @format */
-
 import React from "react";
 import { ListGroup, Badge } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";

@@ -20,7 +20,7 @@ const ChatHeader = ({ participant }) => (
           <span className="position-absolute bottom-0 end-0 bg-success rounded-circle p-1 border border-white"></span>
         </div>
         <div>
-          <h6 className="mb-0 fw-bold">{participant.name}</h6>
+          <h6 className="mb-0 chat-header-title">{participant.name}</h6>
           <small className="text-success">Online</small>
         </div>
       </div>

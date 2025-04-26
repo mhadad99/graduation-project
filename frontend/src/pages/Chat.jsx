@@ -80,15 +80,27 @@ const Chat = () => {
     }
   }, [conversationId, conversations.length]); // Reduced dependencies
 
-  // Fix 3: Scroll to bottom only when messages change
+  // Update the scroll effect
   useEffect(() => {
-    if (messages.length) {
-      scrollToBottom();
-    }
-  }, [messages.length]); // Only depend on messages length
+    if (messages.length && currentConversation) {
+      // Only scroll if new message is added
+      const lastMessage = messages[messages.length - 1];
+      const isNewMessage = lastMessage.senderId === currentUser.id;
 
+      if (isNewMessage) {
+        scrollToBottom();
+      }
+    }
+  }, [messages.length, currentConversation]);
+
+  // Update the scroll function to be smoother
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
   };
 
   const handleSendMessage = (e) => {
@@ -244,7 +256,7 @@ const Chat = () => {
                                     {formatTime(conversation.lastMessageTime)}
                                   </small>
                                 </div>
-                                <p className="mb-0 text-truncate small">
+                                <p className="mb-0 text-truncate small last-message">
                                   {conversation.lastMessage}
                                 </p>
                               </div>
@@ -276,8 +288,12 @@ const Chat = () => {
                     />
                     <div className="chat-messages">
                       <div
-                        className="p-3"
-                        style={{ height: "60vh", overflowY: "auto" }}>
+                        className="messages-container p-3"
+                        style={{
+                          height: "calc(100vh - 240px)",
+                          overflowY: "auto",
+                          overflowX: "hidden",
+                        }}>
                         {loading ? (
                           <div className="text-center py-5">
                             <div
