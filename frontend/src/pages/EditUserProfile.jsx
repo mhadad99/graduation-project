@@ -47,58 +47,114 @@ const ProfileEditForm = ({ user, onSave }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>First Name:</label>
-                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
-            </div>
+        <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
+  <div className="mb-3">
+    <label className="form-label">First Name:</label>
+    <input
+      type="text"
+      name="firstName"
+      className="form-control"
+      value={formData.firstName}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Last Name:</label>
-                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Last Name:</label>
+    <input
+      type="text"
+      name="lastName"
+      className="form-control"
+      value={formData.lastName}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Country:</label>
-                <input type="text" name="country" value={formData.country} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Country:</label>
+    <input
+      type="text"
+      name="country"
+      className="form-control"
+      value={formData.country}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Language:</label>
-                <input type="text" name="language" value={formData.language} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Language:</label>
+    <input
+      type="text"
+      name="language"
+      className="form-control"
+      value={formData.language}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Sex:</label>
-                <select name="sex" value={formData.sex} onChange={handleChange}>
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Sex:</label>
+    <select
+      name="sex"
+      className="form-select"
+      value={formData.sex}
+      onChange={handleChange}
+    >
+      <option value="">Select</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
 
-            <div>
-                <label>Birth Date:</label>
-                <input type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Birth Date:</label>
+    <input
+      type="date"
+      name="birthDate"
+      className="form-control"
+      value={formData.birthDate}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Phone Number:</label>
-                <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Phone Number:</label>
+    <input
+      type="text"
+      name="phoneNumber"
+      className="form-control"
+      value={formData.phoneNumber}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>New Password:</label>
-                <input type="password" name="password" value={formData.password} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">New Password:</label>
+    <input
+      type="password"
+      name="password"
+      className="form-control"
+      value={formData.password}
+      onChange={handleChange}
+    />
+  </div>
 
-            <div>
-                <label>Confirm Password:</label>
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">Confirm Password:</label>
+    <input
+      type="password"
+      name="confirmPassword"
+      className="form-control"
+      value={formData.confirmPassword}
+      onChange={handleChange}
+    />
+  </div>
 
-            <button type="submit">Save Changes</button>
-        </form>
+  <button type="submit" className="btn btn-primary w-100">
+    Save Changes
+  </button>
+</form>
+
     );
 };
 
