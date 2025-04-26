@@ -26,6 +26,7 @@ import {
 } from "react-icons/fa";
 import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
+import { NavLink } from "react-router-dom";
 
 export const Header = ({ isLoggedIn = false }) => {
   // Redux state for theme management
@@ -81,29 +82,29 @@ export const Header = ({ isLoggedIn = false }) => {
   });
 
   // Sample data for messages and notifications
-  const messages = [
-    {
-      id: 1,
-      sender: "John Doe",
-      content: "Hi, I'm interested in your service",
-      time: "2 hours ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      sender: "Jane Smith",
-      content: "Thanks for your quick response",
-      time: "Yesterday",
-      unread: false,
-    },
-    {
-      id: 3,
-      sender: "Mike Johnson",
-      content: "When can we schedule a call?",
-      time: "2 days ago",
-      unread: true,
-    },
-  ];
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     sender: "John Doe",
+  //     content: "Hi, I'm interested in your service",
+  //     time: "2 hours ago",
+  //     unread: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     sender: "Jane Smith",
+  //     content: "Thanks for your quick response",
+  //     time: "Yesterday",
+  //     unread: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     sender: "Mike Johnson",
+  //     content: "When can we schedule a call?",
+  //     time: "2 days ago",
+  //     unread: true,
+  //   },
+  // ];
 
   const notifications = [
     {
@@ -270,7 +271,7 @@ export const Header = ({ isLoggedIn = false }) => {
             {/* Logo */}
             <Navbar.Brand href="/" className="me-4">
               <img
-                src="/logo/logo3.png"
+                src="/logo/Tanfeez.png"
                 alt="Logo"
                 height="60"
                 className="d-inline-block align-top"
@@ -449,15 +450,16 @@ export const Header = ({ isLoggedIn = false }) => {
                   <div
                     ref={refs.messages}
                     className="position-relative icon-wrapper">
-                    <Nav.Link
-                      onClick={() => toggleDropdown("messages")}
+                    <NavLink
+                      // onClick={() => toggleDropdown("messages")}
                       className="nav-icon"
-                      aria-label="Messages">
+                      aria-label="Messages"
+                      to={isLoggedIn ? "/chat" : "/chat"}
+                      >
                       <FaEnvelope />
-                      {renderBadge(messages)}
-                    </Nav.Link>
-
-                    <Overlay
+                      {/* {renderBadge(messages)} */}
+                    </NavLink>
+                    {/* <Overlay
                       show={dropdowns.messages}
                       target={refs.messages.current}
                       placement="bottom-end"
@@ -509,7 +511,7 @@ export const Header = ({ isLoggedIn = false }) => {
                           )}
                         </Popover.Body>
                       </Popover>
-                    </Overlay>
+                    </Overlay> */}
                   </div>
 
                   {/* Incoming Requests - Hide on smaller screens */}
