@@ -1,5 +1,5 @@
 /** @format */
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
@@ -24,11 +24,12 @@ import {
   FaMoon,
   FaSun,
 } from "react-icons/fa";
+import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
 
 export const Header = ({ isLoggedIn = false }) => {
   // Redux state for theme management
-  const { theme } = useSelector(state => state.theme);
+  const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
 
   // State for managing dropdowns with consolidated naming convention
@@ -255,11 +256,10 @@ export const Header = ({ isLoggedIn = false }) => {
     ) : null;
   };
 
-
-    // Toggle theme function
-    const handleToggleTheme = () => {
-      dispatch({ type: 'theme/toggleTheme' });
-    };
+  // Toggle theme function
+  const handleToggleTheme = () => {
+    dispatch({ type: "theme/toggleTheme" });
+  };
 
   return (
     <header className="header-component">
@@ -311,15 +311,22 @@ export const Header = ({ isLoggedIn = false }) => {
             id="basic-navbar-nav"
             className="justify-content-end">
             <Nav className="align-items-center nav-icons-container">
-                  {/* Theme Toggle Button */}
-                <div className="me-3">
+              {/* Theme Toggle Button */}
+              <div className="me-3">
                 <button
                   className="theme-toggle-btn"
                   onClick={handleToggleTheme}
                   aria-label="Toggle theme"
-                  title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-                >
-                  {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={18} />}
+                  title={
+                    theme === "light"
+                      ? "Switch to dark mode"
+                      : "Switch to light mode"
+                  }>
+                  {theme === "light" ? (
+                    <FaMoon size={18} />
+                  ) : (
+                    <FaSun size={18} />
+                  )}
                 </button>
               </div>
 
@@ -387,7 +394,7 @@ export const Header = ({ isLoggedIn = false }) => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex justify-content-between align-items-center popup-header">
                           <span>Notifications</span>
-                          
+
                           <Button
                             variant="link"
                             size="sm"
@@ -564,7 +571,7 @@ export const Header = ({ isLoggedIn = false }) => {
                             {profileMenuOptions.map((option, idx) => (
                               <Nav.Link
                                 key={idx}
-                                href={`#${option.text
+                                href={`/${option.text
                                   .toLowerCase()
                                   .replace(/ /g, "-")}`}
                                 className="px-3 py-2 text-dark menu-item">
@@ -625,6 +632,22 @@ export const Header = ({ isLoggedIn = false }) => {
                 </Overlay>
               </div>
             </Nav>
+            {isLoggedIn && (
+              <Nav className="ms-auto">
+                <Nav.Link
+                  as={Link}
+                  to="/chat"
+                  className="d-flex align-items-center">
+                  <ChatDots size={20} className="me-2" />
+                  Messages
+                  {unreadMessages > 0 && (
+                    <Badge bg="danger" className="ms-2 rounded-circle">
+                      {unreadMessages}
+                    </Badge>
+                  )}
+                </Nav.Link>
+              </Nav>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>

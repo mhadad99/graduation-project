@@ -1,0 +1,26 @@
+.settings-nav .nav-link {
+    color: var(--color-text);
+    padding: 1rem 1.5rem;
+}
+
+.settings-nav .nav-link.active {
+    background-color: var(--primary-50);
+    color: var(--primary-600);
+}
+
+.settings-card {
+    transition: box-shadow 0.3s ease;
+}
+
+.settings-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
+}
+
+.settings-tab-content {
+    min-height: 400px;
+}

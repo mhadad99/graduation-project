@@ -13,6 +13,8 @@ import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
 import UserProfile from "../pages/UserProfile";
 import About from "../pages/About";
 import LoginPage from "../pages/Login";
+import Settings from "../pages/Setting";
+import Chat from "../pages/Chat";
 
 
 export function MainLayout() {
@@ -31,7 +33,9 @@ export function MainLayout() {
           <Route path="profile/:id" element={<UserProfile/>} />
           <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
           <Route path="/about" element={<About />} />
-
+        <Route path="/settings" element={<Settings />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="chat/:conversationId" element={<Chat />} />
         </Route>
       </Routes>
     </BrowserRouter>
