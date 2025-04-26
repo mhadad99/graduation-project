@@ -31,8 +31,8 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
         <Card.Body className="p-4">
           <Row className="align-items-center">
             <Col md={6} className="text-center text-md-start">
-              <h2 className="mb-0">{averageRating}</h2>
-              <div className="d-flex align-items-center justify-content-center justify-content-md-start">
+              <h2 className="mb-0 text-muted">{averageRating}</h2>
+              <div className="d-flex align-items-center justify-content-center justify-content-md-start ">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarFill
                     key={star}
@@ -62,15 +62,15 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
         </Card.Body>
       </Card>
 
-      {/* Reviews List */}
-      <div className="reviews-list mb-4">
+      {/* Reviews List */} 
+      <div className="reviews-list mb-4 ">
         {reviews.map((review) => (
-          <Card key={review.id} className="border-0 shadow-sm mb-3">
+          <Card key={review.id} className="border-0 shadow-sm mb-3 ">
             <Card.Body className="p-4">
               <div className="d-flex align-items-center mb-3">
                 <PersonCircle size={40} className="text-secondary me-3" />
                 <div>
-                  <h6 className="mb-0">{review.author}</h6>
+                  <h6 className="mb-0 fw-semibold text-muted">{review.author}</h6>
                   <div className="d-flex align-items-center">
                     {[...Array(5)].map((_, index) => (
                       <StarFill
@@ -103,7 +103,7 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
       {!isMyProfile && (
         <Card id="reviewForm" className="border-0 shadow-sm">
           <Card.Body className="p-4">
-            <h5 className="mb-4">Write a Review</h5>
+            <h5 className="mb-4 text-muted">Write a Review</h5>
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3">
                 <div className="d-flex align-items-center mb-2">

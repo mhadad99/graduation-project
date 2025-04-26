@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState } from "react";
 import {
   Row,
@@ -34,7 +32,7 @@ import {
   X,
   Briefcase,
 } from "react-bootstrap-icons";
-import "../../styles/UserProfile.css";
+import "../../styles/components/AboutTab.css";
 
 const AboutTab = ({ profileData, isMyProfile }) => {
   // Add qualities array
@@ -71,7 +69,7 @@ const AboutTab = ({ profileData, isMyProfile }) => {
     education = [],
     completionRate = 80, // Ensure completionRate has a default value
     publishedServices = 0,
-    averageRating =4, // Ensure averageRating has a default value
+    averageRating = 4, // Ensure averageRating has a default value
     joinDate = "Not available",
     lastSeen = "Not available",
     socialMedia = {},
@@ -174,7 +172,9 @@ const AboutTab = ({ profileData, isMyProfile }) => {
               <Col xs={4}>
                 <div className="stat-circle">
                   <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h3 className="mb-0 fw-bold">{isNaN(completionRate) ? "0%" : `${completionRate}%`}</h3>
+                    <h3 className="mb-0 fw-bold text-primary">
+                      {isNaN(completionRate) ? "0%" : `${completionRate}%`}
+                    </h3>
                   </div>
                 </div>
                 <p className="mb-0 mt-2 fw-medium">Completion</p>
@@ -182,7 +182,9 @@ const AboutTab = ({ profileData, isMyProfile }) => {
               <Col xs={4}>
                 <div className="stat-circle">
                   <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h3 className="mb-0 fw-bold">{publishedServices}</h3>
+                    <h3 className="mb-0 fw-bold text-primary">
+                      {publishedServices}
+                    </h3>
                   </div>
                 </div>
                 <p className="mb-0 mt-2 fw-medium">Services</p>
@@ -191,8 +193,10 @@ const AboutTab = ({ profileData, isMyProfile }) => {
                 <div className="stat-circle">
                   <div className="d-flex flex-column align-items-center justify-content-center">
                     <div className="d-flex align-items-center">
-                      <h3 className="mb-0 fw-bold">{averageRating}</h3>
-                      <StarFill size={16} className="ms-1 text-warning" />
+                      <h3 className="mb-0 fw-bold text-primary">
+                        {averageRating}
+                      </h3>
+                      {/* <StarFill size={16} className="ms-1 text-warning" /> */}
                     </div>
                   </div>
                 </div>
@@ -200,8 +204,8 @@ const AboutTab = ({ profileData, isMyProfile }) => {
               </Col>
             </Row>
             <h5 className="section-title">Contact Info</h5>
-            <ListGroup variant="flush" className="mb-4">
-              <ListGroup.Item className="px-0 py-3 d-flex justify-content-between align-items-center border-bottom">
+            <ListGroup variant="flush" className="mb-4 ">
+              <ListGroup.Item className="px-0 py-3 d-flex justify-content-between align-items-center border-bottom ">
                 <div className="d-flex align-items-center">
                   <div className="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
                     <Phone size={18} className="text-primary" />
@@ -232,8 +236,8 @@ const AboutTab = ({ profileData, isMyProfile }) => {
 
             <h5 className="section-title">Verifications</h5>
             <ListGroup variant="flush">
-              <ListGroup.Item className="px-0 py-3 d-flex align-items-center justify-content-between border-bottom">
-                <div className="d-flex align-items-center">
+              <ListGroup.Item className="px-0 py-3 d-flex align-items-center justify-content-between border-bottom list-group-item">
+                <div className="d-flex align-items-center ">
                   <div className="rounded-circle bg-success bg-opacity-10 p-2 me-3">
                     <Phone size={18} className="text-success" />
                   </div>

@@ -8,7 +8,6 @@ import { MainLayout } from "./layout/MainLayout";
 import "./styles/designSystem.css"; // Core design tokens
 import "./styles/theme.css"; // Theme variables
 import "./styles/components/Chat.css"; // Component styles
-// import './styles/components/ReviewsTab.css';
 
 // Initialize theme from localStorage
 const savedTheme = localStorage.getItem("theme") || "light";

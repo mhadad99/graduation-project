@@ -1,5 +1,6 @@
 .reviews-tab {
     padding: 1rem 0;
+    color: var(--color-text);
 }
 
 .reviews-tab .card {
@@ -32,4 +33,101 @@
 
 .reviews-tab .star-rating-input:hover {
     transform: scale(1.1);
+}
+
+.review-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border) !important;
+}
+
+.review-author {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.star-rating {
+    color: var(--warning-500);
+}
+
+.review-date {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.review-text {
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.review-summary-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border) !important;
+}
+
+.review-summary-rating {
+    color: var(--color-text);
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.review-count {
+    color: var(--color-text-muted);
+}
+
+.star-rating.inactive {
+    color: var(--color-text-muted);
+}
+
+.empty-reviews {
+    color: var(--color-text-muted);
+}
+
+.review-form-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border) !important;
+}
+
+.review-form-title {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.form-control {
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.form-control:focus {
+    background: var(--color-input-bg);
+    border-color: var(--primary-400);
+    color: var(--color-text);
+    box-shadow: 0 0 0 0.2rem var(--primary-100);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] {
+    .review-card {
+        background: var(--color-card-bg);
+        border-color: var(--color-border);
+    }
+    
+    .star-rating {
+        color: var(--warning-400);
+    }
+
+    .star-rating.inactive {
+        color: var(--color-text-muted);
+    }
+
+    .form-control {
+        background: var(--color-card-bg);
+        border-color: var(--color-border);
+    }
+
+    .form-control:focus {
+        background: var(--color-card-bg);
+        border-color: var(--primary-400);
+        box-shadow: 0 0 0 0.2rem var(--primary-900);
+    }
 }
