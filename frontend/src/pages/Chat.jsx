@@ -25,6 +25,10 @@ import {
 } from "react-bootstrap-icons";
 import { mockChatData } from "../mock/chatData";
 import "../styles/components/Chat.css";
+import DateDivider from "../components/chat/DateDivider";
+import Message from "../components/chat/Message";
+import ChatHeader from "../components/chat/ChatHeader";
+import EmojiPickerButton from "../components/chat/EmojiPickerButton";
 
 const Chat = () => {
   const { conversationId } = useParams();
@@ -152,14 +156,26 @@ const Chat = () => {
     );
   }, []);
 
+  const handleMessageChange = (e) => {
+    setMessageText(e.target.value);
+  };
+
+  const handleSelectConversation = (id) => {
+    navigate(`/chat/${id}`);
+  };
+
+  const handleEmojiClick = (emoji) => {
+    setMessageText((prev) => prev + emoji);
+  };
+
   return (
-    <div className="chat-container py-4">
-      <Container>
-        <Card className="chat-card border-0">
+    <div className="chat-page">
+      <Container fluid="xxl">
+        <Card className="chat-wrapper border-0">
           <Card.Body className="p-0">
-            <Row className="g-0">
-              {/* Conversations List Column */}
-              <Col md={4} className="border-end">
+            <Row className="g-0 h-100">
+              {/* Conversations Column */}
+              <Col md={4} className="border-end conversations-column">
                 <div className="chat-header">
                   <h5 className="mb-3 fw-bold text-primary">Messages</h5>
                   <InputGroup>
@@ -175,9 +191,7 @@ const Chat = () => {
                   </InputGroup>
                 </div>
 
-                <div
-                  className="conversations-list"
-                  style={{ height: "70vh", overflowY: "auto" }}>
+                <div className="conversations-list">
                   {loading && conversations.length === 0 ? (
                     <div className="text-center py-5">
                       <div
@@ -199,7 +213,7 @@ const Chat = () => {
                             action
                             active={isActive}
                             onClick={() =>
-                              navigate(`/chat/${conversation.id}`)
+                              handleSelectConversation(conversation.id)
                             }
                             className={`conversation-item px-3 py-3 border-bottom ${
                               isActive ? "bg-primary bg-opacity-10" : ""
@@ -254,57 +268,15 @@ const Chat = () => {
               </Col>
 
               {/* Messages Column */}
-              <Col md={8}>
+              <Col md={8} className="messages-column">
                 {currentConversation ? (
                   <>
-                    <div className="chat-header">
-                      <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
-                        {currentConversation && (
-                          <div className="d-flex align-items-center">
-                            <div className="position-relative me-3">
-                              {currentConversation && (
-                                <img
-                                  src={
-                                    getParticipantInfo(currentConversation)
-                                      .avatar
-                                  }
-                                  alt={
-                                    getParticipantInfo(currentConversation).name
-                                  }
-                                  className="rounded-circle"
-                                  width="48"
-                                  height="48"
-                                  style={{ objectFit: "cover" }}
-                                />
-                              )}
-                              <span className="position-absolute bottom-0 end-0 bg-success rounded-circle p-1 border border-white"></span>
-                            </div>
-                            <div>
-                              <h6 className="mb-0 fw-bold">
-                                {getParticipantInfo(currentConversation).name}
-                              </h6>
-                              <small className="text-success">Online</small>
-                            </div>
-                          </div>
-                        )}
-                        <div>
-                          <Button
-                            variant="light"
-                            className="rounded-circle p-2 me-2">
-                            <Search />
-                          </Button>
-                          <Button
-                            variant="light"
-                            className="rounded-circle p-2">
-                            <ThreeDots />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
+                    <ChatHeader
+                      participant={getParticipantInfo(currentConversation)}
+                    />
                     <div className="chat-messages">
                       <div
-                        className="chat-messages p-3"
+                        className="p-3"
                         style={{ height: "60vh", overflowY: "auto" }}>
                         {loading ? (
                           <div className="text-center py-5">
@@ -331,63 +303,18 @@ const Chat = () => {
                               return (
                                 <div key={message.id || message.tempId}>
                                   {showDate && (
-                                    <div className="text-center my-3">
-                                      <span className="badge bg-light text-dark px-3 py-2">
-                                        {formatDate(message.timestamp)}
-                                      </span>
-                                    </div>
+                                    <DateDivider
+                                      timestamp={message.timestamp}
+                                    />
                                   )}
-                                  <div
-                                    className={`d-flex ${
-                                      isSender
-                                        ? "justify-content-end"
-                                        : "justify-content-start"
-                                    } mb-3`}>
-                                    {!isSender && (
-                                      <img
-                                        src={
-                                          getParticipantInfo(
-                                            currentConversation
-                                          ).avatar
-                                        }
-                                        alt={
-                                          getParticipantInfo(
-                                            currentConversation
-                                          ).name
-                                        }
-                                        className="rounded-circle me-2 align-self-end"
-                                        width="32"
-                                        height="32"
-                                        style={{ objectFit: "cover" }}
-                                      />
+                                  <Message
+                                    message={message}
+                                    isSender={isSender}
+                                    participant={getParticipantInfo(
+                                      currentConversation
                                     )}
-                                    <div
-                                      className={`message ${
-                                        isSender
-                                          ? "message-sent"
-                                          : "message-received"
-                                      }`}
-                                      style={{ maxWidth: "75%" }}>
-                                      <div className="message-content">
-                                        {message.content}
-                                      </div>
-                                      <div
-                                        className={`message-meta d-flex align-items-center ${
-                                          isSender
-                                            ? "justify-content-end"
-                                            : "justify-content-start"
-                                        } mt-1`}>
-                                        <small className="text-muted me-2">
-                                          {formatTime(message.timestamp)}
-                                        </small>
-                                        {isSender && (
-                                          <small className="text-primary">
-                                            <CheckCircleFill size={12} />
-                                          </small>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
+                                    formatTime={formatTime}
+                                  />
                                 </div>
                               );
                             })}
@@ -403,7 +330,6 @@ const Chat = () => {
                         )}
                       </div>
                     </div>
-
                     <div className="chat-input">
                       <div className="p-3 border-top">
                         <Form onSubmit={handleSendMessage}>
@@ -415,17 +341,17 @@ const Chat = () => {
                               type="text"
                               placeholder="Type a message..."
                               value={messageText}
-                              onChange={(e) => setMessageText(e.target.value)}
+                              onChange={handleMessageChange}
                             />
-                            <Button variant="light" className="action-button">
-                              <EmojiSmile />
-                            </Button>
+                            <EmojiPickerButton
+                              onEmojiClick={handleEmojiClick}
+                            />
                             <Button
-                              variant="primary"
+                              variant="success"
                               type="submit"
-                              className="action-button text-light ms-1 "
+                              className="action-button ms-1"
                               disabled={!messageText.trim()}>
-                              <Send className="text-dark" />
+                              <Send size={20} className="text-white" />
                             </Button>
                           </InputGroup>
                         </Form>
@@ -433,7 +359,7 @@ const Chat = () => {
                     </div>
                   </>
                 ) : (
-                  <div className="d-flex flex-column justify-content-center align-items-center h-100 text-center p-5">
+                  <div className="empty-state">
                     <ChatDots size={64} className="text-muted mb-3" />
                     <h5>Select a conversation</h5>
                     <p className="text-muted">

@@ -2,11 +2,35 @@
 
 /* Light Theme (default) */
 :root {
-    /* Base colors */
-    --color-background: #f8fafc;
-    --color-text: #1e293b;
-    --color-text-muted: #64748b;
-    --color-border: #e2e8f0;
+    /* Semantic Colors */
+    --color-primary: var(--sapphire-500);
+    --color-secondary: var(--coral-400);
+
+    /* Background Colors */
+    --color-background: var(--neutral-50);
+    --color-card-bg: #ffffff;
+    --color-header-bg: var(--sapphire-600);
+    --color-footer-bg: var(--sapphire-700);
+
+    /* Text Colors */
+    --color-text: var(--neutral-900);
+    --color-text-muted: var(--neutral-500);
+    --color-text-inverse: #ffffff;
+
+    /* Border Colors */
+    --color-border: var(--neutral-200);
+
+    /* Input Colors */
+    --color-input-bg: #ffffff;
+    --color-input-border: var(--neutral-200);
+    --color-input-focus: var(--sapphire-400);
+    --color-input-text: var(--neutral-900);
+
+    /* Button Colors */
+    --color-btn-primary: var(--sapphire-500);
+    --color-btn-primary-hover: var(--sapphire-600);
+    --color-btn-secondary: var(--coral-400);
+    --color-btn-secondary-hover: var(--coral-500);
 
     /* Component colors */
     --color-card-bg: #ffffff;
@@ -31,62 +55,96 @@
     --success: #22c55e;
     --gray-100: #f1f5f9;
     --gray-200: #e2e8f0;
+
+    /* Chat Colors */
+    --chat-message-sent-bg: #0091ff;
+    --chat-message-sent-text: #ffffff;
+    --chat-message-received-bg: #f0f2f5;
+    --chat-message-received-text: #1c1e21;
+    --chat-time-text: #65676b;
+    --chat-meta-text: #65676b;
+    --chat-input-bg: #ffffff;
+    --chat-input-text: #1c1e21;
+    --chat-input-placeholder: #65676b;
+    --chat-action-btn-bg: #f0f2f5;
+    --chat-action-btn-text: #65676b;
+    --chat-action-btn-hover-bg: #e4e6eb;
+    --chat-item-hover-bg: rgba(0, 0, 0, 0.04);
+    --chat-item-active-bg: rgba(0, 145, 255, 0.1);
+
+    /* Chat Additional Colors */
+    --chat-messages-bg: var(--color-background);
+    --chat-scroll-thumb: var(--neutral-300);
+    --chat-scroll-track: transparent;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
-    /* Base colors */
+    /* Background Colors */
     --color-background: #0f172a;
-    --color-text: #f1f5f9;
-    --color-text-muted: #94a3b8;
+    --color-card-bg: #1e293b;
+    --color-header-bg: #1e293b;
+    --color-footer-bg: #0f172a;
+
+    /* Text Colors - Made Lighter for Better Readability */
+    --color-text: #f8fafc;
+    --color-text-muted: #cbd5e1;
+    --color-text-inverse: #f1f5f9;
+    --color-link: #38bdf8;
+    --color-link-hover: #7dd3fc;
+
+    /* Border Colors */
     --color-border: #334155;
 
-    /* Component colors */
+    /* Input Colors */
+    --color-input-bg: #1e293b;
+    --color-input-border: #334155;
+    --color-input-text: #f8fafc;
+    --color-input-placeholder: #64748b;
+
+    /* Button Colors */
+    --color-btn-primary: #0ea5e9;
+    --color-btn-primary-hover: #0284c7;
+    --color-btn-secondary: #f43f5e;
+    --color-btn-secondary-hover: #e11d48;
+
+    /* Component Colors */
     --color-card-bg: #1e293b;
-    --color-input-bg: #2A2A2A;
-    --color-dropdown-bg: #2A2A2A;
-    --color-dropdown-text: #F0F0F0;
-    --color-dropdown-hover: #3A3A3A;
+    --color-dropdown-bg: #1e293b;
+    --color-dropdown-text: #f8fafc;
+    --color-dropdown-hover: #334155;
 
-    /* Navbar */
-    --color-navbar-bg: #1A1A1A;
-    --color-navbar-text: #F0F0F0;
+    /* Chat Colors */
+    --chat-message-sent-bg: #0091ff;
+    --chat-message-sent-text: #ffffff;
+    --chat-message-received-bg: #3a3b3c;
+    --chat-message-received-text: #e4e6eb;
+    --chat-time-text: #b0b3b8;
+    --chat-meta-text: #b0b3b8;
+    --chat-input-bg: #3a3b3c;
+    --chat-input-text: #e4e6eb;
+    --chat-input-placeholder: #b0b3b8;
+    --chat-action-btn-bg: #4e4f50;
+    --chat-action-btn-text: #e4e6eb;
+    --chat-action-btn-hover-bg: #4e4f50;
+    --chat-item-hover-bg: rgba(255, 255, 255, 0.1);
+    --chat-item-active-bg: rgba(0, 145, 255, 0.15);
 
-    /* Override bootstrap and other component styles */
-    --bs-body-bg: #121212;
-    --bs-body-color: #F0F0F0;
+    /* Chat Additional Colors */
+    --chat-messages-bg: var(--color-card-bg);
+    --chat-scroll-thumb: var(--neutral-700);
+    --chat-scroll-track: transparent;
 
-    /* Override specific colors */
-    --color-sapphire: #4B92F6;
-    /* Brighter blue */
-    --color-coral: #FF8A94;
-    /* Brighter coral */
-    --color-breeze: #1A4D47;
-    /* Darker teal for dark mode */
-    --color-header-bg: #1A1A1A;
-    --color-header-text: #F0F0F0;
-    --color-footer-bg: #1A1A1A;
-    --color-footer-text: #F0F0F0;
+    /* Adjusted message colors for better contrast */
+    --chat-message-received-bg: #2d3748;
+    --chat-message-received-text: #f7fafc;
+    --chat-message-sent-bg: #0284c7;
+    --chat-input-bg: #2d3748;
 
-    /* Button colors */
-    --color-btn-primary: #4B92F6;
-    /* Brighter blue */
-    --color-btn-secondary: #FF8A94;
-    /* Brighter coral */
-    --color-btn-success: #42A57A;
-    /* Brighter green */
-    --color-btn-danger: #FF4A56;
-    /* Brighter red */
-
-    /* Form and Inputs */
-    --color-form-bg: #2A2A2A;
-    --color-input-border: #444444;
-    --color-input-focus: #4B92F6;
-
-    --primary-50: #082f49;
-    --primary-100: #0c4a6e;
-    --gray-100: #1e293b;
-    --gray-200: #334155;
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Apply theme to elements */
@@ -219,6 +277,70 @@ table {
 
 [data-theme="dark"] .category-link:hover {
     background-color: var(--color-dropdown-hover);
+}
+
+/* Dark mode overrides for specific components */
+[data-theme="dark"] {
+    .navbar {
+        background-color: var(--color-header-bg) !important;
+    }
+
+    .card {
+        background-color: var(--color-card-bg);
+    }
+
+    .form-control {
+        background-color: var(--color-input-bg) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+    }
+
+    .form-control::placeholder {
+        color: var(--color-input-placeholder) !important;
+    }
+
+    .dropdown-menu {
+        background-color: var(--color-dropdown-bg);
+        border-color: var(--color-border);
+    }
+
+    .dropdown-item {
+        color: var(--color-dropdown-text);
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--color-dropdown-hover);
+    }
+
+    .modal-content {
+        background-color: var(--color-card-bg);
+        color: var(--color-text);
+    }
+
+    .table {
+        color: var(--color-text);
+    }
+
+    .badge {
+        &.bg-light {
+            background-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+    }
+
+    .btn-light {
+        background-color: #334155 !important;
+        border-color: #475569 !important;
+        color: #f8fafc !important;
+    }
+
+    .text-muted {
+        color: #94a3b8 !important;
+    }
+
+    .border-light {
+        border-color: #334155 !important;
+    }
 }
 
 /* .footer {

@@ -268,11 +268,11 @@ export const Header = ({ isLoggedIn = false }) => {
           {/* Left section: Logo and Categories */}
           <div className="d-flex align-items-center">
             {/* Logo */}
-            <Navbar.Brand href="#home" className="me-4">
+            <Navbar.Brand href="/" className="me-4">
               <img
-                src="10002.png"
+                src="/logo/logo3.png"
                 alt="Logo"
-                height="36"
+                height="60"
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
@@ -294,7 +294,8 @@ export const Header = ({ isLoggedIn = false }) => {
               <Button
                 variant="outline-light"
                 size="sm"
-                className="py-1 px-3 d-none d-md-block add-service-btn">
+                className="py-1 px-3 d-none d-md-block add-service-btn"
+                href="/add/service">
                 Add a service <span className="ms-1">+</span>
               </Button>
             )}
