@@ -2,9 +2,14 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
+import { Provider } from 'react-redux'
 import { store } from "./redux/store"; // adjust path if needed
 import { MainLayout } from "./layout/MainLayout";
+import "bootstrap/dist/css/bootstrap.min.css"
+
+import { myStore } from "./store";
+
+
 import "./styles/designSystem.css"; // Core design tokens
 import "./styles/theme.css"; // Theme variables
 import "./styles/components/Chat.css"; // Component styles

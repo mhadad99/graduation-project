@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5000/users";
+const baseURL = "http://127.0.0.1:8000/api/user/";
 
 const getAllUsers = () => axios.get(baseURL);
-const getUserById = (userId) => axios.get(`${baseURL}/${userId}`);
+const getUserById = (userId) => axios.get(`${baseURL}${userId}`);
 const addNewUser = (user) => axios.post(`${baseURL}`, user);
 const editUser = (userId, user) => axios.put(`${baseURL}/${userId}`, user);
 const deleteUser = (userId) => axios.delete(`${baseURL}/${userId}`);

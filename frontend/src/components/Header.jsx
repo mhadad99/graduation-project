@@ -24,11 +24,23 @@ import {
   FaMoon,
   FaSun,
 } from "react-icons/fa";
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/authSlice";
+
 import { NavLink } from "react-router-dom";
 
-export const Header = ({ isLoggedIn = false }) => {
+export const Header = () => {
+  const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((store) => store.authSlice);
+  const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login'); // Redirect to the login page
+  };
+
   // Redux state for theme management
   const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
@@ -291,7 +303,7 @@ export const Header = ({ isLoggedIn = false }) => {
             </div>
 
             {/* Add Service Button - Only show when logged in */}
-            {!isLoggedIn && (
+            {isLoggedIn && (
               <Button
                 variant="outline-light"
                 size="sm"
@@ -353,25 +365,27 @@ export const Header = ({ isLoggedIn = false }) => {
               </div>
 
               {/* Login/Signup buttons for not logged in users */}
-              {isLoggedIn && (
+              {!isLoggedIn && (
                 <div className="d-flex align-items-center auth-buttons">
-                  <Button
+                  <Link
+                    to={'register'}
                     variant="outline-secondary"
                     size="sm"
                     className="me-2 text-white border-0 signup-btn">
-                    <FaUser className="me-1" /> New account
-                  </Button>
-                  <Button
+                    <FaUser className="me-1" /> Register
+                  </Link>
+                  <Link
+                    to={"/login"}
                     variant="outline-secondary"
                     size="sm"
                     className="text-white border-0 login-btn">
                     <FaUser className="me-1" /> Login
-                  </Button>
+                  </Link>
                 </div>
               )}
 
               {/* Logged in user features */}
-              {!isLoggedIn && (
+              {isLoggedIn && (
                 <>
                   {/* Notifications Dropdown */}
                   <div
@@ -410,9 +424,8 @@ export const Header = ({ isLoggedIn = false }) => {
                               {notifications.map((notification) => (
                                 <div
                                   key={notification.id}
-                                  className={`notification-item p-2 border-bottom ${
-                                    notification.unread ? "bg-light" : ""
-                                  }`}>
+                                  className={`notification-item p-2 border-bottom ${notification.unread ? "bg-light" : ""
+                                    }`}>
                                   <div className="d-flex justify-content-between">
                                     <span className="notification-content">
                                       {notification.content}
@@ -455,7 +468,7 @@ export const Header = ({ isLoggedIn = false }) => {
                       className="nav-icon"
                       aria-label="Messages"
                       to={isLoggedIn ? "/chat" : "/chat"}
-                      >
+                    >
                       <FaEnvelope />
                       {/* {renderBadge(messages)} */}
                     </NavLink>
@@ -477,9 +490,8 @@ export const Header = ({ isLoggedIn = false }) => {
                               {messages.map((message) => (
                                 <div
                                   key={message.id}
-                                  className={`message-item p-2 border-bottom ${
-                                    message.unread ? "bg-light" : ""
-                                  }`}>
+                                  className={`message-item p-2 border-bottom ${message.unread ? "bg-light" : ""
+                                    }`}>
                                   <div className="d-flex justify-content-between">
                                     <strong className="message-sender">
                                       {message.sender}
@@ -574,13 +586,11 @@ export const Header = ({ isLoggedIn = false }) => {
                             {profileMenuOptions.map((option, idx) => (
                               <Nav.Link
                                 key={idx}
-                                href={`/${option.text
-                                  .toLowerCase()
-                                  .replace(/ /g, "-")}`}
-                                className="px-3 py-2 text-dark menu-item">
-                                <span className="menu-icon me-2">
-                                  {option.icon}
-                                </span>
+                                onClick={option.text === 'Logout' ? handleLogout : undefined} // Call handleLogout for Logout
+                                href={option.text !== 'Logout' ? `/${option.text.toLowerCase().replace(/ /g, '-')}` : undefined}
+                                className="px-3 py-2 text-dark menu-item"
+                              >
+                                <span className="menu-icon me-2">{option.icon}</span>
                                 {option.text}
                               </Nav.Link>
                             ))}

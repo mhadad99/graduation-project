@@ -1,29 +1,41 @@
-/*depend.. 1: npm install bootstrap react-social-login-buttons*/
-/* 2- npm install axios */
-/* 3- npm install @react-oauth/google */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import '../styles/Login.css';
+import { loginUser } from '../api/auth';
+import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../utils/validation';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from "../store/authSlice";
+
+
+
 
 export default function LoginPage() {
+
+  const navigate = useNavigate(); 
+  const dispatch = useDispatch();
+  const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
+  useEffect(() => {
+    const url = window.location.pathname;
+    if (url === "/login" && isLoggedIn) {
+      navigate("/");
+    }
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [touched, setTouched] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase());
-  const isEmailEmpty = email.trim() === '';
+  const isEmailEmpty = isFieldEmpty(email);
   const isEmailValid = !isEmailEmpty && validateEmail(email);
   const showEmptyEmailError = (touched || submitted) && isEmailEmpty;
   const showInvalidEmailError = (touched || submitted) && !isEmailEmpty && !isEmailValid;
 
-  const isPasswordEmpty = password.trim() === '';
-  const isPasswordTooShort = password.length < 6;
-  const showPasswordError = (touched || submitted) && (isPasswordEmpty || isPasswordTooShort);
+  const isPasswordEmpty = isFieldEmpty(password);
+  const showPasswordError = (touched || submitted) && (isPasswordEmpty || isPasswordTooShort(password));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,26 +43,19 @@ export default function LoginPage() {
     setTouched(true);
     setErrorMessage('');
 
-    if (!isEmailValid || isPasswordEmpty || isPasswordTooShort) return;
+    if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(password)) return;
 
-    setIsLoading(true);
-    try {
-      const response = await axios.post('https://api-url.com/login', { email, password });
-      console.log('Login successful:', response.data);
-    } catch (error) {
-      console.error('Login failed:', error);
-      setErrorMessage('Login failed. Please check your credentials and try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(loginAction({ email, password }))
+    .unwrap()
+    .then(() => {
+      navigate("/");
+    })
+    .catch((err) => {
+      console.error("Login failed:", err);
+    });
   };
 
   const handleBlur = () => setTouched(true);
-
-  // const handleGoogleLogin = () => {
-  //  Google Login react-google-login
-  //   console.log("Google Login Clicked");
-  // };
 
   return (
     <div className="login-container">
@@ -81,46 +86,46 @@ export default function LoginPage() {
 
           {/* Password */}
           <div className={`mb-3 ${showPasswordError ? 'was-validated' : ''}`}>
-             <label htmlFor="password" className="form-label fs-5">Password</label>
+            <label htmlFor="password" className="form-label fs-5">Password</label>
 
             <div className="position-relative">
-               <input
-                 type={showPassword ? 'text' : 'password'}
-                    className={`form-control form-control-lg pe-5 ${showPasswordError ? 'is-invalid' : ''}`}
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    onBlur={handleBlur}
-                    required
-                  />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className={`form-control form-control-lg pe-5 ${showPasswordError ? 'is-invalid' : ''}`}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                onBlur={handleBlur}
+                required
+              />
 
-                  {/* Eye Icon */}
-                  <i
-                    className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      right: '15px',
-                      transform: 'translateY(-50%)',
-                      cursor: 'pointer',
-                      fontSize: '1.2rem',
-                      color: '#6c757d',
-                      zIndex: 2,
-                    }}
-                  ></i>
-                </div>
+              {/* Eye Icon */}
+              <i
+                className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '15px',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  fontSize: '1.2rem',
+                  color: '#6c757d',
+                  zIndex: 2,
+                }}
+              ></i>
+            </div>
 
-                {showPasswordError && (
-                  <div className="invalid-feedback d-block">
-                    {isPasswordEmpty ? 'This field is required' : 'Password must be at least 6 characters'}
-                  </div>
-                )}
+            {showPasswordError && (
+              <div className="invalid-feedback d-block">
+                {isPasswordEmpty ? 'This field is required' : 'Password must be at least 6 characters'}
               </div>
+            )}
+          </div>
 
 
-          {errorMessage && <div className="alert alert-danger py-2">{errorMessage}</div>}
+          {error && <div className="alert alert-danger py-2">{error}</div>}
 
           <button
             type="submit"
