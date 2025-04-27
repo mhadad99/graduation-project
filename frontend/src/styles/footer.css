@@ -1,47 +1,38 @@
-/* Footer.css */
-
-/* Gradient Background */
 .footer {
-    background: linear-gradient(135deg, #0425A6, #2F6B66);
-    color: white;
-    padding: 40px 0;
-  }
-  
-  .footer a {
-    color: #FFA07A; /* Coral Color */
-    text-decoration: none;
-  }
-  
-  .footer a:hover {
-    color: #FF0000; /* Red Accent */
-  }
-  
-  .social-icons a {
-    color: white;
-    font-size: 20px;
-    margin: 0 10px;
-  }
-  
-  .social-icons a:hover {
-    color: #FFA07A; /* Coral Hover Effect */
-  }
-  
-  .newsletter input {
-    border-radius: 25px;
-    padding: 10px;
-    width: 70%;
-    border: none;
-  }
-  
-  .newsletter button {
-    border-radius: 25px;
-    padding: 10px 20px;
-    background-color: #FF0000; /* Red Accent */
-    color: white;
-    border: none;
-  }
-  
-  .newsletter button:hover {
-    background-color: #FFA07A; /* Coral Hover */
-  }
-  
+  background: linear-gradient(135deg, #0425A6, #2F6B66);
+  color: white;
+}
+
+.footer a {
+  color: #FFA07A;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.footer a:hover {
+  color: #FF0000;
+}
+
+.footer h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 14px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 16px;
+  margin: 0 8px;
+}
+
+.social-icons a:hover {
+  color: #FFA07A;
+}
+
+.footer hr {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}

@@ -17,6 +17,8 @@ import UserProfile from "../pages/UserProfile";
 import About from "../pages/About";
 import LoginPage from "../pages/Login";
 
+import ProfileEditForm from "../pages/EditUserProfile";
+
 
 export function MainLayout() {
   return (
@@ -24,6 +26,7 @@ export function MainLayout() {
       <Routes>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
+          <Route path = "/editUserProfile" element={<ProfileEditForm />} />
           <Route path="*" element={<NotFound />} /> 
           <Route path="/project/:id" element={<ProjectDetails />} />
           <Route path="/add" element={<AddProject />} />
