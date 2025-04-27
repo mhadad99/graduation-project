@@ -1,0 +1,82 @@
+.add-project-container {
+    max-width: 600px;
+    max-height: 80%;
+    margin: 3% auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-project-title {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #0354ac;
+    font-size: 2rem;
+
+  }
+  
+  button.add-project-submit-btn {
+    width: 20%;
+    color: #ecedee;
+    text-align: center;
+    border: none;
+    padding: 15px 5px;
+    font-size: 1.3rem;
+    text-shadow: #333 0px 1px 2px;
+    background-color: #044cb1;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    border-radius: 10px;
+    margin: 20px auto;
+   }
+  
+  
+  
+  .add-project-submit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-project-suggestions {
+    z-index: 1000;
+  }
+  .add-project-label {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .level-dropdown {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .level-options {
+    position: absolute;
+    background-color: #e5e5e9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    z-index: 10;
+    padding: 10px;
+    width: 20%;
+  }
+  
+  .level-option {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .level-option.selected {
+    background-color: #8b9ef1;
+  }
+  
+  .level-option:hover {
+    background-color: #b6c3fd;
+  }
+  

@@ -1,6 +1,9 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
 import { Home } from "../pages/Home";
 import { NotFound } from "../pages/NotFound";
+import AddProject from '../pages/AddProject';
+import ProjectDetails from '../pages/ProjectDetails';
+
 import {
   BrowserRouter,
   Route,
@@ -16,6 +19,8 @@ export function MainLayout() {
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
           <Route path="*" element={<NotFound />} /> 
+          <Route path="/project/:id" element={<ProjectDetails />} />
+          <Route path="/add" element={<AddProject />} />
         </Route>
       </Routes>
     </BrowserRouter>
