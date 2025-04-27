@@ -1,5 +1,3 @@
-/** @format */
-import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
@@ -28,13 +26,15 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/authSlice";
+import { logout } from "../store/slices/authSlice";
 
 import { NavLink } from "react-router-dom";
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((store) => store.authSlice);
+  const { isLoggedIn } = useSelector((myStore) => myStore.authSlice);
+  // let isLoggedIn = false
+
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
   const handleLogout = () => {
     dispatch(logout());
@@ -42,8 +42,7 @@ export const Header = () => {
   };
 
   // Redux state for theme management
-  const { theme } = useSelector((state) => state.theme);
-  const dispatch = useDispatch();
+  const { theme } = useSelector((state) => state.themeSlice);
 
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
@@ -645,7 +644,7 @@ export const Header = () => {
                 </Overlay>
               </div>
             </Nav>
-            {isLoggedIn && (
+            {/* {isLoggedIn && (
               <Nav className="ms-auto">
                 <Nav.Link
                   as={Link}
@@ -660,7 +659,7 @@ export const Header = () => {
                   )}
                 </Nav.Link>
               </Nav>
-            )}
+            )} */}
           </Navbar.Collapse>
         </Container>
       </Navbar>

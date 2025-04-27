@@ -4,21 +4,21 @@ import '../../styles/Login.css';
 import { registerUser } from '../../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerAction } from "../../store/authSlice";
+import { registerAction } from "../../store/slices/authSlice";
 import { useNavigate } from 'react-router-dom';
 
 
 export default function RegisterForm() {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
     useEffect(() => {
-      const url = window.location.pathname;
-      if (url === "/register" && isLoggedIn) {
-        navigate("/");
-      }
+        const url = window.location.pathname;
+        if (url === "/register" && isLoggedIn) {
+            navigate("/");
+        }
     }, []);
-  
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -54,14 +54,14 @@ export default function RegisterForm() {
 
         if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(formData.password)) return;
 
-            dispatch(registerAction(formData))
-    .unwrap()
-    .then(() => {
-      navigate("/login");
-    })
-    .catch((err) => {
-      console.error("Register failed:", err);
-    });
+        dispatch(registerAction(formData))
+            .unwrap()
+            .then(() => {
+                navigate("/login");
+            })
+            .catch((err) => {
+                console.error("Register failed:", err);
+            });
     };
 
     const handleBlur = () => setTouched(true);

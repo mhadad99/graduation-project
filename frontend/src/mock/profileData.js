@@ -5,7 +5,7 @@ export const mockProfileData = {
     id: 1,
     name: "Ayman Samir",
     title: "Full Stack Developer",
-    role: "freelancer",
+    role: "admin",
     profileImage: "https://i.imgur.com/6AglEUF.jpeg",
     location: "Cairo, Egypt",
     status: "online",

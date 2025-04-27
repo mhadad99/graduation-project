@@ -5,14 +5,14 @@ import '../styles/Login.css';
 import { loginUser } from '../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginAction } from "../store/authSlice";
+import { loginAction } from "../store/slices/authSlice";
 
 
 
 
 export default function LoginPage() {
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
   useEffect(() => {
@@ -46,13 +46,13 @@ export default function LoginPage() {
     if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(password)) return;
 
     dispatch(loginAction({ email, password }))
-    .unwrap()
-    .then(() => {
-      navigate("/");
-    })
-    .catch((err) => {
-      console.error("Login failed:", err);
-    });
+      .unwrap()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("Login failed:", err);
+      });
   };
 
   const handleBlur = () => setTouched(true);
