@@ -1,0 +1,43 @@
+:root {
+    --upwork-green: #14a800;
+    --upwork-green-hover: #108600;
+  }
+  
+  .app {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .text-primary {
+    color: var(--upwork-green) !important;
+  }
+  
+  .btn-success {
+    background-color: var(--upwork-green) !important;
+    border-color: var(--upwork-green) !important;
+  }
+  
+  .btn-success:hover,
+  .btn-success:focus {
+    background-color: var(--upwork-green-hover) !important;
+    border-color: var(--upwork-green-hover) !important;
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: var(--upwork-green) !important;
+    border-bottom: 3px solid var(--upwork-green) !important;
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+  
+  .text-success {
+    color: var(--upwork-green) !important;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+.signup-page {
+  background-color: #f9f9f9;
+}

@@ -1,15 +1,27 @@
-# FastAPI Project
+# Freelancer Platform API (Django + DRF)
 
-Backend API for the central JOVS Project
+This is the backend for the Freelancer Platform using Django and Django REST Framework. It supports feature-based structure, JWT authentication, and will be connected to a React frontend.
 
-## Getting Started
+---
 
-Follow these steps to set up and run the project on your local machine.
+## Tech Stack
 
-### Prerequisites
+- Python 3.x
+- Django 4.x
+- Django REST Framework
+- Simple JWT (for token-based auth)
+- Custom User Model
+- CORS Headers (to enable frontend communication)
 
-- Python 3.6+
-- `pip` package manager
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+````bash
+git clone <https://github.com/mhadad99/graduation-project.git>
+cd freelancer-platform
 
 ### Installation
 
@@ -30,17 +42,45 @@ Follow these steps to set up and run the project on your local machine.
 
 `source venv/bin/activate`
 
-4. Install project dependencies using pip:
+4. Install required packages:
 
-`pip install -r requirements.txt`
+   pip install django djangorestframework djangorestframework-simplejwt django-cors-headers
 
-5. Running the App
-   Start the development server using uvicorn:
-   `uvicorn app.main:app --reload`
-   Access the app in your web browser or API client at http://127.0.0.1:8000.
-   Or this link http://localhost:8000/docs#/
+4^. Add your Database credentials to PostgreSQL, in settings.py:
+      ```
+      DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # Change to PostgreSQL
+        'NAME': 'your_database_name',  # Replace with your database name
+        'USER': 'your_database_user',  # Your PostgreSQL username
+        'PASSWORD': 'your_database_password',  # Your PostgreSQL password
+        'HOST': 'localhost',  # Set to your PostgreSQL host (localhost if it's on the same machine)
+        'PORT': '5432',  # Default PostgreSQL port
+         }
+            }
+      ```
+5. Create App:
 
-- NOTE: Every time you want to run the api server do step 3 and 5
-- NOTE2: `pip freeze > requirements.txt` will update the requirements.txt file i guess
+   python manage.py startapp `App_NAME`
+         -- Add to the new app folder: serializers.py,urls.py
+         -- include new urls to the main urls.py file in config
 
-##
+
+
+   ##Database Migrations
+
+   5^. Make Migrations
+         python manage.py makemigrations
+
+   5^^. Apply Migrations
+         python manage.py migrate
+
+
+   ##
+
+6. Run server:
+   python manage.py runserver
+
+
+---
+````
