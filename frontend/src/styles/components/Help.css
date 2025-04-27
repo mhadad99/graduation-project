@@ -1,0 +1,119 @@
+.help-page {
+    background-color: var(--color-background);
+    min-height: calc(100vh - 72px);
+    padding-top: 72px;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, var(--primary-500), var(--primary-600));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.faq-card,
+.contact-card {
+    background: var(--color-card-bg);
+    box-shadow: var(--shadow-sm);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.faq-card:hover,
+.contact-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.custom-accordion .accordion-item {
+    border: 1px solid var(--color-border);
+    background: var(--color-card-bg);
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem !important;
+    overflow: hidden;
+}
+
+.custom-accordion .accordion-button {
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    padding: 1.25rem;
+}
+
+.custom-accordion .accordion-button:not(.collapsed) {
+    background: var(--primary-50);
+    color: var(--primary-600);
+}
+
+.custom-accordion .accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--primary-200);
+}
+
+.form-control {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.form-control:focus {
+    background: var(--color-background);
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px var(--primary-100);
+    color: var(--color-text);
+}
+
+.submit-btn {
+    background: var(--primary-500);
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: var(--primary-600);
+    transform: translateY(-1px);
+}
+
+.contact-info {
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.contact-details {
+    color: var(--color-text-muted);
+}
+
+.contact-details i {
+    color: var(--primary-500);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .custom-accordion .accordion-button:not(.collapsed) {
+    background: var(--primary-900);
+    color: var(--primary-400);
+}
+
+[data-theme="dark"] .form-control {
+    background: var(--color-card-bg);
+}
+
+[data-theme="dark"] .form-control:focus {
+    background: var(--color-card-bg);
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px var(--primary-900);
+}
+
+.success-alert {
+    background: var(--success-100);
+    border-color: var(--success-200);
+    color: var(--success-700);
+}
+
+[data-theme="dark"] .success-alert {
+    background: var(--success-900);
+    border-color: var(--success-800);
+    color: var(--success-200);
+}

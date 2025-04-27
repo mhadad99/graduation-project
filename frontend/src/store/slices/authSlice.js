@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "../api/auth";
+import { loginUser, registerUser } from "../../api/auth";
 
 
 // const access_token = response.data.access_token;

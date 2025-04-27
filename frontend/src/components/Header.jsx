@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
@@ -21,21 +19,30 @@ import {
   FaBell,
   FaTruck,
   FaBars,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/authSlice";
+import { logout } from "../store/slices/authSlice";
 
+import { NavLink } from "react-router-dom";
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((store) => store.authSlice);
+  const { isLoggedIn } = useSelector((myStore) => myStore.authSlice);
+  // let isLoggedIn = false
+
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login'); // Redirect to the login page
   };
+
+  // Redux state for theme management
+  const { theme } = useSelector((state) => state.themeSlice);
 
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
@@ -86,29 +93,29 @@ export const Header = () => {
   });
 
   // Sample data for messages and notifications
-  const messages = [
-    {
-      id: 1,
-      sender: "John Doe",
-      content: "Hi, I'm interested in your service",
-      time: "2 hours ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      sender: "Jane Smith",
-      content: "Thanks for your quick response",
-      time: "Yesterday",
-      unread: false,
-    },
-    {
-      id: 3,
-      sender: "Mike Johnson",
-      content: "When can we schedule a call?",
-      time: "2 days ago",
-      unread: true,
-    },
-  ];
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     sender: "John Doe",
+  //     content: "Hi, I'm interested in your service",
+  //     time: "2 hours ago",
+  //     unread: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     sender: "Jane Smith",
+  //     content: "Thanks for your quick response",
+  //     time: "Yesterday",
+  //     unread: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     sender: "Mike Johnson",
+  //     content: "When can we schedule a call?",
+  //     time: "2 days ago",
+  //     unread: true,
+  //   },
+  // ];
 
   const notifications = [
     {
@@ -261,6 +268,11 @@ export const Header = () => {
     ) : null;
   };
 
+  // Toggle theme function
+  const handleToggleTheme = () => {
+    dispatch({ type: "theme/toggleTheme" });
+  };
+
   return (
     <header className="header-component">
       <Navbar bg="dark" variant="dark" expand="lg" className="py-2">
@@ -270,9 +282,9 @@ export const Header = () => {
             {/* Logo */}
             <Navbar.Brand href="/" className="me-4">
               <img
-                src="10002.png"
+                src="/logo/Tanfeez.png"
                 alt="Logo"
-                height="36"
+                height="60"
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
@@ -294,7 +306,8 @@ export const Header = () => {
               <Button
                 variant="outline-light"
                 size="sm"
-                className="py-1 px-3 d-none d-md-block add-service-btn">
+                className="py-1 px-3 d-none d-md-block add-service-btn"
+                href="/add/service">
                 Add a service <span className="ms-1">+</span>
               </Button>
             )}
@@ -311,6 +324,25 @@ export const Header = () => {
             id="basic-navbar-nav"
             className="justify-content-end">
             <Nav className="align-items-center nav-icons-container">
+              {/* Theme Toggle Button */}
+              <div className="me-3">
+                <button
+                  className="theme-toggle-btn"
+                  onClick={handleToggleTheme}
+                  aria-label="Toggle theme"
+                  title={
+                    theme === "light"
+                      ? "Switch to dark mode"
+                      : "Switch to light mode"
+                  }>
+                  {theme === "light" ? (
+                    <FaMoon size={18} />
+                  ) : (
+                    <FaSun size={18} />
+                  )}
+                </button>
+              </div>
+
               {/* Search Button */}
               <div ref={refs.search} className="position-relative icon-wrapper">
                 <Nav.Link
@@ -335,7 +367,7 @@ export const Header = () => {
               {!isLoggedIn && (
                 <div className="d-flex align-items-center auth-buttons">
                   <Link
-                  to={'register'}
+                    to={'register'}
                     variant="outline-secondary"
                     size="sm"
                     className="me-2 text-white border-0 signup-btn">
@@ -430,15 +462,16 @@ export const Header = () => {
                   <div
                     ref={refs.messages}
                     className="position-relative icon-wrapper">
-                    <Nav.Link
-                      onClick={() => toggleDropdown("messages")}
+                    <NavLink
+                      // onClick={() => toggleDropdown("messages")}
                       className="nav-icon"
-                      aria-label="Messages">
+                      aria-label="Messages"
+                      to={isLoggedIn ? "/chat" : "/chat"}
+                    >
                       <FaEnvelope />
-                      {renderBadge(messages)}
-                    </Nav.Link>
-
-                    <Overlay
+                      {/* {renderBadge(messages)} */}
+                    </NavLink>
+                    {/* <Overlay
                       show={dropdowns.messages}
                       target={refs.messages.current}
                       placement="bottom-end"
@@ -489,7 +522,7 @@ export const Header = () => {
                           )}
                         </Popover.Body>
                       </Popover>
-                    </Overlay>
+                    </Overlay> */}
                   </div>
 
                   {/* Incoming Requests - Hide on smaller screens */}
@@ -611,6 +644,22 @@ export const Header = () => {
                 </Overlay>
               </div>
             </Nav>
+            {/* {isLoggedIn && (
+              <Nav className="ms-auto">
+                <Nav.Link
+                  as={Link}
+                  to="/chat"
+                  className="d-flex align-items-center">
+                  <ChatDots size={20} className="me-2" />
+                  Messages
+                  {unreadMessages > 0 && (
+                    <Badge bg="danger" className="ms-2 rounded-circle">
+                      {unreadMessages}
+                    </Badge>
+                  )}
+                </Nav.Link>
+              </Nav>
+            )} */}
           </Navbar.Collapse>
         </Container>
       </Navbar>
