@@ -45,7 +45,7 @@
 }
 
 .hc-card-title {
-  color: white;
+  color: white !important;
   /* Keep white for overlay text */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   font-size: 1.25rem;
