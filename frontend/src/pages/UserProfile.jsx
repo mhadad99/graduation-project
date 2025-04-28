@@ -21,42 +21,53 @@ import {
   PortfolioTab,
   AboutTab,
   ReviewsTab,
+  ProjectsTab,
 } from "../components/profile";
 
 const UserProfile = () => {
-  const { userId } = useParams();
+  const { id } = useParams();
+  const loggedInUserId = "2"; // This should come from your auth state/context
+  const isMyProfile = id === loggedInUserId;
+
+  // Improved role determination
+  const getUserRole = (id) => {
+    if (id === "1") return "freelancer";
+    if (id === "2") return "client";
+    if (id === "3") return "admin";
+    return null;
+  };
+
+  const role = getUserRole(id);
+  const profileData = role ? mockProfileData[role] : null;
 
   // Local state
   const [activeTab, setActiveTab] = useState("about");
-  const [isMyProfile, setIsMyProfile] = useState(false);
-  const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [portfolioItems, setPortfolioItems] = useState(
+    profileData?.portfolio || []
+  );
 
   // Simulate API call with mock data
   useEffect(() => {
     const loadMockData = () => {
-      // Simulate network delay
       setTimeout(() => {
-        // For demo, always load freelancer profile
-        setProfileData(mockProfileData.freelancer);
+        if (role === "freelancer") {
+          setPortfolioItems(mockProfileData.freelancer.portfolio || []);
+        }
         setIsLoading(false);
-        // Set isMyProfile based on URL param
-        setIsMyProfile(userId === "1"); // Assuming ID 1 is the logged-in user
       }, 1000);
     };
 
     loadMockData();
-  }, [userId]);
+  }, [id, role]);
 
   // Mock handlers
   const handleAddPortfolioItem = (item) => {
-    console.log("Adding portfolio item:", item);
-    // You would normally dispatch to Redux here
+    setPortfolioItems((prev) => [...prev, { ...item, id: Date.now() }]);
   };
 
   const handleDeletePortfolioItem = (itemId) => {
-    console.log("Deleting portfolio item:", itemId);
-    // You would normally dispatch to Redux here
+    setPortfolioItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
   const handleSubmitReview = (review) => {
@@ -78,12 +89,14 @@ const UserProfile = () => {
   if (!profileData) {
     return (
       <Container className="py-5">
-        <Alert variant="warning">User profile not found</Alert>
+        <Alert variant="warning">
+          User profile not found. Invalid user ID: {id}
+        </Alert>
       </Container>
     );
   }
 
-  const renderRoleBasedTabs = () => {
+  const renderTabs = () => {
     const userRole = profileData?.role || "freelancer";
 
     const commonTabs = [
@@ -127,18 +140,33 @@ const UserProfile = () => {
         icon: <Collection className="me-2" />,
         component: (
           <PortfolioTab
-            portfolio={profileData.portfolio}
+            portfolioItems={profileData.portfolio} // Changed from portfolio to portfolioItems
             isMyProfile={isMyProfile}
-            onAdd={handleAddPortfolioItem}
-            onDelete={handleDeletePortfolioItem}
+            isLoading={isLoading}
+            onAddItem={handleAddPortfolioItem} // Changed from onAdd
+            onDeleteItem={handleDeletePortfolioItem} // Changed from onDelete
           />
         ),
       },
+      ...commonTabs,
     ];
 
-    return userRole === "freelancer"
-      ? [...freelancerTabs, ...commonTabs]
-      : commonTabs;
+    const clientTabs = [
+      {
+        eventKey: "projects",
+        title: "Projects",
+        icon: <Briefcase className="me-2" />,
+        component: (
+          <ProjectsTab
+            projects={profileData.projects}
+            isMyProfile={isMyProfile}
+          />
+        ),
+      },
+      ...commonTabs,
+    ];
+
+    return userRole === "freelancer" ? freelancerTabs : clientTabs;
   };
 
   return (
@@ -151,7 +179,7 @@ const UserProfile = () => {
           onSelect={(k) => setActiveTab(k)}
           className="mb-4 custom-tab"
           justify>
-          {renderRoleBasedTabs().map(({ eventKey, title, icon, component }) => (
+          {renderTabs().map(({ eventKey, title, icon, component }) => (
             <Tab
               key={eventKey}
               eventKey={eventKey}

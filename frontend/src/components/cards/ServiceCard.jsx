@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Button, Badge } from "react-bootstrap";
-import { Star, Clock, CheckCircle } from "react-bootstrap-icons";
+import {  Clock, CheckCircle, StarFill } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "../../styles/components/ServiceCard.css"; // Adjust the path as necessary
 const ServiceCard = ({ service, isOwner }) => {
@@ -43,7 +43,7 @@ const ServiceCard = ({ service, isOwner }) => {
         </Card.Text>
         <div className="service-meta mb-3">
           <div className="rating">
-            <Star className="star-icon" />
+            <StarFill className="star-icon me-1 text-warning bg" />
             <span className="rating-value">{rating}</span>
             <span className="review-count">({reviewCount})</span>
           </div>
