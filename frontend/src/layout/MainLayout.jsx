@@ -21,6 +21,7 @@ import Chat from "../pages/Chat";
 import ServicesPage from "../pages/ServicesPage";
 import Help from "../components/Help";
 import EditProfile from "../pages/EditProfile";
+import EditProfile from "../pages/EditProfile";
 
 
 export function MainLayout() {
@@ -38,7 +39,7 @@ export function MainLayout() {
           <Route path="/about" element={<About />} />
           <Route path="servicedetails" element={<ServiceDetailsPage />} />
           <Route path="add/service" element={<CreateService />} />
-          <Route path="profile" element={<UserProfile />} />
+          <Route path="profile/:id" element={<UserProfile/>} />
           <Route path="profile/edit/:id" element={<EditProfile />} />
           <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
           <Route path="/about" element={<About />} />
