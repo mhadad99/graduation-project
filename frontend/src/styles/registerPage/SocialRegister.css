@@ -12,3 +12,8 @@
 .apple-icon {
   background-color: #000;
 }
+
+/* Optional: Add border for better visibility in dark mode */
+[data-theme="dark"] .social-icon {
+  border: 1px solid var(--color-border);
+}
