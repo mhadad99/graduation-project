@@ -68,12 +68,12 @@ export default function RegisterForm() {
 
     return (
         <div className="login-container">
-            <div className="logo-container">
-                <img src="../TANFEEZ.png" alt="Tanfeez Logo" className="logo" />
-            </div>
 
             <div className="login-card">
-                <h2 className="text-center mb-4">Register for Tanfeez</h2>
+            <div className="logo-container">
+                <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" />
+            </div>
+                <h2 className="text-center mb-0">Register for Tanfeez</h2>
 
                 <form onSubmit={handleSubmit} noValidate>
                     {/* First Name */}
