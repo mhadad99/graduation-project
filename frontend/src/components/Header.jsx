@@ -282,9 +282,10 @@ export const Header = () => {
             {/* Logo */}
             <Navbar.Brand href="/" className="me-4">
               <img
-                src="/logo/Tanfeez.png"
+                src="/logo/logo3.png"
                 alt="Logo"
                 height="60"
+                width={120}
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
