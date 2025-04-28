@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "user",
+    "freelancer",
+    "client",
+    "skill",
 ]
 
 MIDDLEWARE = [
@@ -79,14 +82,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",  # Change to PostgreSQL
-        "NAME": "project_db",  # Replace with your database name
-        "USER": "project_user",  # Your PostgreSQL username
-        "PASSWORD": "1234",  # Your PostgreSQL password
-        # Set to your PostgreSQL host (localhost if it's on the same machine)
-        "HOST": "localhost",
-        "PORT": "5432",  # Default PostgreSQL port
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'tanfeez',  # Name of the database
+        'USER': 'postgres',  # Default PostgreSQL user (change if you have a custom user)
+        'PASSWORD': 'tanfeez',      # Leave empty if no password is set, or add your password
+        'HOST': 'localhost', # Host where PostgreSQL is running
+        'PORT': '5432',      # Default PostgreSQL port
     }
 }
 
@@ -144,4 +146,35 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+}
+
+# Other settings...
+
+# JWT Token Configuration
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
 }
