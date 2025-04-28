@@ -5,7 +5,7 @@ export { default as ServicesTab } from "./ServicesTab";
 export { default as PortfolioTab } from "./PortfolioTab";
 export { default as AboutTab } from "./AboutTab";
 export { default as ReviewsTab } from "./ReviewsTab";
-
+export { default as ProjectsTab } from "./ProjectsTab";
 // In your profileData.js
 reviews: [
   {
