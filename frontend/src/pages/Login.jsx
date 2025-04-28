@@ -59,12 +59,12 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
-      <div className="logo-container">
-        <img src="../TANFEEZ.png" alt="Tanfeez Logo" className="logo" />
-      </div>
 
       <div className="login-card">
+      <div className="logo-container">
+        <img src="logo/Tanfeez.png" alt="Tanfeez Logo" className="logo " />
         <h2 className="text-center mb-4">Login to Tanfeez</h2>
+      </div>
 
         <form onSubmit={handleSubmit} noValidate>
           {/* Email */}
