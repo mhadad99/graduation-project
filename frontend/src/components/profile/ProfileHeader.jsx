@@ -1,43 +1,30 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Container, 
-  Image, 
-  Button,
-  Row,
-  Col
-} from 'react-bootstrap';
-import { 
-  Star, 
-  Award, 
-  Clock, 
-  Heart, 
-  Share, 
-  ChatDots, 
+/** @format */
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { Container, Image, Button, Row, Col, Badge } from "react-bootstrap";
+import {
+  Star,
+  Award,
+  Clock,
+  Heart,
+  Share,
+  ChatDots,
   Pencil,
   GeoAlt,
   Envelope,
-  Calendar3
-} from 'react-bootstrap-icons';
-import '../../styles/UserProfile.css';
+  Calendar3,
+  PersonBadge,
+} from "react-bootstrap-icons";
+import "../../styles/UserProfile.css";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
-  // Early return if profileData is not available
   if (!profileData) {
-    return (
-      <div className="profile-header text-center">
-        <Container>
-          <div className="spinner-border text-light" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3 text-white">Loading profile data...</p>
-        </Container>
-      </div>
-    );
+    return <div className="profile-header text-center py-5">Loading...</div>;
   }
 
-  // Default values for missing properties
   const {
+    id,
     profileImage = "https://i.imgur.com/6AglEUF.jpeg",
     name = "User",
     title = "Freelancer",
@@ -46,86 +33,112 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
     numberOfReviews = 0,
     completionRate = 0,
     averageResponse = "N/A",
-    role = "freelancer"
+    role = "freelancer",
   } = profileData;
 
+  const stats = [
+    {
+      icon: Star,
+      text: `${averageRating.toFixed(1)} (${numberOfReviews} reviews)`,
+    },
+    { icon: Award, text: `${completionRate}% Completion` },
+    { icon: Clock, text: `${averageResponse} response` },
+  ];
+
+  const actions = [
+    { icon: Heart, text: "Save", variant: "light" },
+    { icon: Share, text: "Share", variant: "light" },
+    { icon: Envelope, text: "Message", variant: "light" },
+  ];
+
+  const getRoleBadgeVariant = (role) => {
+    switch (role.toLowerCase()) {
+      case "freelancer":
+        return "primary";
+      case "client":
+        return "success";
+      case "admin":
+        return "danger";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
-    <div className="profile-header text-center fade-in-up">
+    <div className="profile-header text-center">
       <Container>
         <div className="profile-pic-container mb-4">
           <Image
             src={profileImage}
             roundedCircle
             className="profile-avatar"
-            alt="Profile Picture"
+            alt={name}
           />
-          <span className="position-absolute profile-status-dot bg-success rounded-circle"></span>
+          <span className="profile-status-dot" />
         </div>
-        
-        <h2 className="mt-3 mb-1 fw-bold">{name}</h2>
-        <div className="profile-title mb-3">{title}</div>
-        
-        <div className="d-flex justify-content-center align-items-center mb-4">
+
+        <h2 className="fw-bold mb-1">
+          {name}
+          <Badge
+            bg={getRoleBadgeVariant(role)}
+            className="ms-2 role-badge text-capitalize"
+            size="sm"
+            pill>
+            <PersonBadge size={12} className="me-1" />
+            {role}
+          </Badge>
+        </h2>
+        <div className="text-muted mb-3">{title}</div>
+
+        <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">
             <GeoAlt size={18} className="me-2" />
-            <span>{location}</span>
+            {location}
           </span>
           <span className="profile-badge">
             <Calendar3 size={18} className="me-2" />
-            <span>Member since {new Date().getFullYear()}</span>
+            Member since {new Date().getFullYear()}
           </span>
         </div>
-        
+
         <Row className="justify-content-center mb-4">
           <Col xs={12} md={8}>
-            <div className="d-flex flex-wrap justify-content-center">
-              <span className="profile-badge">
-                <Star size={18} className="me-2" /> 
-                <span>
-                  {typeof averageRating === 'number' ? averageRating.toFixed(1) : '0.0'} 
-                  <small className="ms-1">({numberOfReviews} reviews)</small>
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {stats.map(({ icon: Icon, text }, idx) => (
+                <span key={idx} className="profile-badge">
+                  <Icon size={18} className="me-2" />
+                  {text}
                 </span>
-              </span>
-              <span className="profile-badge">
-                <Award size={18} className="me-2" /> 
-                <span>{completionRate}% Completion</span>
-              </span>
-              <span className="profile-badge">
-                <Clock size={18} className="me-2" /> 
-                <span>{averageResponse} response</span>
-              </span>
+              ))}
             </div>
           </Col>
         </Row>
-        
-        <div className="d-flex flex-wrap justify-content-center gap-2 mt-2">
-          <Button variant="light" className="px-3 py-2 rounded-pill shadow-sm">
-            <Heart size={18} className="me-2" /> Save
-          </Button>
-          <Button variant="light" className="px-3 py-2 rounded-pill shadow-sm">
-            <Share size={18} className="me-2" /> Share
-          </Button>
-          <Button variant="light" className="px-3 py-2 rounded-pill shadow-sm">
-            <Envelope size={18} className="me-2" /> Message
-          </Button>
-          
+
+        <div className="d-flex flex-wrap justify-content-center gap-2">
+          {actions.map(({ icon: Icon, text, variant }, idx) => (
+            <Button key={idx} variant={variant} className="action-btn">
+              <Icon size={18} className="me-2" />
+              {text}
+            </Button>
+          ))}
+
           {isMyProfile ? (
-            <Button 
-              variant="success"
-              className="contact-btn shadow-sm"
+            <Button
               as={Link}
-              to="/edit-profile"
-            >
-              <Pencil size={18} className="me-2" /> Edit Profile
+              to={`/profile/edit/${id}`}
+              variant="success"
+              className="action-btn">
+              <Pencil size={18} className="me-2" />
+              Edit Profile
             </Button>
           ) : (
-            <Button 
-              variant="primary" 
-              className="contact-btn shadow-sm"
+            <Button
               as={Link}
-              to={`/chat?user=${profileData.id || 0}`}
-            >
-              <ChatDots size={18} className="me-2" /> Contact
+              to={`/chat?user=${id}`}
+              variant="primary"
+              className="action-btn">
+              <ChatDots size={18} className="me-2" />
+              Contact
             </Button>
           )}
         </div>
