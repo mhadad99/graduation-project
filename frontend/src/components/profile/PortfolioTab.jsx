@@ -1,76 +1,90 @@
-import React, { useState } from 'react';
-import { 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
-  Badge, 
-  Modal, 
-  Form,
-  Alert
-} from 'react-bootstrap';
-import { 
-  Plus, 
-  Trash, 
-  Link45deg, 
-  Collection 
-} from 'react-bootstrap-icons';
+/** @format */
 
-const PortfolioTab = ({ portfolioItems = [], isMyProfile, isLoading, onAddItem, onDeleteItem }) => {
+import React, { useState } from "react";
+import { Row, Col, Card, Button } from "react-bootstrap";
+import { Plus, Collection } from "react-bootstrap-icons";
+import PortfolioCard from "../cards/PortfolioCard";
+import AddProjectModal from "../modals/AddProjectModal";
+import '../../styles/components/PortfolioTab.css';
+const PortfolioTab = ({
+  portfolioItems = [],
+  isMyProfile ,
+  isLoading,
+  onAddItem,
+  onDeleteItem,
+}) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPortfolioItem, setNewPortfolioItem] = useState({
-    title: '',
-    description: '',
-    image: '',
-    link: '',
-    tags: ''
+    title: "",
+    description: "",
+    image: "",
+    link: "",
+    tags: "",
+    category: "",
   });
-  
+
+  // Add category options
+  const categories = [
+    "Full Stack Development",
+    "Web Application",
+    "Cloud Solutions",
+    "API Development",
+    "DevOps",
+    "AI/ML Integration",
+  ];
+
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     }).format(date);
   };
-  
+
   // Handle input change for new portfolio item
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewPortfolioItem(prev => ({
+    setNewPortfolioItem((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
-  
+
   // Add new portfolio item
   const handleAddPortfolioItem = () => {
     // Convert tags string to array
     const tagsArray = newPortfolioItem.tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag !== '');
-    
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== "");
+
     const newItem = {
       ...newPortfolioItem,
+      id: Date.now(), // temporary ID
       tags: tagsArray,
+      createdAt: new Date().toISOString(),
     };
-    
+
     onAddItem(newItem);
-    
+
     // Reset form and close modal
     setNewPortfolioItem({
-      title: '',
-      description: '',
-      image: '',
-      link: '',
-      tags: ''
+      title: "",
+      description: "",
+      image: "",
+      link: "",
+      tags: "",
+      category: "",
     });
     setShowAddModal(false);
   };
-  
+
+  const sortedPortfolioItems = [...portfolioItems].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   if (isLoading) {
     return (
       <div className="text-center py-4">
@@ -81,179 +95,74 @@ const PortfolioTab = ({ portfolioItems = [], isMyProfile, isLoading, onAddItem, 
       </div>
     );
   }
-  
+
   return (
-    <div>
+    <div className="portfolio-tab">
       <Row className="mb-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h4 className="fw-bold mb-0">Portfolio</h4>
-            {isMyProfile && (
-              <Button 
-                variant="primary" 
+            {!isMyProfile && (
+              <Button
+                variant="primary"
                 className="d-flex align-items-center"
-                onClick={() => setShowAddModal(true)}
-              >
+                onClick={() => setShowAddModal(true)}>
                 <Plus className="me-2" /> Add Project
               </Button>
             )}
           </div>
         </Col>
       </Row>
-      
+
       {portfolioItems.length > 0 ? (
         <Row xs={1} md={2} lg={3} className="g-4">
-          {portfolioItems.map(item => (
+          {sortedPortfolioItems.map((item) => (
             <Col key={item.id}>
-              <Card className="h-100 portfolio-card border-0 shadow-sm">
-                <div className="position-relative">
-                  <Card.Img 
-                    variant="top" 
-                    src={item.image} 
-                    alt={item.title} 
-                    className="portfolio-img"
-                    style={{ height: '200px', objectFit: 'cover' }}
-                  />
-                  {isMyProfile && (
-                    <Button 
-                      variant="danger" 
-                      size="sm" 
-                      className="position-absolute top-0 end-0 m-2"
-                      onClick={() => onDeleteItem(item.id)}
-                    >
-                      <Trash />
-                    </Button>
-                  )}
-                </div>
-                <Card.Body>
-                  <Card.Title className="h5 fw-bold">{item.title}</Card.Title>
-                  <Card.Text className="text-muted">{item.description}</Card.Text>
-                  <div className="mb-3">
-                    {item.tags.map((tag, idx) => (
-                      <Badge key={idx} bg="light" text="dark" className="me-1 mb-1">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <small className="text-muted">{item.createdAt && formatDate(item.createdAt)}</small>
-                    <a 
-                      href={item.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline-primary"
-                    >
-                      <Link45deg className="me-1" /> View Project
-                    </a>
-                  </div>
-                </Card.Body>
-              </Card>
+              <PortfolioCard
+                item={item}
+                isMyProfile={isMyProfile}
+                onDelete={onDeleteItem}
+                formatDate={formatDate}
+              />
             </Col>
           ))}
         </Row>
       ) : (
         <Card className="border-0 shadow-sm">
           <Card.Body className="text-center py-5">
-            <Collection size={48} className="text-muted mb-3" />
-            <h5>No portfolio items yet</h5>
-            {isMyProfile ? (
+            <Collection size={48} className="empty-state-icon mb-3" />
+            <h5 className="text-muted">No portfolio items yet</h5>
+            {!isMyProfile ? (
               <div>
-                <p className="text-muted mb-3">Showcase your work by adding projects to your portfolio</p>
-                <Button 
+                <p className="text-muted mb-3">
+                  Start showcasing your best work! Add your first project to
+                  attract potential clients.
+                </p>
+                <Button
                   variant="primary"
+                  size="lg"
                   onClick={() => setShowAddModal(true)}
-                >
+                  className="d-inline-flex align-items-center">
                   <Plus className="me-2" /> Add Your First Project
                 </Button>
               </div>
             ) : (
-              <p className="text-muted">This user hasn't added any portfolio items yet</p>
+              <p className="text-muted">
+                This freelancer hasn't added any portfolio items yet.
+              </p>
             )}
           </Card.Body>
         </Card>
       )}
-      
-      {/* Add Portfolio Item Modal */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Add Portfolio Item</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Project Title</Form.Label>
-              <Form.Control
-                type="text"
-                name="title"
-                value={newPortfolioItem.title}
-                onChange={handleInputChange}
-                placeholder="Enter project title"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                value={newPortfolioItem.description}
-                onChange={handleInputChange}
-                placeholder="Enter project description"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Image URL</Form.Label>
-              <Form.Control
-                type="text"
-                name="image"
-                value={newPortfolioItem.image}
-                onChange={handleInputChange}
-                placeholder="Enter image URL"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Project URL</Form.Label>
-              <Form.Control
-                type="text"
-                name="link"
-                value={newPortfolioItem.link}
-                onChange={handleInputChange}
-                placeholder="Enter project URL"
-                required
-              />
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Tags (comma separated)</Form.Label>
-              <Form.Control
-                type="text"
-                name="tags"
-                value={newPortfolioItem.tags}
-                onChange={handleInputChange}
-                placeholder="React, Node.js, MongoDB"
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
-            Cancel
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleAddPortfolioItem}
-            disabled={!newPortfolioItem.title || !newPortfolioItem.description || !newPortfolioItem.image}
-          >
-            Add Project
-          </Button>
-        </Modal.Footer>
-      </Modal>
+
+      <AddProjectModal
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        onSubmit={handleAddPortfolioItem}
+        formData={newPortfolioItem}
+        onChange={handleInputChange}
+        categories={categories}
+      />
     </div>
   );
 };

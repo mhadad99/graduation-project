@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Form, Button, Badge } from "react-bootstrap";
 import { StarFill, Star, PersonCircle } from "react-bootstrap-icons";
-import '../../styles/components/ReviewsTab.css';
+import "../../styles/components/ReviewsTab.css";
 
 const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
   const [newReview, setNewReview] = useState({
@@ -22,7 +22,7 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
     ? (
         reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length
       ).toFixed(1)
-    : 0;
+    : "0.0";
 
   return (
     <div className="reviews-tab">
@@ -62,7 +62,7 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
         </Card.Body>
       </Card>
 
-      {/* Reviews List */} 
+      {/* Reviews List */}
       <div className="reviews-list mb-4 ">
         {reviews.map((review) => (
           <Card key={review.id} className="border-0 shadow-sm mb-3 ">
@@ -70,7 +70,9 @@ const ReviewsTab = ({ reviews = [], onSubmitReview, isMyProfile }) => {
               <div className="d-flex align-items-center mb-3">
                 <PersonCircle size={40} className="text-secondary me-3" />
                 <div>
-                  <h6 className="mb-0 fw-semibold text-muted">{review.author}</h6>
+                  <h6 className="mb-0 fw-semibold text-muted">
+                    {review.author}
+                  </h6>
                   <div className="d-flex align-items-center">
                     {[...Array(5)].map((_, index) => (
                       <StarFill

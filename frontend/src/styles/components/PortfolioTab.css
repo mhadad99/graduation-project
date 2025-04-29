@@ -1,0 +1,33 @@
+.portfolio-tab {
+    color: var(--color-text);
+    padding: 1rem 0;
+}
+
+.view-project-btn {
+    color: var(--color-btn-primary);
+    border-color: var(--color-btn-primary);
+}
+
+.view-project-btn:hover {
+    background: var(--color-btn-primary);
+    color: white;
+}
+
+.empty-state-icon {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+.category-badge {
+    background: var(--color-btn-primary);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 1rem;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .category-badge {
+    background: var(--color-btn-primary);
+    color: white;
+}
