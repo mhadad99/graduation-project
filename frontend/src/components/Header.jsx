@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
@@ -22,7 +24,7 @@ import {
   FaMoon,
   FaSun,
 } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { ChatDots } from "react-bootstrap-icons";
 import "../styles/header.css"; // Import your CSS file
 import { useDispatch, useSelector } from "react-redux";
@@ -38,7 +40,7 @@ export const Header = () => {
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login'); // Redirect to the login page
+    navigate("/login"); // Redirect to the login page
   };
 
   // Redux state for theme management
@@ -281,17 +283,25 @@ export const Header = () => {
           <div className="d-flex align-items-center">
             {/* Logo */}
             <Navbar.Brand href="/" className="me-4">
-              <img
-                src="/logo/logo3.png"
-                alt="Logo"
-                height="60"
-                width={120}
-                className="d-inline-block align-top"
-              />
+              <svg width="120" height="40" viewBox="0 0 120 40">
+                <text
+                  x="10"
+                  y="30"
+                  className="logo-text"
+                  style={{
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "24px",
+                  }}>
+                  <tspan fill="#ffffff">Tan</tspan>
+                  <tspan fill="#0d6efd">feez</tspan>
+                  <tspan fill="#20c997">.</tspan>
+                </text>
+              </svg>
             </Navbar.Brand>
 
             {/* Categories Dropdown */}
-            <div ref={refs.categories} className="me-3">
+            {/* <div ref={refs.categories} className="me-3">
               <Button
                 variant="outline-light"
                 size="sm"
@@ -300,7 +310,7 @@ export const Header = () => {
                 aria-expanded={dropdowns.categories}>
                 Categories
               </Button>
-            </div>
+            </div> */}
 
             {/* Add Service Button - Only show when logged in */}
             {isLoggedIn && (
@@ -344,7 +354,7 @@ export const Header = () => {
                 </button>
               </div>
 
-              {/* Search Button */}
+              {/* Search Button
               <div ref={refs.search} className="position-relative icon-wrapper">
                 <Nav.Link
                   onClick={() => toggleDropdown("search")}
@@ -352,7 +362,7 @@ export const Header = () => {
                   aria-label="Search">
                   <FaSearch />
                 </Nav.Link>
-              </div>
+              </div> */}
 
               {/* Shopping Cart */}
               <div className="icon-wrapper">
@@ -368,7 +378,7 @@ export const Header = () => {
               {!isLoggedIn && (
                 <div className="d-flex align-items-center auth-buttons">
                   <Link
-                    to={'register'}
+                    to={"register"}
                     variant="outline-secondary"
                     size="sm"
                     className="me-2 text-white border-0 signup-btn">
@@ -424,8 +434,9 @@ export const Header = () => {
                               {notifications.map((notification) => (
                                 <div
                                   key={notification.id}
-                                  className={`notification-item p-2 border-bottom ${notification.unread ? "bg-light" : ""
-                                    }`}>
+                                  className={`notification-item p-2 border-bottom ${
+                                    notification.unread ? "bg-light" : ""
+                                  }`}>
                                   <div className="d-flex justify-content-between">
                                     <span className="notification-content">
                                       {notification.content}
@@ -467,8 +478,7 @@ export const Header = () => {
                       // onClick={() => toggleDropdown("messages")}
                       className="nav-icon"
                       aria-label="Messages"
-                      to={isLoggedIn ? "/chat" : "/chat"}
-                    >
+                      to={isLoggedIn ? "/chat" : "/chat"}>
                       <FaEnvelope />
                       {/* {renderBadge(messages)} */}
                     </NavLink>
@@ -531,7 +541,6 @@ export const Header = () => {
                     <Nav.Link
                       href="#incoming"
                       className="nav-icon incoming-requests">
-                      <FaTruck />{" "}
                       <span className="d-none d-xl-inline ms-1">
                         Incoming requests
                       </span>
@@ -586,11 +595,22 @@ export const Header = () => {
                             {profileMenuOptions.map((option, idx) => (
                               <Nav.Link
                                 key={idx}
-                                onClick={option.text === 'Logout' ? handleLogout : undefined} // Call handleLogout for Logout
-                                href={option.text !== 'Logout' ? `/${option.text.toLowerCase().replace(/ /g, '-')}` : undefined}
-                                className="px-3 py-2 text-dark menu-item"
-                              >
-                                <span className="menu-icon me-2">{option.icon}</span>
+                                onClick={
+                                  option.text === "Logout"
+                                    ? handleLogout
+                                    : undefined
+                                } // Call handleLogout for Logout
+                                href={
+                                  option.text !== "Logout"
+                                    ? `/${option.text
+                                        .toLowerCase()
+                                        .replace(/ /g, "-")}`
+                                    : undefined
+                                }
+                                className="px-3 py-2 text-dark menu-item">
+                                <span className="menu-icon me-2">
+                                  {option.icon}
+                                </span>
                                 {option.text}
                               </Nav.Link>
                             ))}
@@ -666,7 +686,7 @@ export const Header = () => {
       </Navbar>
 
       {/* Full-width Search Dropdown */}
-      {dropdowns.search && (
+      {/* {dropdowns.search && (
         <div className="position-absolute w-100 bg-light shadow-sm py-3 search-dropdown">
           <Container>
             <Form className="d-flex">
@@ -683,9 +703,9 @@ export const Header = () => {
             </Form>
           </Container>
         </div>
-      )}
+      )} */}
 
-      {/* Categories Dropdown */}
+      {/* Categories Dropdown
       {dropdowns.categories && (
         <div className="position-absolute w-100 bg-white shadow-sm py-3 categories-dropdown">
           <Container>
@@ -715,7 +735,7 @@ export const Header = () => {
             </div>
           </Container>
         </div>
-      )}
+      )} */}
     </header>
   );
 };
