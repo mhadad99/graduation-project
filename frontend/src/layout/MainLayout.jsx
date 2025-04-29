@@ -41,8 +41,7 @@ export function MainLayout() {
           <Route path="add/service" element={<CreateService />} />
           <Route path="profile/:id" element={<UserProfile />} />
           <Route path="profile/edit/:id" element={<EditProfile />} />
-          <Route path="/services/:serviceSlug" element={<ServiceDetailsPage />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/services/:id" element={<ServiceDetailsPage />} />          <Route path="/about" element={<About />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="chat" element={<Chat />} />
         <Route path="chat/:conversationId" element={<Chat />} />
