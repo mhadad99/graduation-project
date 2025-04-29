@@ -25,16 +25,17 @@ class LoginView(APIView):
             email=serializer.validated_data["email"],
             password=serializer.validated_data["password"],
         )
-        if not user:
+        if not user or user.is_deleted:
             return Response(
                 {"detail": "Invalid credentials"}, status=status.HTTP_403_FORBIDDEN
             )
-
+        user_data = UserOutSerializer(user).data
         refresh = RefreshToken.for_user(user)
         return Response(
             {
                 "access_token": str(refresh.access_token),
                 "token_type": "bearer",
+                "user": user_data,
             }
         )
 
