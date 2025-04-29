@@ -121,7 +121,9 @@
         color: var(--color-text-muted) !important;
         opacity: 0.9;
     }
-
+    .language-title {
+        color: var(--color-text-inverse);
+    }
     .about-tab .badge {
         background: var(--color-card-bg);
         color: var(--color-text-inverse);

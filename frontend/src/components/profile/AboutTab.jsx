@@ -76,7 +76,7 @@ const AboutTab = ({ profileData, isMyProfile }) => {
             <h6 className="mt-4 mb-3">Languages</h6>
             {languages.map((lang, index) => (
               <div key={index} className="mb-2">
-                <span className="fw-medium">{lang.name}</span>
+                <span className="fw-medium language-title">{lang.name}</span>
                 <span className="text-muted ms-2">({lang.level})</span>
               </div>
             ))}
