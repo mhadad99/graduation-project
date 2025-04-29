@@ -15,9 +15,17 @@
   letter-spacing: 0.5px;
 }
 
-.tan { color: var(--color-text-inverse); }
-.feez { color: var(--primary-400); }
-.accent-dot { color: var(--accent-400); }
+.tan {
+  color: var(--color-text-inverse);
+}
+
+.feez {
+  color: var(--primary-400);
+}
+
+.accent-dot {
+  color: var(--accent-400);
+}
 
 /* Navigation buttons */
 .add-service-btn,
@@ -57,6 +65,19 @@
   background: var(--color-dropdown-hover);
   color: var(--primary-400) !important;
   transform: translateY(-1px);
+}
+
+/* Add this after your existing nav-icon styles */
+.incoming-requests {
+  border-radius: 0 !important;
+  color: var(--color-text-inverse) !important;
+  transition: var(--theme-transition);
+}
+
+.incoming-requests:hover {
+  background: transparent !important;
+  color: var(--primary-400) !important;
+  transform: none !important;
 }
 
 /* Profile image */
@@ -152,6 +173,7 @@
     opacity: 0;
     transform: translateY(-16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

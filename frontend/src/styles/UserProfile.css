@@ -207,6 +207,22 @@
   opacity: 1;
 }
 
+.role-badge {
+  font-size: 0.9rem !important;
+  padding: 0.35rem 0.75rem !important;
+  font-weight: 500 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  box-shadow: var(--shadow-sm);
+  line-height: 1;
+}
+
+.role-badge svg {
+  width: 12px;
+  height: 12px;
+  margin-top: -1px;
+}
+
 /* Dark mode adjustments */
 [data-theme="dark"] {
   .profile-header {
@@ -259,7 +275,14 @@
     background: var(--color-card-bg);
   }
 
-  .testimonial-text, p , h1, h2, h3, h4, h5, h6 {
+  .testimonial-text,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: var(--color-text);
   }
 
@@ -279,6 +302,9 @@
     color: var(--color-text);
   }
 
+  .role-badge {
+    opacity: 0.9;
+  }
 }
 
 /* Animations */
