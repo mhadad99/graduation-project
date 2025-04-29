@@ -25,6 +25,13 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    # User roles
+    USER_TYPES = (
+        ('none', 'None'),  # Default: No role assigned
+        ('freelancer', 'Freelancer'),
+        ('client', 'Client'),
+    )
+
     first_name = models.CharField(max_length=255)
     second_name = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(unique=True)
@@ -38,6 +45,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_deleted = models.BooleanField(default=False)
     is_registered = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
+
+    # New field to track user role
+    user_type = models.CharField(
+        max_length=10,
+        choices=USER_TYPES,
+        default='none',
+        help_text="Tracks whether the user is a freelancer, client, or neither."
+    )
 
     objects = CustomUserManager()
 

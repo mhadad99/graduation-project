@@ -10,9 +10,9 @@ from .views import (
 urlpatterns = [
     path("all/", FreelancerListView.as_view(), name="freelancer-list"),
     path('create/', FreelancerCreateView.as_view(), name='freelancer-create'),
-    path('detail/<int:uid>/', FreelancerDetailView.as_view(), name='freelancer-detail'),
-    path('update/<int:uid>/', FreelancerUpdateView.as_view(), name='freelancer-update'),
-    path('delete/<int:uid>/', FreelancerDeleteView.as_view(), name='freelancer-delete'),
+    path('detail/', FreelancerDetailView.as_view(), name='freelancer-detail'),
+    path('update/', FreelancerUpdateView.as_view(), name='freelancer-update'),
+    path('delete/', FreelancerDeleteView.as_view(), name='freelancer-delete'),
     
 ]
 
