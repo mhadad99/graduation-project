@@ -27,9 +27,9 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     # User roles
     USER_TYPES = (
-        ('none', 'None'),  # Default: No role assigned
-        ('freelancer', 'Freelancer'),
-        ('client', 'Client'),
+        ("none", "None"),  # Default: No role assigned
+        ("freelancer", "Freelancer"),
+        ("client", "Client"),
     )
 
     first_name = models.CharField(max_length=255)
@@ -38,7 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=255)
     selfie_verification = models.TextField(null=True, blank=True)
     user_name = models.CharField(max_length=255, unique=True)
-    photo = models.TextField(null=True, blank=True)
+    photo = models.ImageField(upload_to="profile_photos/", blank=True, null=True)
     birth_date = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -50,8 +50,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     user_type = models.CharField(
         max_length=10,
         choices=USER_TYPES,
-        default='none',
-        help_text="Tracks whether the user is a freelancer, client, or neither."
+        default="none",
+        help_text="Tracks whether the user is a freelancer, client, or neither.",
     )
 
     objects = CustomUserManager()
