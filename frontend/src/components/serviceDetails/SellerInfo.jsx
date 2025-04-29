@@ -1,37 +1,55 @@
-import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Image from 'react-bootstrap/Image';
-import Stack from 'react-bootstrap/Stack';
-import Badge from 'react-bootstrap/Badge';
-// import { StarFill } from 'react-bootstrap-icons';
+/** @format */
 
-const seller = {
-  name: 'Alexandra King',
-  avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-  location: 'New York, USA',
-  rating: 4.9,
-  reviews: 128,
-  bio: `Award-winning graphic designer with a decade of experience creating custom logos and branding for startups and established businesses alike. Passionate about delivering creative vision and exceeding your expectations.`,
-  topRated: true
-};
+import React from "react";
+import { Card, Image, Stack, Badge } from "react-bootstrap";
 
-export default function SellerInfo() {
+export default function SellerInfo({ freelancer }) {
+  const {
+    name,
+    avatar,
+    level,
+    totalProjects,
+    responseTime,
+    description,
+    skills,
+  } = freelancer;
+
   return (
-    <Card className="mb-3 p-3 align-items-center flex-row gap-4 border-0 shadow-sm" style={{background: '#f8fafc'}}>
-      <Image src={seller.avatar} roundedCircle width={72} height={72} alt="Seller Avatar" style={{objectFit: 'cover', border: '2px solid #d8e6fc'}} />
-      <Stack gap={1} style={{flex: 1}}>
-        <div className="d-flex align-items-center gap-2">
-          <span className="fw-semibold" style={{fontSize: '1.12rem'}}>{seller.name}</span>
-          {seller.topRated && <Badge bg="success" className="ms-1">Top Rated</Badge>}
+    <Card className="border-0 shadow-sm">
+      <Card.Body>
+        <div className="d-flex gap-4">
+          <Image
+            src={avatar}
+            roundedCircle
+            width={72}
+            height={72}
+            className="seller-avatar"
+          />
+          <div className="flex-grow-1">
+            <div className="d-flex align-items-center gap-2 mb-2">
+              <h5 className="mb-0 ">{name}</h5>
+              <Badge bg="primary">{level}</Badge>
+            </div>
+            <div className="text-muted mb-3">
+              <small>
+                {totalProjects} Projects · {responseTime} Response Time
+              </small>
+            </div>
+            <p className="mb-3">{description}</p>
+            <div className="d-flex flex-wrap gap-2">
+              {skills.map((skill, index) => (
+                <Badge
+                  key={index}
+                  bg="light"
+                  text="dark"
+                  className="skill-badge">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="d-flex align-items-center gap-2">
-          {/* <StarFill color="#f8a800" size={18} /><span className="fw-bold">{seller.rating}</span> */}
-          <span className="text-secondary">({seller.reviews} reviews)</span>
-          <span className="mx-2 text-muted">·</span>
-          <span className="text-muted">{seller.location}</span>
-        </div>
-        <div className="text-secondary mt-1" style={{fontSize: '0.97rem', lineHeight: 1.5}}>{seller.bio}</div>
-      </Stack>
+      </Card.Body>
     </Card>
   );
 }
