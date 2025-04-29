@@ -1,0 +1,242 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 2rem;
+  margin-top: 0%;
+}
+
+.logo-container {
+  /* margin-bottom: 1.5rem; */
+  text-align: center;
+  /* margin: 10px auto; */
+}
+
+input::placeholder {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  opacity: 0.8;
+}
+
+input.form-control.is-valid {
+  background-image: none !important;
+}
+
+.logo {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
+}
+
+.login-card {
+  background: var(--color-card-bg);
+  padding: 3rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  width: 90%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.login-card h2 {
+  color: var(--color-text);
+}
+
+.form-label {
+  color: var(--color-text);
+}
+
+.form-control {
+  background-color: var(--color-input-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.form-control:focus {
+  background-color: var(--color-input-bg) !important;
+  border-color: var(--primary-400) !important;
+  box-shadow: 0 0 0 0.2rem var(--primary-100) !important;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  margin: 2rem 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider-text {
+  padding: 0 1rem;
+  color: var(--color-text-muted);
+}
+
+.social-buttons {
+  margin: 2rem 0;
+}
+
+.signup-prompt a {
+  color: var(--primary-500);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--primary-500);
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.signup-prompt a:hover {
+  background-color: var(--primary-500);
+  color: var(--color-white);
+}
+
+.invalid-feedback {
+  color: var(--danger-500);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.is-invalid {
+  border-color: var(--danger-500) !important;
+}
+
+.continue-btn {
+  background: var(--primary-500);
+  color: var(--color-white);
+  font-weight: 500;
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+  background: var(--primary-600);
+  color: var(--color-white);
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    padding: 2rem;
+  }
+
+  .logo {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+.app {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.text-primary {
+  color: var(--primary-500) !important;
+}
+
+.btn-success {
+  background-color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+  color: var(--color-white) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-500) !important;
+  border-bottom: 3px solid var(--primary-500) !important;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.text-success {
+  color: var(--primary-500) !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.signup-page {
+  background-color: var(--color-background);
+  transition: background 0.3s;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .signup-page {
+  background-color: var(--color-background);
+}
+
+[data-theme="dark"] .btn-success {
+  background-color: var(--primary-400) !important;
+  border-color: var(--primary-400) !important;
+}
+
+[data-theme="dark"] .btn-success:hover,
+[data-theme="dark"] .btn-success:focus {
+  background-color: var(--primary-300) !important;
+  border-color: var(--primary-300) !important;
+}
+
+[data-theme="dark"] .text-primary,
+[data-theme="dark"] .text-success {
+  color: var(--primary-400) !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  color: var(--primary-400) !important;
+  border-bottom: 3px solid var(--primary-400) !important;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] {
+  .login-card {
+    background: var(--color-card-bg);
+    border-color: var(--color-border);
+  }
+
+  .form-control {
+    background-color: var(--color-card-bg) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+  }
+
+  .form-control:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-900) !important;
+  }
+
+  .signup-prompt a {
+    color: var(--primary-400);
+    border-color: var(--primary-400);
+  }
+
+  .signup-prompt a:hover {
+    background-color: var(--primary-400);
+    color: var(--color-white);
+  }
+
+  .continue-btn {
+    background: var(--primary-600);
+  }
+
+  .continue-btn:hover {
+    background: var(--primary-500);
+  }
+
+  .logo {
+    filter: brightness(0.9);
+  }
+}

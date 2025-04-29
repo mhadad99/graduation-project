@@ -1,0 +1,229 @@
+.hc-services-container {
+  background-color: var(--color-background);
+  padding: 4rem 0;
+}
+
+.hc-service-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.hc-service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.hc-card-img-container {
+  height: 300px;
+  position: relative;
+  background: var(--color-background);
+}
+
+.hc-service-img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hc-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(0, 0, 0, 0.7));
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+
+.hc-card-title {
+  color: white !important;
+  /* Keep white for overlay text */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  z-index: 2;
+}
+
+.hc-services-section {
+  background-color: var(--color-background);
+}
+
+.hc-section-title {
+  color: var(--color-text);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  position: relative;
+  text-align: center;
+}
+
+.hc-section-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--primary-500);
+  margin: 0.5rem auto 0;
+}
+
+.hc-feature-card {
+  background: var(--color-card-bg);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-border);
+}
+
+.hc-feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.hc-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-100);
+  border-radius: 50%;
+  color: var(--primary-500);
+  font-size: 1.75rem;
+}
+
+.hc-feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.hc-feature-description {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.hc-dev1 {
+  text-align: center;
+  margin: 2rem auto;
+  text-decoration: none;
+  color: var(--primary-500);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.hc-dev1:hover {
+  color: var(--primary-600);
+}
+
+.hc-why-choose-us {
+  background: var(--color-background);
+  padding: 4rem 0;
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] {
+  .hc-service-card {
+    background: var(--color-card-bg);
+    border-color: var(--color-border);
+  }
+
+  .hc-card-overlay {
+    background: linear-gradient(to bottom,
+        transparent,
+        rgba(0, 0, 0, 0.85));
+  }
+
+  .hc-icon-wrapper {
+    background: var(--primary-900);
+    color: var(--primary-400);
+  }
+
+  .hc-feature-card {
+    background: var(--color-card-bg);
+    border-color: var(--color-border);
+  }
+
+  .hc-dev1 {
+    color: var(--primary-400);
+  }
+
+  .hc-dev1:hover {
+    color: var(--primary-300);
+  }
+
+  .hc-services-section {
+    background-color: var(--color-background);
+  }
+
+  .hc-icon-container {
+    color: var(--primary-400);
+  }
+
+  .hc-service-title {
+    color: var(--color-text);
+  }
+
+  .hc-section-title::after {
+    background: var(--primary-400);
+  }
+
+  .hc-feature-description {
+    color: var(--color-text-muted);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+  .hc-section-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hc-section-title {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .hc-card-img-container {
+    height: 250px;
+  }
+
+  .hc-feature-card {
+    padding: 1.5rem;
+  }
+
+  .hc-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+.hc-icon-container {
+  color: var(--primary-500);
+  margin-bottom: 1.5rem !important;
+}
+
+.hc-service-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.hc-service-card {
+  cursor: pointer;
+}

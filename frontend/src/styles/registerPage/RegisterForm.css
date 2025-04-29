@@ -1,0 +1,43 @@
+.signup-tabs .nav-link {
+  text-align: center;
+  padding: 15px;
+  border-radius: 0;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: color 0.2s;
+}
+
+.signup-tabs .nav-link.active {
+  color: var(--primary-500);
+  border-bottom: 3px solid var(--primary-500);
+  background: transparent;
+}
+
+.signup-tabs {
+  text-align: center;
+  background: var(--color-card-bg);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 30px 0;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .signup-tabs {
+  background: var(--color-card-bg);
+}
+
+[data-theme="dark"] .signup-tabs .nav-link {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .signup-tabs .nav-link.active {
+  color: var(--primary-400);
+  border-bottom: 3px solid var(--primary-400);
+}
+
+[data-theme="dark"] .divider {
+  background-color: var(--color-border);
+}

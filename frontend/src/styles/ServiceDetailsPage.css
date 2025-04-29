@@ -1,0 +1,114 @@
+.service-details-page {
+    background-color: var(--color-background);
+    min-height: calc(100vh - 72px);
+    padding-top: 72px;
+}
+
+.details-section {
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.service-header {
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.cover-image {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+}
+
+.header-content {
+    padding: 2rem;
+    background: var(--color-card-bg);
+}
+
+.breadcrumb-custom {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-custom .breadcrumb-item {
+    color: var(--color-text-muted);
+}
+
+.breadcrumb-custom .breadcrumb-item.active {
+    color: var(--color-text);
+}
+
+.service-title {
+    color: var(--color-text);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.freelancer-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.freelancer-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-200);
+}
+
+.pricing-box {
+    position: sticky;
+    top: 92px;
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+}
+
+.service-content {
+    padding: 2rem;
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.reviews-section {
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.portfolio-gallery {
+    background: var(--color-card-bg);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .service-details-page {
+    background: var(--color-background);
+}
+
+[data-theme="dark"] .details-section,
+[data-theme="dark"] .pricing-box,
+[data-theme="dark"] .service-content,
+[data-theme="dark"] .reviews-section,
+[data-theme="dark"] .portfolio-gallery {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .breadcrumb-custom .breadcrumb-item {
+    color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .breadcrumb-custom .breadcrumb-item.active {
+    color: var(--primary-400);
+}
