@@ -9,9 +9,14 @@ from django.contrib.auth.hashers import make_password
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a new user.
+    Automatically validates and hashes the password.
+    """
     user_type = serializers.ChoiceField(
-        choices=CustomUser.USER_TYPES[1:]
-    )  # exclude 'none'
+        choices=CustomUser.USER_TYPES[1:],  # Exclude 'none'
+        help_text="The type of user (freelancer or client)."
+    )
 
     class Meta:
         model = CustomUser
@@ -29,15 +34,21 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "user_type",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password": {"write_only": True},  # Ensure password is not returned in responses
         }
 
     def create(self, validated_data):
+        """
+        Create a new CustomUser instance and hash the password.
+        """
         validated_data["password"] = make_password(validated_data["password"])
         return CustomUser.objects.create(**validated_data)
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating an existing user.
+    """
     class Meta:
         model = CustomUser
         fields = [
@@ -55,11 +66,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
+    """
+    Serializer for user login.
+    Validates email and password fields.
+    """
     email = serializers.EmailField()
     password = serializers.CharField()
 
 
 class UserPasswordUpdateSerializer(serializers.Serializer):
+    """
+    Serializer for updating a user's password.
+    Validates the old password and ensures the new passwords match.
+    """
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
     new_password_confirm = serializers.CharField(write_only=True)
@@ -88,12 +107,19 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
 
 
 class UserPhotoUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating a user's profile photo.
+    """
     class Meta:
         model = CustomUser
         fields = ["photo"]
 
 
 class UserOutSerializer(serializers.ModelSerializer):
+    """
+    Serializer for outputting user details.
+    Includes all relevant fields for displaying user information.
+    """
     class Meta:
         model = CustomUser
         fields = [
