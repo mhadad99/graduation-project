@@ -9,11 +9,13 @@ from .serializers import (
 )
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
     queryset = CustomUser.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
 
 
 class LoginView(APIView):

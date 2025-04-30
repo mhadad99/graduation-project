@@ -24,6 +24,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_name",
+            "photo",
             "phone",
             "birth_date",
             "user_type",
