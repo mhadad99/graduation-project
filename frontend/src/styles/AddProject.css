@@ -1,82 +1,193 @@
-.add-project-container {
-    max-width: 600px;
-    max-height: 80%;
-    margin: 3% auto;
-    padding: 30px;
-    background-color: #f9f9f9;
-    border-radius: 15px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .add-project-title {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #0354ac;
-    font-size: 2rem;
+/* Base Layout */
+.page-container {
+  padding: 2rem 0;
+  min-height: calc(100vh - 80px);
+  background: var(--color-background);
+}
 
-  }
-  
-  button.add-project-submit-btn {
-    width: 20%;
-    color: #ecedee;
-    text-align: center;
-    border: none;
-    padding: 15px 5px;
-    font-size: 1.3rem;
-    text-shadow: #333 0px 1px 2px;
-    background-color: #044cb1;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    font-weight: bold;
-    border-radius: 10px;
-    margin: 20px auto;
-   }
-  
-  
-  
-  .add-project-submit-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .add-project-suggestions {
-    z-index: 1000;
-  }
-  .add-project-label {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #333;
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Card Styles */
+.custom-card {
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  background: var(--color-card-bg);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.card-header-custom {
+  padding: 1rem 1.5rem;
+  background: var(--primary-600);
+  color: var(--color-text-inverse);
+  font-weight: 500;
+}
+
+.card-body-custom {
+  padding: 1.5rem;
+}
+
+/* Form Controls */
+.form-control,
+.form-select {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+.input-group-text {
+  background: var(--color-input-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* Skills & Level Selector */
+.level-dropdown {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--color-input-bg);
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.level-dropdown:hover {
+  border-color: var(--primary-500);
+}
+
+.level-dropdown.active {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+.dropdown-icon {
+  transition: transform 0.2s ease;
+  color: var(--color-text-muted);
+}
+
+.dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+.level-options {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: 0.25rem;
+  box-shadow: var(--shadow-md);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.level-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.level-option:hover {
+  background: var(--color-hover);
+}
+
+.level-option.selected {
+  background: var(--primary-500);
+  color: var(--color-text-inverse);
+}
+
+/* Summary Section */
+.sticky-sidebar {
+  position: sticky;
+  top: 92px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+/* Alert Styles */
+.alert {
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  .custom-card {
+    background: var(--color-card-bg-dark);
+    border-color: var(--color-border-dark);
   }
 
+  .card-header-custom {
+    background: var(--primary-700);
+  }
+
+  .form-control,
+  .form-select,
+  .input-group-text,
   .level-dropdown {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 10px;
+    background: var(--color-input-bg-dark);
+    border-color: var(--color-border-dark);
+    color: var(--color-text-inverse);
   }
-  
+
+  .level-dropdown:hover {
+    border-color: var(--primary-400);
+  }
+
+  .level-dropdown.active {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 2px var(--primary-900);
+  }
+
   .level-options {
-    position: absolute;
-    background-color: #e5e5e9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    z-index: 10;
-    padding: 10px;
-    width: 20%;
+    background: var(--color-card-bg-dark);
+    border-color: var(--color-border-dark);
   }
-  
-  .level-option {
-    padding: 8px;
-    cursor: pointer;
-  }
-  
-  .level-option.selected {
-    background-color: #8b9ef1;
-  }
-  
+
   .level-option:hover {
-    background-color: #b6c3fd;
+    background: var(--color-hover-dark);
   }
-  
+
+  .summary-item {
+    border-color: var(--color-border-dark);
+  }
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .sticky-sidebar {
+    position: static;
+    margin-top: 2rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+}

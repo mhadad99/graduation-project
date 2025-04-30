@@ -212,7 +212,7 @@ const CreateService = () => {
             <Col lg={8}>
               <Card className="mb-4 custom-card">
                 <div className="card-header-custom">
-                  <h5 className="mb-0">Basic Information</h5>
+                  <h5 className="mb-0 text-light">Basic Information</h5>
                 </div>
                 <Card.Body className="card-body-custom">
                   <Form.Group className="mb-4">
@@ -311,7 +311,7 @@ const CreateService = () => {
 
               <Card className="mb-4 custom-card">
                 <div className="card-header-custom">
-                  <h5 className="mb-0">Service Description</h5>
+                  <h5 className="mb-0 text-light">Service Description</h5>
                 </div>
                 <Card.Body className="card-body-custom">
                   <Form.Group className="mb-3">
@@ -337,7 +337,7 @@ const CreateService = () => {
             <Col lg={4}>
               <Card className="mb-4 custom-card">
                 <div className="card-header-custom">
-                  <h5 className="mb-0">Media</h5>
+                  <h5 className="mb-0 text-light">Media</h5>
                 </div>
                 <Card.Body className="card-body-custom">
                   <Form.Group className="mb-4">
