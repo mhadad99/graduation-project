@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Image, Button, Row, Col, Badge } from "react-bootstrap";
 import {
@@ -15,10 +15,67 @@ import {
   Envelope,
   Calendar3,
   PersonBadge,
+  Camera,
 } from "react-bootstrap-icons";
 import "../../styles/UserProfile.css";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
+  const fileInputRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const handleAvatarClick = () => {
+    if (isMyProfile) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type and size
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        alert("Please upload a valid image file (JPEG, PNG, or WebP)");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        alert("File size should be less than 5MB");
+        return;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Prepare form data for API
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      try {
+        // TODO: Replace with your API endpoint
+        // const response = await fetch('/api/profile/avatar', {
+        //   method: 'POST',
+        //   body: formData,
+        //   credentials: 'include'
+        // });
+        // if (response.ok) {
+        //   const data = await response.json();
+        //   // Update profile image URL in your state management
+        //   console.log('Avatar updated successfully:', data);
+        // }
+      } catch (error) {
+        console.error("Error uploading avatar:", error);
+        setPreviewImage(null);
+      }
+    }
+  };
+
   if (!profileData) {
     return <div className="profile-header text-center py-5">Loading...</div>;
   }
@@ -67,13 +124,29 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
   return (
     <div className="profile-header text-center">
       <Container>
-        <div className="profile-pic-container mb-4">
+        <div className="profile-pic-container mb-4 position-relative">
           <Image
-            src={profileImage}
+            src={previewImage || profileImage}
             roundedCircle
             className="profile-avatar"
             alt={name}
           />
+          {isMyProfile && (
+            <>
+              <div
+                className="avatar-upload-overlay"
+                onClick={handleAvatarClick}>
+                <Camera size={24} />
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/jpeg,image/png,image/webp"
+                className="d-none"
+              />
+            </>
+          )}
           <span className="profile-status-dot" />
         </div>
 
