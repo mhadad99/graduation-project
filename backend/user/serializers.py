@@ -1,7 +1,7 @@
 from rest_framework import serializers
-
-from client.serializers import ClientCreateSerializer
-from freelancer.serializers import FreelancerCreateSerializer
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError
 from client.models import Client
 from freelancer.models import Freelancer
 from .models import CustomUser
@@ -12,53 +12,85 @@ class UserCreateSerializer(serializers.ModelSerializer):
     user_type = serializers.ChoiceField(
         choices=CustomUser.USER_TYPES[1:]
     )  # exclude 'none'
-    freelancer_data = FreelancerCreateSerializer(required=False)
-    client_data = ClientCreateSerializer(required=False)
 
     class Meta:
         model = CustomUser
         fields = [
-            "id",
             "first_name",
             "second_name",
             "email",
             "password",
             "user_name",
+            "photo",
             "phone",
             "birth_date",
+            "bio",
+            "address",
             "user_type",
-            "freelancer_data",
-            "client_data",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
-            "freelancer_data": {"write_only": True},
-            "client_data": {"write_only": True},
         }
 
     def create(self, validated_data):
-        user_type = validated_data.pop("user_type")
-        freelancer_data = validated_data.pop("freelancer_data", None)
-        client_data = validated_data.pop("client_data", None)
-
         validated_data["password"] = make_password(validated_data["password"])
-        user = CustomUser.objects.create(**validated_data, user_type=user_type)
+        return CustomUser.objects.create(**validated_data)
 
-        if user_type == "freelancer":
-            if not freelancer_data:
-                raise serializers.ValidationError(
-                    {"freelancer_data": "Required for freelancer."}
-                )
-            Freelancer.objects.create(uid=user, **freelancer_data)
 
-        elif user_type == "client":
-            if not client_data:
-                raise serializers.ValidationError(
-                    {"client_data": "Required for client."}
-                )
-            Client.objects.create(uid=user, **client_data)
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "first_name",
+            "second_name",
+            "email",
+            "user_name",
+            "photo",
+            "phone",
+            "birth_date",
+            "bio",
+            "address",
+            "user_type",
+        ]
 
+
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+
+class UserPasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+    new_password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = self.context["request"].user
+
+        if not user.check_password(data["old_password"]):
+            raise ValidationError({"old_password": "Old password is incorrect."})
+
+        if data["new_password"] != data["new_password_confirm"]:
+            raise ValidationError({"new_password_confirm": "Passwords do not match."})
+
+        try:
+            validate_password(data["new_password"], user)
+        except DjangoValidationError as e:
+            raise ValidationError({"new_password": list(e.messages)})
+
+        return data
+
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        user.set_password(self.validated_data["new_password"])
+        user.save()
         return user
+
+
+class UserPhotoUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["photo"]
 
 
 class UserOutSerializer(serializers.ModelSerializer):
@@ -74,9 +106,6 @@ class UserOutSerializer(serializers.ModelSerializer):
             "phone",
             "birth_date",
             "user_type",
+            "bio",
+            "address",
         ]
-
-
-class UserLoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
