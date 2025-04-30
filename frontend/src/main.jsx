@@ -1,7 +1,18 @@
-import { createRoot } from "react-dom/client";
-import { MainLayout } from "./layout/MainLayout";
-import "bootstrap/dist/css/bootstrap.min.css"
+// src/main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-createRoot(document.getElementById("root")).render(
-  <MainLayout/>
+import Dashboard from './pages/Dashboard';
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
 );

@@ -3,15 +3,13 @@ import { Header } from '../components/Header'
 import { HomeHero } from '../components/HomeHero'
 import { HomeCategory } from '../components/HomeCategory'
 import { Footer } from '../components/Footer'
-import Dashboard from '../pages/Dashboard'
 
-export function MainLayout() {
+export default function HomeLayout() {
   return (
     <>
         <Header></Header>
         <HomeHero></HomeHero>
         <HomeCategory></HomeCategory>
-        <Dashboard></Dashboard>
         <Footer></Footer>
     </>
   )
