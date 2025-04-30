@@ -16,7 +16,15 @@ export const loginUser = async (credentials) => {
 // Register: Add a new user
 export const registerUser = async (newUser) => {
   try {
-    const createUserResponse = await axios.post(`${baseURL}register/`, newUser);
+    const formData = new FormData();
+    for (const key in newUser) {
+      formData.append(key, newUser[key]);
+    }
+    const createUserResponse = await axios.post(`${baseURL}register/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     console.log(createUserResponse)
     return createUserResponse.data;
   } catch (error) {

@@ -547,7 +547,9 @@ export const Header = () => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                        src={user.photo == null?'/avatar.png': user.photo}
+                      // /home/haddad/Documents/workspace/graduation-project/backend/media/profile_photos/Picsart_22-07-17_19-12-56-235_1.jpg
+                      // backend/media/profile_photos/Picsart_22-07-17_19-12-56-235_1.jpg
+                        src={user.photo == null?'/avatar.png': `http://localhost:8000${user.photo}`}
                         roundedCircle
                         width="32"
                         height="32"
@@ -567,7 +569,7 @@ export const Header = () => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
                           <Image
-                            src={user.photo == null?'/avatar.png': user.photo}
+                            src={user.photo == null?'/avatar.png': `http://localhost:8000${user.photo}`}
                             roundedCircle
                             width="40"
                             height="40"

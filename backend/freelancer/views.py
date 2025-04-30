@@ -26,8 +26,8 @@ class FreelancerCreateView(generics.CreateAPIView):
             raise PermissionDenied("You are already registered as a client and cannot register as a freelancer.")
 
         # Check if the user is already registered as a freelancer
-        if user.user_type == 'freelancer':
-            raise PermissionDenied("You are already registered as a freelancer.")
+        # if user.user_type == 'freelancer':
+        #     raise PermissionDenied("You are already registered as a freelancer.")
 
         # Proceed with freelancer registration
         serializer.save(uid=user)

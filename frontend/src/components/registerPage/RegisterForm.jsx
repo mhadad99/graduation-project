@@ -25,6 +25,8 @@ export default function RegisterForm({ role }) {
         second_name: '',
         user_name: '',
         user_type: role,
+
+        
     });
     const [showPassword, setShowPassword] = useState(false);
     const [touched, setTouched] = useState(false);
@@ -49,7 +51,7 @@ export default function RegisterForm({ role }) {
         setTouched(true);
 
         if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(formData.password)) return;
-
+        console.log(formData)
         dispatch(registerAction(formData))
             .unwrap()
             .then(() => {

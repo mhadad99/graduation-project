@@ -55,7 +55,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       <Container>
         <div className="profile-pic-container mb-4">
           <Image
-            src={photo==null? '/avatar.png': photo}
+            src={photo==null? '/avatar.png': `http://localhost:8000${photo}`}
             roundedCircle
             className="profile-avatar"
             alt="Profile Picture"
