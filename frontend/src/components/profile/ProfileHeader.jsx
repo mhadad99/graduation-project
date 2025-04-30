@@ -38,9 +38,10 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
 
   // Default values for missing properties
   const {
-    profileImage = "https://i.imgur.com/6AglEUF.jpeg",
-    name = "User",
-    title = "Freelancer",
+    photo = "https://i.imgur.com/6AglEUF.jpeg",
+    first_name = "User",
+    second_name = "User",
+    user_type = "Freelancer",
     location = "Not specified",
     averageRating = 0,
     numberOfReviews = 0,
@@ -54,7 +55,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       <Container>
         <div className="profile-pic-container mb-4">
           <Image
-            src={profileImage}
+            src={photo==null? '/avatar.png': photo}
             roundedCircle
             className="profile-avatar"
             alt="Profile Picture"
@@ -62,8 +63,8 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
           <span className="position-absolute profile-status-dot bg-success rounded-circle"></span>
         </div>
         
-        <h2 className="mt-3 mb-1 fw-bold">{name}</h2>
-        <div className="profile-title mb-3">{title}</div>
+        <h2 className="mt-3 mb-1 fw-bold">{first_name} {second_name}</h2>
+        <div className="profile-title mb-3">{user_type.toUpperCase()}</div>
         
         <div className="d-flex justify-content-center align-items-center mb-4">
           <span className="profile-badge">
@@ -114,7 +115,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
               variant="success"
               className="contact-btn shadow-sm"
               as={Link}
-              to="/edit-profile"
+              to={"/profile/edit/"+profileData.id}
             >
               <Pencil size={18} className="me-2" /> Edit Profile
             </Button>

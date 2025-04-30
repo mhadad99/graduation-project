@@ -2,42 +2,52 @@ import React, { useState, useRef } from 'react';
 import { Container, Row, Col, Form, Button, Card, Badge, Alert } from 'react-bootstrap';
 import { FiUpload, FiDollarSign, FiTag, FiList, FiX, FiImage, FiInfo, FiYoutube } from 'react-icons/fi';
 import '../styles/CreateService.css';
+import { addService } from '../api/service';
+import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useNavigate } from 'react-router-dom';
+
+
 
 const CreateService = () => {
   // Ref for file input
   const galleryInputRef = useRef(null);
-  
+  const navigate = useNavigate();
+
   // State for form fields
+  // const [formData, setFormData] = useState({
+  //   title: '',
+  //   category: '',
+  //   tags: [],
+  //   priceFrom: '',
+  //   description: '',
+  //   thumbnailImage: null,
+  //   galleryImages: [],
+  //   youtubeUrl: ''
+  // });
   const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    tags: [],
-    priceFrom: '',
+    service_name: '',
     description: '',
-    thumbnailImage: null,
-    galleryImages: [],
-    youtubeUrl: ''
   });
-  
+
   // State for current tag being entered
-  const [currentTag, setCurrentTag] = useState('');
-  
+  // const [currentTag, setCurrentTag] = useState('');
+
   // State for form validation
   const [validated, setValidated] = useState(false);
-  
+
   // State for alerts
-  const [showMaxImagesAlert, setShowMaxImagesAlert] = useState(false);
-  
-  // State for YouTube video preview
-  const [youtubeVideoId, setYoutubeVideoId] = useState('');
-  const [youtubeError, setYoutubeError] = useState('');
-  
+  // const [showMaxImagesAlert, setShowMaxImagesAlert] = useState(false);
+
+  // // State for YouTube video preview
+  // const [youtubeVideoId, setYoutubeVideoId] = useState('');
+  // const [youtubeError, setYoutubeError] = useState('');
+
   // Sample categories (you can replace with your actual categories)
   const categories = [
-    'Web Development', 
-    'Graphic Design', 
-    'Interior Design', 
-    'Content Writing', 
+    'Web Development',
+    'Graphic Design',
+    'Interior Design',
+    'Content Writing',
     'Digital Marketing',
     'UI/UX Design',
     'Video Editing',
@@ -53,148 +63,165 @@ const CreateService = () => {
       ...formData,
       [name]: value
     });
-    
+
     // Clear YouTube error when user modifies input
-    if (name === 'youtubeUrl') {
-      setYoutubeError('');
-    }
+    // if (name === 'youtubeUrl') {
+    //   setYoutubeError('');
+    // }
   };
 
   // Handle thumbnail image upload
-  const handleThumbnailUpload = (e) => {
-    if (e.target.files[0]) {
-      setFormData({
-        ...formData,
-        thumbnailImage: e.target.files[0]
-      });
-    }
-  };
+  // const handleThumbnailUpload = (e) => {
+  //   if (e.target.files[0]) {
+  //     setFormData({
+  //       ...formData,
+  //       thumbnailImage: e.target.files[0]
+  //     });
+  //   }
+  // };
 
-  // Handle gallery images upload
-  const handleGalleryUpload = (e) => {
-    if (e.target.files) {
-      const newImages = Array.from(e.target.files);
-      const totalImages = formData.galleryImages.length + newImages.length;
-      
-      if (totalImages <= 6) {
-        setFormData({
-          ...formData,
-          galleryImages: [...formData.galleryImages, ...newImages]
-        });
-        setShowMaxImagesAlert(false);
-      } else {
-        // Only add images up to the maximum of 6
-        const availableSlots = 6 - formData.galleryImages.length;
-        if (availableSlots > 0) {
-          const imagesToAdd = newImages.slice(0, availableSlots);
-          setFormData({
-            ...formData,
-            galleryImages: [...formData.galleryImages, ...imagesToAdd]
-          });
-        }
-        setShowMaxImagesAlert(true);
-        
-        // Clear the file input
-        if (galleryInputRef.current) {
-          galleryInputRef.current.value = '';
-        }
-      }
-    }
-  };
+  // // Handle gallery images upload
+  // const handleGalleryUpload = (e) => {
+  //   if (e.target.files) {
+  //     const newImages = Array.from(e.target.files);
+  //     const totalImages = formData.galleryImages.length + newImages.length;
 
-  // Add tag to the tags array
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    if (currentTag.trim() !== '' && !formData.tags.includes(currentTag.trim())) {
-      setFormData({
-        ...formData,
-        tags: [...formData.tags, currentTag.trim()]
-      });
-      setCurrentTag('');
-    }
-  };
+  //     if (totalImages <= 6) {
+  //       setFormData({
+  //         ...formData,
+  //         galleryImages: [...formData.galleryImages, ...newImages]
+  //       });
+  //       setShowMaxImagesAlert(false);
+  //     } else {
+  //       // Only add images up to the maximum of 6
+  //       const availableSlots = 6 - formData.galleryImages.length;
+  //       if (availableSlots > 0) {
+  //         const imagesToAdd = newImages.slice(0, availableSlots);
+  //         setFormData({
+  //           ...formData,
+  //           galleryImages: [...formData.galleryImages, ...imagesToAdd]
+  //         });
+  //       }
+  //       setShowMaxImagesAlert(true);
 
-  // Handle tag input keypress (add on Enter)
-  const handleTagKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddTag(e);
-    }
-  };
+  //       // Clear the file input
+  //       if (galleryInputRef.current) {
+  //         galleryInputRef.current.value = '';
+  //       }
+  //     }
+  //   }
+  // };
 
-  // Remove tag from the tags array
-  const handleRemoveTag = (tagToRemove) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
+  // // Add tag to the tags array
+  // const handleAddTag = (e) => {
+  //   e.preventDefault();
+  //   if (currentTag.trim() !== '' && !formData.tags.includes(currentTag.trim())) {
+  //     setFormData({
+  //       ...formData,
+  //       tags: [...formData.tags, currentTag.trim()]
+  //     });
+  //     setCurrentTag('');
+  //   }
+  // };
 
-  // Remove gallery image
-  const handleRemoveGalleryImage = (index) => {
-    const updatedGalleryImages = [...formData.galleryImages];
-    updatedGalleryImages.splice(index, 1);
-    setFormData({
-      ...formData,
-      galleryImages: updatedGalleryImages
-    });
-    setShowMaxImagesAlert(false);
-    
-    // Clear the file input
-    if (galleryInputRef.current) {
-      galleryInputRef.current.value = '';
-    }
-  };
-  
-  // Extract YouTube video ID from URL
-  const extractYoutubeId = (url) => {
-    if (!url) return null;
-    
-    // Match YouTube URL patterns
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    
-    return (match && match[2].length === 11) ? match[2] : null;
-  };
-  
-  // Handle YouTube URL validation and preview
-  const handleYoutubePreview = (e) => {
-    e.preventDefault();
-    const videoId = extractYoutubeId(formData.youtubeUrl);
-    
-    if (videoId) {
-      setYoutubeVideoId(videoId);
-      setYoutubeError('');
-    } else {
-      setYoutubeError('Please enter a valid YouTube URL');
-      setYoutubeVideoId('');
-    }
-  };
-  
-  // Remove YouTube video
-  const handleRemoveYoutubeVideo = () => {
-    setFormData({
-      ...formData,
-      youtubeUrl: ''
-    });
-    setYoutubeVideoId('');
-    setYoutubeError('');
-  };
+  // // Handle tag input keypress (add on Enter)
+  // const handleTagKeyPress = (e) => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     handleAddTag(e);
+  //   }
+  // };
+
+  // // Remove tag from the tags array
+  // const handleRemoveTag = (tagToRemove) => {
+  //   setFormData({
+  //     ...formData,
+  //     tags: formData.tags.filter(tag => tag !== tagToRemove)
+  //   });
+  // };
+
+  // // Remove gallery image
+  // const handleRemoveGalleryImage = (index) => {
+  //   const updatedGalleryImages = [...formData.galleryImages];
+  //   updatedGalleryImages.splice(index, 1);
+  //   setFormData({
+  //     ...formData,
+  //     galleryImages: updatedGalleryImages
+  //   });
+  //   setShowMaxImagesAlert(false);
+
+  //   // Clear the file input
+  //   if (galleryInputRef.current) {
+  //     galleryInputRef.current.value = '';
+  //   }
+  // };
+
+  // // Extract YouTube video ID from URL
+  // const extractYoutubeId = (url) => {
+  //   if (!url) return null;
+
+  //   // Match YouTube URL patterns
+  //   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  //   const match = url.match(regExp);
+
+  //   return (match && match[2].length === 11) ? match[2] : null;
+  // };
+
+  // // Handle YouTube URL validation and preview
+  // const handleYoutubePreview = (e) => {
+  //   e.preventDefault();
+  //   const videoId = extractYoutubeId(formData.youtubeUrl);
+
+  //   if (videoId) {
+  //     setYoutubeVideoId(videoId);
+  //     setYoutubeError('');
+  //   } else {
+  //     setYoutubeError('Please enter a valid YouTube URL');
+  //     setYoutubeVideoId('');
+  //   }
+  // };
+
+  // // Remove YouTube video
+  // const handleRemoveYoutubeVideo = () => {
+  //   setFormData({
+  //     ...formData,
+  //     youtubeUrl: ''
+  //   });
+  //   setYoutubeVideoId('');
+  //   setYoutubeError('');
+  // };
 
   // Handle form submission
   const handleSubmit = (e) => {
     const form = e.currentTarget;
     e.preventDefault();
-    
+
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
       return;
     }
-    
-    console.log('Form Data:', formData);
+
+    addService(formData).then((response) => {
+      console.log(response);
+      Swal.fire({
+        icon: 'success',
+        title: 'Service created successfully',
+        showConfirmButton: false,
+        timer: 1500
+      }).then(() => {
+        navigate('/services');
+      })
+    }).catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Service creation failed',
+        text: error || 'Something went wrong. Please try again.',
+      })
+    });
+
+
     // Here you would typically send the data to your backend API
-    alert('Service created successfully!');
   };
 
   return (
@@ -216,11 +243,11 @@ const CreateService = () => {
                 </div>
                 <Card.Body className="card-body-custom">
                   <Form.Group className="mb-4">
-                    <Form.Label>Service Title</Form.Label>
+                    <Form.Label>Service Name</Form.Label>
                     <Form.Control
                       type="text"
-                      name="title"
-                      value={formData.title}
+                      name="service_name"
+                      value={formData.service_name}
                       onChange={handleInputChange}
                       placeholder="E.g., Professional Landing Page Design"
                       className="form-control-custom"
@@ -231,7 +258,7 @@ const CreateService = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Form.Group className="mb-4">
+                  {/* <Form.Group className="mb-4">
                     <Form.Label>Category</Form.Label>
                     <Form.Select 
                       name="category"
@@ -248,9 +275,9 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please select a category.
                     </Form.Control.Feedback>
-                  </Form.Group>
+                  </Form.Group> */}
 
-                  <Form.Group className="mb-4">
+                  {/* <Form.Group className="mb-4">
                     <Form.Label>Tags</Form.Label>
                     <div className="d-flex input-group-custom">
                       <Form.Control
@@ -283,9 +310,9 @@ const CreateService = () => {
                         </span>
                       ))}
                     </div>
-                  </Form.Group>
+                  </Form.Group> */}
 
-                  <Form.Group className="mb-3">
+                  {/* <Form.Group className="mb-3">
                     <Form.Label>Starting Price ($)</Form.Label>
                     <div className="input-group input-group-custom">
                       <span className="input-group-text">
@@ -305,7 +332,7 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please provide a valid starting price.
                     </Form.Control.Feedback>
-                  </Form.Group>
+                  </Form.Group> */}
                 </Card.Body>
               </Card>
 
@@ -340,7 +367,7 @@ const CreateService = () => {
                   <h5 className="mb-0">Media</h5>
                 </div>
                 <Card.Body className="card-body-custom">
-                  <Form.Group className="mb-4">
+                  {/* <Form.Group className="mb-4">
                     <Form.Label>Thumbnail Image</Form.Label>
                     <div className="mb-3">
                       {formData.thumbnailImage ? (
@@ -367,7 +394,7 @@ const CreateService = () => {
                             type="file"
                             className="d-none"
                             accept="image/*"
-                            onChange={handleThumbnailUpload}
+                            // onChange={handleThumbnailUpload}
                             required={!formData.thumbnailImage}
                           />
                         </label>
@@ -376,9 +403,9 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please upload a thumbnail image.
                     </Form.Control.Feedback>
-                  </Form.Group>
+                  </Form.Group> */}
 
-                  <Form.Group className="mb-4">
+                  {/* <Form.Group className="mb-4">
                     <Form.Label>YouTube Video (Optional)</Form.Label>
                     <div className="youtube-form">
                       <div className="input-group input-group-custom">
@@ -428,9 +455,9 @@ const CreateService = () => {
                         </div>
                       )}
                     </div>
-                  </Form.Group>
+                  </Form.Group> */}
 
-                  <Form.Group className="mb-3">
+                  {/* <Form.Group className="mb-3">
                     <Form.Label className="d-flex justify-content-between align-items-center">
                       Gallery Images
                       <span className="text-muted fs-6">
@@ -494,21 +521,21 @@ const CreateService = () => {
                     <Form.Text className="text-muted d-block mt-2">
                       Upload up to 6 images showcasing your work
                     </Form.Text>
-                  </Form.Group>
+                  </Form.Group> */}
                 </Card.Body>
               </Card>
             </Col>
           </Row>
 
           <div className="d-flex justify-content-between mt-4">
-            <Button 
+            {/* <Button 
               variant="outline-secondary" 
               className="button-outline"
             >
               Save as Draft
-            </Button>
-            <Button 
-              variant="primary" 
+            </Button> */}
+            <Button
+              variant="primary"
               type="submit"
               className="button-primary"
             >

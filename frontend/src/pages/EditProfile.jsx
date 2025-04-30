@@ -13,14 +13,16 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { mockUserData } from "../mockData/profileData";
 import "../styles/EditProfile.css";
+import { useSelector } from "react-redux";
 
 const EditProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const {user} = useSelector((state) => state.authSlice);
 
   // For demo, we'll determine user type based on ID
-  const userType = id === "1" ? "freelancer" : id === "2" ? "client" : "admin";
-  const userData = mockUserData[userType];
+  const userType = user.user_type;
+  const userData = user;
 
   const [formData, setFormData] = useState(userData);
   const [error, setError] = useState(null);
@@ -153,17 +155,31 @@ const EditProfile = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>First Name</Form.Label>
                   <Form.Control
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="first_name"
+                    value={formData.first_name}
                     onChange={handleChange}
                     required
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Second Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="second_name"
+                    value={formData.second_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={12}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control type="email" value={formData.email} disabled />

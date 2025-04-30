@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/Login.css';
-import { registerUser } from '../../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerAction } from "../../store/slices/authSlice";
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
-
-export default function RegisterForm() {
+export default function RegisterForm({ role }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
@@ -25,12 +24,11 @@ export default function RegisterForm() {
         first_name: '',
         second_name: '',
         user_name: '',
+        user_type: role,
     });
     const [showPassword, setShowPassword] = useState(false);
     const [touched, setTouched] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
 
     const isEmailEmpty = isFieldEmpty(formData.email);
     const isEmailValid = !isEmailEmpty && validateEmail(formData.email);
@@ -49,18 +47,30 @@ export default function RegisterForm() {
         e.preventDefault();
         setSubmitted(true);
         setTouched(true);
-        setErrorMessage('');
-        setSuccessMessage('');
 
         if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(formData.password)) return;
 
         dispatch(registerAction(formData))
             .unwrap()
             .then(() => {
-                navigate("/login");
+                // Show success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful',
+                    text: 'You have successfully registered! Redirecting to login...',
+                    timer: 3000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    navigate("/login");
+                });
             })
             .catch((err) => {
-                console.error("Register failed:", err);
+                // Show error alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: error || 'Something went wrong. Please try again.',
+                });
             });
     };
 
@@ -68,12 +78,11 @@ export default function RegisterForm() {
 
     return (
         <div className="login-container">
-
             <div className="login-card">
-            <div className="logo-container">
-                <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" />
-            </div>
-                <h2 className="text-center mb-0">Register for Tanfeez</h2>
+                <div className="logo-container">
+                    <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" />
+                </div>
+                <h2 className="text-center mb-3">{role === 'client' ? 'Register as Client' : 'Register as Freelancer'}</h2>
 
                 <form onSubmit={handleSubmit} noValidate>
                     {/* First Name */}
@@ -175,9 +184,6 @@ export default function RegisterForm() {
                             </div>
                         )}
                     </div>
-
-                    {error && <div className="alert alert-danger py-2">{error}</div>}
-                    {successMessage && <div className="alert alert-success py-2">{successMessage}</div>}
 
                     <button
                         type="submit"

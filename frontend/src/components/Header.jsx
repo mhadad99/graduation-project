@@ -32,7 +32,7 @@ import { NavLink } from "react-router-dom";
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((myStore) => myStore.authSlice);
+  const { isLoggedIn, user } = useSelector((myStore) => myStore.authSlice);
   // let isLoggedIn = false
 
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
@@ -547,7 +547,7 @@ export const Header = () => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                        src="https://i.imgur.com/6AglEUF.jpeg"
+                        src={user.photo == null?'/avatar.png': user.photo}
                         roundedCircle
                         width="32"
                         height="32"
@@ -567,7 +567,7 @@ export const Header = () => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
                           <Image
-                            src="https://i.imgur.com/6AglEUF.jpeg"
+                            src={user.photo == null?'/avatar.png': user.photo}
                             roundedCircle
                             width="40"
                             height="40"
@@ -575,9 +575,9 @@ export const Header = () => {
                             alt="Profile"
                           />
                           <div>
-                            <div className="fw-bold">Ayman Samir</div>
+                            <div className="fw-bold">{user.first_name} {user.second_name}</div>
                             <div className="small text-muted">
-                              Ayman@gmail.com
+                              {user.email}
                             </div>
                           </div>
                         </Popover.Header>
@@ -587,7 +587,7 @@ export const Header = () => {
                               <Nav.Link
                                 key={idx}
                                 onClick={option.text === 'Logout' ? handleLogout : undefined} // Call handleLogout for Logout
-                                href={option.text !== 'Logout' ? `/${option.text.toLowerCase().replace(/ /g, '-')}` : undefined}
+                                href={option.text !== 'Logout' ?(option.text === 'Profile' ? `/profile/${user.id}` :`/${option.text.toLowerCase().replace(/ /g, '-')}` ): undefined}
                                 className="px-3 py-2 text-dark menu-item"
                               >
                                 <span className="menu-icon me-2">{option.icon}</span>

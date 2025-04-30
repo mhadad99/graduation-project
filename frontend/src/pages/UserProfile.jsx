@@ -23,21 +23,18 @@ import {
   ReviewsTab,
   ProjectsTab,
 } from "../components/profile";
+import { useSelector } from "react-redux";
 
 const UserProfile = () => {
   const { id } = useParams();
-  const loggedInUserId = "2"; // This should come from your auth state/context
-  const isMyProfile = id === loggedInUserId;
+  const {user}=useSelector((myStore) => myStore.authSlice)
+  const isMyProfile = id === user.id.toString();
 
-  // Improved role determination
-  const getUserRole = (id) => {
-    if (id === "1") return "freelancer";
-    if (id === "2") return "client";
-    if (id === "3") return "admin";
-    return null;
-  };
+  console.log("id is "+user.id + "     is my profile " + isMyProfile)
 
-  const role = getUserRole(id);
+
+
+  const role = user.user_type;
   const profileData = role ? mockProfileData[role] : null;
 
   // Local state
@@ -55,7 +52,7 @@ const UserProfile = () => {
           setPortfolioItems(mockProfileData.freelancer.portfolio || []);
         }
         setIsLoading(false);
-      }, 1000);
+      }, 1);
     };
 
     loadMockData();
@@ -171,7 +168,7 @@ const UserProfile = () => {
 
   return (
     <div className="bg-light min-vh-100">
-      <ProfileHeader profileData={profileData} isMyProfile={isMyProfile} />
+      <ProfileHeader profileData={user} isMyProfile={isMyProfile} />
 
       <Container className="mt-4">
         <Tabs
