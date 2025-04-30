@@ -30,65 +30,17 @@ const UserProfile = () => {
   const {user}=useSelector((myStore) => myStore.authSlice)
   const isMyProfile = id === user.id.toString();
 
-  console.log("id is "+user.id + "     is my profile " + isMyProfile)
 
 
 
   const role = user.user_type;
   const profileData = role ? mockProfileData[role] : null;
-
-  // Local state
   const [activeTab, setActiveTab] = useState("about");
-  const [isLoading, setIsLoading] = useState(true);
-  const [portfolioItems, setPortfolioItems] = useState(
-    profileData?.portfolio || []
-  );
-
-  // Simulate API call with mock data
-  useEffect(() => {
-    const loadMockData = () => {
-      setTimeout(() => {
-        if (role === "freelancer") {
-          setPortfolioItems(mockProfileData.freelancer.portfolio || []);
-        }
-        setIsLoading(false);
-      }, 1);
-    };
-
-    loadMockData();
-  }, [id, role]);
-
-  // Mock handlers
-  const handleAddPortfolioItem = (item) => {
-    setPortfolioItems((prev) => [...prev, { ...item, id: Date.now() }]);
-  };
-
-  const handleDeletePortfolioItem = (itemId) => {
-    setPortfolioItems((prev) => prev.filter((item) => item.id !== itemId));
-  };
-
-  const handleSubmitReview = (review) => {
-    console.log("Submitting review:", review);
-    // You would normally dispatch to Redux here
-  };
-
-  if (isLoading) {
-    return (
-      <Container className="py-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-2">Loading profile data...</p>
-      </Container>
-    );
-  }
 
   if (!profileData) {
     return (
       <Container className="py-5">
-        <Alert variant="warning">
-          User profile not found. Invalid user ID: {id}
-        </Alert>
+        <Alert variant="warning">User profile not found</Alert>
       </Container>
     );
   }
@@ -110,11 +62,7 @@ const UserProfile = () => {
         title: "Reviews",
         icon: <Star className="me-2" />,
         component: (
-          <ReviewsTab
-            reviews={profileData.reviews}
-            onSubmitReview={handleSubmitReview}
-            isMyProfile={isMyProfile}
-          />
+          <ReviewsTab reviews={profileData.reviews} isMyProfile={isMyProfile} />
         ),
       },
     ];
@@ -137,11 +85,8 @@ const UserProfile = () => {
         icon: <Collection className="me-2" />,
         component: (
           <PortfolioTab
-            portfolioItems={profileData.portfolio} // Changed from portfolio to portfolioItems
+            portfolioItems={profileData.portfolio}
             isMyProfile={isMyProfile}
-            isLoading={isLoading}
-            onAddItem={handleAddPortfolioItem} // Changed from onAdd
-            onDeleteItem={handleDeletePortfolioItem} // Changed from onDelete
           />
         ),
       },

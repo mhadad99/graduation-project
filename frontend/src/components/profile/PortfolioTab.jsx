@@ -85,16 +85,16 @@ const PortfolioTab = ({
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-4">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3">Loading portfolio...</p>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="text-center py-4">
+  //       <div className="spinner-border text-primary" role="status">
+  //         <span className="visually-hidden">Loading...</span>
+  //       </div>
+  //       <p className="mt-3">Loading portfolio...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="portfolio-tab">

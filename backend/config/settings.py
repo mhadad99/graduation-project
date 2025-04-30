@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "skill",
     "project",
     "service",
+    "client_rating",
 ]
 
 MIDDLEWARE = [

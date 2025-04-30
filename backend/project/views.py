@@ -7,9 +7,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from project import serializer
+from project import serializers
 from project.enums import Progress
-from project.serializer import (
+from project.serializers import (
     ProjectCreateSerializer,
     ProjectSerializer,
     ProjectUpdateSerializer,
