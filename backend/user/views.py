@@ -22,6 +22,7 @@ class RegisterView(generics.CreateAPIView):
     View for registering a new user.
     Automatically creates a Freelancer or Client profile based on the user_type.
     """
+
     serializer_class = UserCreateSerializer
     queryset = CustomUser.objects.all()
     parser_classes = [MultiPartParser, FormParser]
@@ -73,10 +74,19 @@ class LoginView(APIView):
         )
 
 
-class UserDetailView(generics.RetrieveAPIView):
-    """
-    View for retrieving detailed information about a specific user.
-    """
+class UserMeView(generics.RetrieveAPIView):
+    """View to get the currently authenticated user (from token)"""
+
+    serializer_class = UserOutSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserDetailByIdView(generics.RetrieveAPIView):
+    """View to get user by ID (admin or special access)"""
+
     queryset = CustomUser.objects.filter(is_deleted=False)
     serializer_class = UserOutSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -87,6 +97,7 @@ class UserListView(generics.ListAPIView):
     """
     View for listing all users (excluding deleted ones).
     """
+
     queryset = CustomUser.objects.filter(is_deleted=False)
     serializer_class = UserOutSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -96,10 +107,13 @@ class UserUpdateView(generics.UpdateAPIView):
     """
     View for updating user details.
     """
+
     queryset = CustomUser.objects.filter(is_deleted=False)
     serializer_class = UserUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
-    lookup_field = "id"
+
+    def get_object(self):
+        return self.request.user
 
 
 class UserDeleteView(APIView):
@@ -107,6 +121,7 @@ class UserDeleteView(APIView):
     View for soft-deleting a user.
     Marks the user as deleted without removing the record from the database.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, id):
@@ -129,6 +144,7 @@ class UserPasswordUpdateView(APIView):
     """
     View for updating a user's password.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request):
@@ -147,6 +163,7 @@ class UserPhotoUpdateView(APIView):
     """
     View for updating a user's profile photo.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
