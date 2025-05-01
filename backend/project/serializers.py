@@ -8,6 +8,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = [
             "id",
+            "clientId",
+            "freelancerId",
             "name",
             "description",
             "start_date",
@@ -28,6 +30,10 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "duration",
+            "progress",
+            "experience_level",
+            "type",
+            "budget",
         ]
 
     def create(self, validated_data):
@@ -39,7 +45,6 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            "id",
             "name",
             "description",
             "start_date",
@@ -47,4 +52,7 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
             "freelancerId",
             "duration",
             "progress",
+            "experience_level",
+            "type",
+            "budget",
         ]
