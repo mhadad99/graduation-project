@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework.exceptions import ValidationError
+from freelancer.serializers import FreelancerOutSerializer
 from client.models import Client
 from freelancer.models import Freelancer
 from .models import CustomUser
@@ -13,9 +14,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
     Serializer for creating a new user.
     Automatically validates and hashes the password.
     """
+
     user_type = serializers.ChoiceField(
         choices=CustomUser.USER_TYPES[1:],  # Exclude 'none'
-        help_text="The type of user (freelancer or client)."
+        help_text="The type of user (freelancer or client).",
     )
 
     class Meta:
@@ -34,7 +36,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "user_type",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},  # Ensure password is not returned in responses
+            "password": {
+                "write_only": True
+            },  # Ensure password is not returned in responses
         }
 
     def create(self, validated_data):
@@ -49,9 +53,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer for updating an existing user.
     """
+
     class Meta:
         model = CustomUser
         fields = [
+            "id",
             "first_name",
             "second_name",
             "email",
@@ -70,6 +76,7 @@ class UserLoginSerializer(serializers.Serializer):
     Serializer for user login.
     Validates email and password fields.
     """
+
     email = serializers.EmailField()
     password = serializers.CharField()
 
@@ -79,6 +86,7 @@ class UserPasswordUpdateSerializer(serializers.Serializer):
     Serializer for updating a user's password.
     Validates the old password and ensures the new passwords match.
     """
+
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
     new_password_confirm = serializers.CharField(write_only=True)
@@ -110,16 +118,16 @@ class UserPhotoUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer for updating a user's profile photo.
     """
+
     class Meta:
         model = CustomUser
         fields = ["photo"]
 
 
 class UserOutSerializer(serializers.ModelSerializer):
-    """
-    Serializer for outputting user details.
-    Includes all relevant fields for displaying user information.
-    """
+    freelancer_profile = FreelancerOutSerializer(read_only=True)
+    client_profile = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         fields = [
@@ -134,4 +142,17 @@ class UserOutSerializer(serializers.ModelSerializer):
             "user_type",
             "bio",
             "address",
+            "freelancer_profile",
+            "client_profile",
         ]
+
+    def get_client_profile(self, obj):
+        if hasattr(obj, "client_profile"):
+            return {
+                "id": obj.client_profile.id,
+                "phone": obj.client_profile.phone,
+                "company": obj.client_profile.company,
+                "created_at": obj.client_profile.created_at,
+                "updated_at": obj.client_profile.updated_at,
+            }
+        return None
