@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 
-const baseURL = "http://127.0.0.1:8000/api/service"; // Now it routes through Vite proxy
+const baseURL = "http://127.0.0.1:8000/api/user"; // Now it routes through Vite proxy
 export const addService = async (service) => {
     // send brear token
     console.log("herre")
@@ -21,9 +21,7 @@ export const addService = async (service) => {
 };
 
 
-export const getAllServices = async () => {
-    console.log("herre")
-
+export const getMyProfile = async () => {
     try {
         const response = await axios.get(`${baseURL}/`, {
             headers: {

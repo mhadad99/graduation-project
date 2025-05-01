@@ -26,7 +26,7 @@ export default function RegisterForm({ role }) {
         user_name: '',
         user_type: role,
 
-        
+
     });
     const [showPassword, setShowPassword] = useState(false);
     const [touched, setTouched] = useState(false);
@@ -51,7 +51,7 @@ export default function RegisterForm({ role }) {
         setTouched(true);
 
         if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(formData.password)) return;
-        console.log(formData)
+
         dispatch(registerAction(formData))
             .unwrap()
             .then(() => {
@@ -66,12 +66,24 @@ export default function RegisterForm({ role }) {
                     navigate("/login");
                 });
             })
-            .catch((err) => {
-                // Show error alert
+            .catch((error) => {
+                // Extract error messages from the response
+                const errorMessages = [];
+                if (error.data) {
+                    for (const key in error.data) {
+                        if (Array.isArray(error.data[key])) {
+                            errorMessages.push(...error.data[key]);
+                        } else {
+                            errorMessages.push(error.data[key]);
+                        }
+                    }
+                }
+
+                // Show error alert with the extracted messages
                 Swal.fire({
                     icon: 'error',
                     title: 'Registration Failed',
-                    text: error || 'Something went wrong. Please try again.',
+                    html: errorMessages.join('<br>'), // Display messages as HTML
                 });
             });
     };

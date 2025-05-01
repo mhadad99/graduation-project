@@ -56,7 +56,11 @@ export const registerAction = createAsyncThunk(
             const response = await registerUser(newUser);
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 );

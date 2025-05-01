@@ -18,6 +18,7 @@ import {
   Camera,
 } from "react-bootstrap-icons";
 import "../../styles/UserProfile.css";
+import axios from "axios";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
   const fileInputRef = useRef(null);
@@ -55,20 +56,26 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
 
       // Prepare form data for API
       const formData = new FormData();
-      formData.append("avatar", file);
-
+      formData.append("photo", file);
+      console.log("get image")
       try {
         // TODO: Replace with your API endpoint
-        // const response = await fetch('/api/profile/avatar', {
-        //   method: 'POST',
-        //   body: formData,
-        //   credentials: 'include'
-        // });
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   // Update profile image URL in your state management
-        //   console.log('Avatar updated successfully:', data);
-        // }
+        const response = await axios.patch('http://127.0.0.1:8000/api/user/photo/update/',  formData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const user = JSON.parse(localStorage.getItem('user'));
+        user.photo = response.data.photo;
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log("after call api")
+        console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          // Update profile image URL in your state management
+          console.log('Avatar updated successfully:', data);
+        }
       } catch (error) {
         console.error("Error uploading avatar:", error);
         setPreviewImage(null);
@@ -151,7 +158,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         </div>
 
         <h2 className="fw-bold mb-1">
-          {name}
+          {first_name} {second_name}
           <Badge
             bg={getRoleBadgeVariant(role)}
             className="ms-2 role-badge text-capitalize"
@@ -161,7 +168,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
             {role}
           </Badge>
         </h2>
-        <div className="text-muted mb-3">{first_name} {second_name}</div>
+        <div className="text-muted mb-3"> Web Developer</div>
 
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">

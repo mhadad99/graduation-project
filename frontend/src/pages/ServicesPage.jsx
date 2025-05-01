@@ -39,25 +39,25 @@ const ServicesPage = () => {
     setFilteredServices(services);
   }, [services]);
 
-  // useEffect(() => {
-  //   const filtered = services.filter((service) => {
-  //     const matchesCategory =
-  //       selectedCategory === "All Services" ||
-  //       service.category === selectedCategory;
-  //     const matchesSubcategory =
-  //       !selectedSubcategory || service.subcategory === selectedSubcategory;
-  //     const matchesSearch =
-  //       service.service_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       service.description.toLowerCase().includes(searchTerm.toLowerCase());
-  //     const matchesPrice =
-  //       service.price >= priceRange[0] && service.price <= priceRange[1];
+  useEffect(() => {
+    const filtered = services.filter((service) => {
+      // const matchesCategory =
+      //   selectedCategory === "All Services" ||
+      //   service.category === selectedCategory;
+      // const matchesSubcategory =
+      //   !selectedSubcategory || service.subcategory === selectedSubcategory;
+      const matchesSearch =
+        service.service_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        service.description.toLowerCase().includes(searchTerm.toLowerCase());
+      // const matchesPrice =
+      //   service.price >= priceRange[0] && service.price <= priceRange[1];
 
-  //     return (
-  //       matchesCategory && matchesSubcategory && matchesSearch && matchesPrice
-  //     );
-  //   });
-  //   setFilteredServices(filtered);
-  // }, [selectedCategory, selectedSubcategory, searchTerm, priceRange]);
+      return (
+         matchesSearch 
+      );
+    });
+    setFilteredServices(filtered);
+  }, [selectedCategory, selectedSubcategory, searchTerm, priceRange]);
 
   return (
     <Container className="py-5">

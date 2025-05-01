@@ -102,7 +102,7 @@ const PortfolioTab = ({
         <Col>
           <div className="d-flex justify-content-between align-items-center">
             <h4 className="fw-bold mb-0">Portfolio</h4>
-            {!isMyProfile && (
+            {isMyProfile && (
               <Button
                 variant="primary"
                 className="d-flex align-items-center"
@@ -132,7 +132,7 @@ const PortfolioTab = ({
           <Card.Body className="text-center py-5">
             <Collection size={48} className="empty-state-icon mb-3" />
             <h5 className="text-muted">No portfolio items yet</h5>
-            {!isMyProfile ? (
+            {isMyProfile ? (
               <div>
                 <p className="text-muted mb-3">
                   Start showcasing your best work! Add your first project to
