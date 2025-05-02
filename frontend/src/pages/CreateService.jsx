@@ -203,7 +203,6 @@ const CreateService = () => {
     }
 
     addService(formData).then((response) => {
-      console.log(response);
       Swal.fire({
         icon: 'success',
         title: 'Service created successfully',

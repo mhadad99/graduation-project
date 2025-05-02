@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Image, Button, Row, Col, Badge } from "react-bootstrap";
 import {
@@ -19,10 +19,16 @@ import {
 } from "react-bootstrap-icons";
 import "../../styles/UserProfile.css";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserImageAction } from "../../store/slices/userSlice";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const { } = useSelector((myStore) => myStore.userSlice);
+  const dispatch = useDispatch();
+
+
 
   const handleAvatarClick = () => {
     if (isMyProfile) {
@@ -57,29 +63,11 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       // Prepare form data for API
       const formData = new FormData();
       formData.append("photo", file);
-      console.log("get image")
-      try {
-        // TODO: Replace with your API endpoint
-        const response = await axios.patch('http://127.0.0.1:8000/api/user/photo/update/',  formData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        const user = JSON.parse(localStorage.getItem('user'));
-        user.photo = response.data.photo;
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log("after call api")
-        console.log(response)
-        if (response.ok) {
-          const data = await response.json();
-          // Update profile image URL in your state management
-          console.log('Avatar updated successfully:', data);
-        }
-      } catch (error) {
-        console.error("Error uploading avatar:", error);
-        setPreviewImage(null);
-      }
+      dispatch(updateUserImageAction(formData))
+
+
+
+
     }
   };
 
@@ -133,7 +121,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       <Container>
         <div className="profile-pic-container mb-4 position-relative">
           <Image
-            src={photo==null? '/avatar.png': `http://localhost:8000${photo}`}
+            src={photo == null ? '/avatar.png' : photo}
             roundedCircle
             className="profile-avatar"
             alt={name}

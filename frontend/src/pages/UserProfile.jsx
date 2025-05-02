@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Tabs, Tab, Alert } from "react-bootstrap";
+import { Container, Tabs, Tab, Alert, Spinner } from "react-bootstrap";
 import {
   Briefcase,
   PersonFill,
@@ -10,9 +10,6 @@ import {
   Star,
   GeoAlt,
 } from "react-bootstrap-icons";
-
-// Import mock data
-import { mockProfileData } from "../mock/profileData";
 
 // Import profile components
 import {
@@ -23,27 +20,47 @@ import {
   ReviewsTab,
   ProjectsTab,
 } from "../components/profile";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getMyProfileAction } from "../store/slices/userSlice";
 
 const UserProfile = () => {
   const { id } = useParams();
-  const {user}=useSelector((myStore) => myStore.authSlice)
-  const isMyProfile = id === user.id.toString();
+  const dispatch = useDispatch();
+  const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
 
-
-
-
-  const role = user.user_type;
-  const profileData = role ? mockProfileData[role] : null;
   const [activeTab, setActiveTab] = useState("about");
 
-  if (!profileData) {
+  // Fetch user data if it is null or undefined
+  useEffect(() => {
+    if (!user) {
+      dispatch(getMyProfileAction());
+    }
+  }, [user, dispatch]);
+
+  // Show a spinner while loading
+  if (isLoading || !user) {
     return (
-      <Container className="py-5">
-        <Alert variant="warning">User profile not found</Alert>
+      <Container className="py-5 text-center">
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <p className="mt-3">Loading user profile...</p>
       </Container>
     );
   }
+
+  // Handle case where user data is not available
+  if (!user) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger">User profile not found</Alert>
+      </Container>
+    );
+  }
+
+  const isMyProfile = id === user.id.toString();
+  const role = user.user_type;
+  const profileData = role ? user : null;
 
   const renderTabs = () => {
     const userRole = profileData?.role || "freelancer";

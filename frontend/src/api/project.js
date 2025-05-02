@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000/api/service"; // Now it routes through Vite proxy
-export const addService = async (service) => {
+const baseURL = "http://127.0.0.1:8000/api/project/"; // Now it routes through Vite proxy
+export const addProject = async (service) => {
     // send brear token
     const token = localStorage.getItem("authToken");
     const config = {
@@ -10,7 +10,7 @@ export const addService = async (service) => {
         },
     };
     try {
-        const response = await axios.post(`${baseURL}/create/`, service, config);
+        const response = await axios.post(`${baseURL}create/`, service, config);
         return response
     } catch (error) {
         throw error;
@@ -18,7 +18,7 @@ export const addService = async (service) => {
 };
 
 
-export const getAllServices = async () => {
+export const getAllProject = async () => {
     try {
         const response = await axios.get(`${baseURL}/`, {
             headers: {

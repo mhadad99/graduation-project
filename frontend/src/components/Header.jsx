@@ -31,10 +31,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 
 import { NavLink } from "react-router-dom";
+import { getMyProfileAction } from "../store/slices/userSlice";
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((myStore) => myStore.authSlice);
+  const { isLoggedIn } = useSelector((myStore) => myStore.authSlice);
   // let isLoggedIn = false
 
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
@@ -42,11 +43,16 @@ export const Header = () => {
     dispatch(logout());
     navigate("/login"); // Redirect to the login page
   };
+  useEffect(() => {
+    dispatch(getMyProfileAction());
+  }, [dispatch]);
 
   // Redux state for theme management
   const { theme } = useSelector((state) => state.themeSlice);
   const { role } = useSelector((state) => state.authSlice);
 
+  // Redux state for theme management
+  const { isLoading, user } = useSelector((state) => state.userSlice);
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
     categories: false,
@@ -153,7 +159,7 @@ export const Header = () => {
 
     return (
       <div className="action-button-wrapper ms-auto me-4">
-        {role === "freelancer" ? (
+        {user.user_type === "freelancer" ? (
           <Link to="/add/service" className="add-action-btn">
             <span className="btn-text">Add Service</span>
             <span className="btn-icon">+</span>
@@ -368,9 +374,7 @@ export const Header = () => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                      // /home/haddad/Documents/workspace/graduation-project/backend/media/profile_photos/Picsart_22-07-17_19-12-56-235_1.jpg
-                      // backend/media/profile_photos/Picsart_22-07-17_19-12-56-235_1.jpg
-                        src={user.photo == null?'/avatar.png': `http://localhost:8000${user.photo}`}
+                        src={!user.photo?'/avatar.png': user.photo}
                         roundedCircle
                         width="32"
                         height="32"
@@ -390,7 +394,7 @@ export const Header = () => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
                           <Image
-                            src={user.photo == null?'/avatar.png': `http://localhost:8000${user.photo}`}
+                            src={user.photo == null?'/avatar.png': user.photo}
                             roundedCircle
                             width="40"
                             height="40"

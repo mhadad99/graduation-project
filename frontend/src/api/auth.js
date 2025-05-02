@@ -4,9 +4,7 @@ const baseURL = "http://127.0.0.1:8000/api/user/"; // Now it routes through Vite
 // Function to authenticate user
 export const loginUser = async (credentials) => {
   try {
-    console.log("credentials" + credentials)
     const response =  await axios.post(`${baseURL}login/`, credentials);
-    console.log(response)
     return response
   } catch (error) {
     throw error;
@@ -25,10 +23,8 @@ export const registerUser = async (newUser) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(createUserResponse)
     return createUserResponse.data;
   } catch (error) {
-    console.log(error)
     throw error;
   }
 };
