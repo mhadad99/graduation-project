@@ -36,11 +36,14 @@ import { getMyProfileAction } from "../store/slices/userSlice";
 export const Header = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((myStore) => myStore.authSlice);
+  const { isLoading, user } = useSelector((state) => state.userSlice);
+
   // let isLoggedIn = false
 
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
   const handleLogout = () => {
     dispatch(logout());
+    
     navigate("/login"); // Redirect to the login page
   };
   useEffect(() => {
@@ -52,7 +55,6 @@ export const Header = () => {
   const { role } = useSelector((state) => state.authSlice);
 
   // Redux state for theme management
-  const { isLoading, user } = useSelector((state) => state.userSlice);
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
     categories: false,

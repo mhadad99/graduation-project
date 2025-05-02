@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getMyProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getMyFreelancerProfile, getMyProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
 
 
 const saveUserToLocalStorage = (user) => {
@@ -23,6 +23,8 @@ const getUserFromLocalStorage = () => {
 
 const initialState = {
     user: "",
+    freelancer: "",
+    client: "",
     isLoading: false,
     error: null,
 
@@ -35,6 +37,21 @@ export const getMyProfileAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await getMyProfile();
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
+export const getMyFreelancerProfileAction = createAsyncThunk(
+
+    "user/getMyFreelancerProfileAction",
+    async (args, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await getMyFreelancerProfile();
+            console.log(response.data);
             return response.data;
 
         } catch (error) {
@@ -63,7 +80,19 @@ export const updateUserProfileAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await updateUserProfile(formData);
-            return response.data;
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
+export const updateFreelancerProfileAction = createAsyncThunk(
+    "user/updateFreelancerProfileAction",
+    async (formData, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await updateFreelancerProfile(formData);
+            return response;
         } catch (error) {
             return rejectWithValue(error.message);
         }
@@ -113,6 +142,29 @@ const userSlice = createSlice(
                 state.user = updatedUser;
                 saveUserToLocalStorage(updatedUser);
             }).addCase(updateUserProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+            builder.addCase(getMyFreelancerProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(getMyFreelancerProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.freelancer = action.payload;
+            }).addCase(getMyFreelancerProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+            builder.addCase(updateFreelancerProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(updateFreelancerProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                console.log(action.payload);
+                const updatedUser = { ...state.freelancer, ...action.payload };
+                state.freelancer = updatedUser;
+                // saveUserToLocalStorage(updatedUser);
+            }).addCase(updateFreelancerProfileAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
