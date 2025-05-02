@@ -2,12 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 # views.py
-from rest_framework import generics
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-
-from project import serializers
+from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework import generics, status
+from rest_framework.response import Response
+from user.models import CustomUser
 from project.enums import Progress
 from project.serializers import (
     ProjectCreateSerializer,
@@ -15,6 +14,7 @@ from project.serializers import (
     ProjectUpdateSerializer,
 )
 from .models import Project
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 # Create
@@ -79,3 +79,55 @@ class ProjectDeleteView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         instance.progress = Progress.CANCELLED
         instance.save()
+
+
+# Special view to get all projects by a specific client
+
+
+class ProjectsByCurrentClientView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.user_type != "client":
+            raise PermissionDenied("Only clients can view their projects.")
+
+        if not hasattr(user, "client_profile"):
+            raise NotFound("Client profile not found for this user.")
+
+        return Project.objects.filter(clientId=user).exclude(
+            progress=Progress.CANCELLED
+        )
+
+
+class ProjectsByUserIdView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        user_id = self.kwargs.get("user_id")
+
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            raise NotFound("User not found.")
+
+        if user.user_type != "client":
+            raise NotFound("This user is not a client.")
+
+        return Project.objects.filter(clientId=user).exclude(
+            progress=Progress.CANCELLED
+        )
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if not queryset.exists():
+            return Response(
+                {"detail": "Client has no projects yet."}, status=status.HTTP_200_OK
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
