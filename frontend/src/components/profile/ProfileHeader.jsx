@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Image, Button, Row, Col, Badge } from "react-bootstrap";
 import {
@@ -18,10 +18,17 @@ import {
   Camera,
 } from "react-bootstrap-icons";
 import "../../styles/UserProfile.css";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserImageAction } from "../../store/slices/userSlice";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const { } = useSelector((myStore) => myStore.userSlice);
+  const dispatch = useDispatch();
+
+
 
   const handleAvatarClick = () => {
     if (isMyProfile) {
@@ -55,24 +62,12 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
 
       // Prepare form data for API
       const formData = new FormData();
-      formData.append("avatar", file);
+      formData.append("photo", file);
+      dispatch(updateUserImageAction(formData))
 
-      try {
-        // TODO: Replace with your API endpoint
-        // const response = await fetch('/api/profile/avatar', {
-        //   method: 'POST',
-        //   body: formData,
-        //   credentials: 'include'
-        // });
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   // Update profile image URL in your state management
-        //   console.log('Avatar updated successfully:', data);
-        // }
-      } catch (error) {
-        console.error("Error uploading avatar:", error);
-        setPreviewImage(null);
-      }
+
+
+
     }
   };
 
@@ -81,10 +76,10 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
   }
 
   const {
-    id,
-    profileImage = "https://i.imgur.com/6AglEUF.jpeg",
-    name = "User",
-    title = "Freelancer",
+    photo = "https://i.imgur.com/6AglEUF.jpeg",
+    first_name = "User",
+    second_name = "User",
+    user_type = "Freelancer",
     location = "Not specified",
     averageRating = 0,
     numberOfReviews = 0,
@@ -126,7 +121,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       <Container>
         <div className="profile-pic-container mb-4 position-relative">
           <Image
-            src={previewImage || profileImage}
+            src={photo == null ? '/avatar.png' : photo}
             roundedCircle
             className="profile-avatar"
             alt={name}
@@ -151,7 +146,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         </div>
 
         <h2 className="fw-bold mb-1">
-          {name}
+          {first_name} {second_name}
           <Badge
             bg={getRoleBadgeVariant(role)}
             className="ms-2 role-badge text-capitalize"
@@ -161,7 +156,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
             {role}
           </Badge>
         </h2>
-        <div className="text-muted mb-3">{title}</div>
+        <div className="text-muted mb-3"> Web Developer</div>
 
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">
@@ -198,7 +193,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
           {isMyProfile ? (
             <Button
               as={Link}
-              to={`/profile/edit/${id}`}
+              to={`/profile/edit/${profileData.id}`}
               variant="success"
               className="action-btn">
               <Pencil size={18} className="me-2" />
@@ -207,7 +202,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
           ) : (
             <Button
               as={Link}
-              to={`/chat?user=${id}`}
+              to={`/chat?user=${profileData.id}`}
               variant="primary"
               className="action-btn">
               <ChatDots size={18} className="me-2" />

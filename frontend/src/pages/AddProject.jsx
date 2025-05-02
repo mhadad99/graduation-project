@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Container, Form, Row, Col, Alert } from "react-bootstrap";
 import axios from "axios";
-import ProjectBasicInfo from "../components/addProject/ProjectBasicInfo";
-import ProjectBudget from "../components/addProject/ProjectBudget";
-import ProjectRequirements from "../components/addProject/ProjectRequirements";
-import ProjectSummary from "../components/addProject/ProjectSummary";
 import "../styles/AddProject.css";
+import ProjectBasicInfo from "../components/addproject/ProjectBasicInfo";
+import ProjectBudget from "../components/addproject/ProjectBudget";
+import ProjectSummary from "../components/addproject/ProjectSummary";
+import ProjectRequirements from "../components/addproject/ProjectRequirements";
 
 function AddProject() {
   const [formData, setFormData] = useState({

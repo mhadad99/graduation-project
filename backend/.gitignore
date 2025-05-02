@@ -36,4 +36,5 @@ test-results/
 .DS_Store  # macOS
 Thumbs.db  # Windows
 
+*/migrations/
 migrations/

@@ -1,11 +1,14 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Container, Row, Col, Form, InputGroup, Button } from "react-bootstrap";
 import { Search, Funnel } from "react-bootstrap-icons";
 import ServiceCard from "../components/cards/ServiceCard";
 import { servicesData, categories } from "../mock/servicesData";
 import "../styles/ServicesPage.css";
+import { useDispatch, useSelector } from "react-redux";
+import { myStore } from "../store";
+import { getAllServicesAction } from "../store/slices/serviceSlice";
 
 const ServicesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,22 +29,31 @@ const ServicesPage = () => {
       setSelectedCategory(categoryName);
     }
   };
+  const {services, isLoading, error} = useSelector((myStore)  => myStore.serviceSlice);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllServicesAction());
+  },[])
 
   useEffect(() => {
-    const filtered = servicesData.filter((service) => {
-      const matchesCategory =
-        selectedCategory === "All Services" ||
-        service.category === selectedCategory;
-      const matchesSubcategory =
-        !selectedSubcategory || service.subcategory === selectedSubcategory;
+    setFilteredServices(services);
+  }, [services]);
+
+  useEffect(() => {
+    const filtered = services.filter((service) => {
+      // const matchesCategory =
+      //   selectedCategory === "All Services" ||
+      //   service.category === selectedCategory;
+      // const matchesSubcategory =
+      //   !selectedSubcategory || service.subcategory === selectedSubcategory;
       const matchesSearch =
-        service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        service.service_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         service.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesPrice =
-        service.price >= priceRange[0] && service.price <= priceRange[1];
+      // const matchesPrice =
+      //   service.price >= priceRange[0] && service.price <= priceRange[1];
 
       return (
-        matchesCategory && matchesSubcategory && matchesSearch && matchesPrice
+         matchesSearch 
       );
     });
     setFilteredServices(filtered);

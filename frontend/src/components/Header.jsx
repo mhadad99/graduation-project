@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 
 import { NavLink } from "react-router-dom";
+import { getMyProfileAction } from "../store/slices/userSlice";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -42,11 +43,16 @@ export const Header = () => {
     dispatch(logout());
     navigate("/login"); // Redirect to the login page
   };
+  useEffect(() => {
+    dispatch(getMyProfileAction());
+  }, [dispatch]);
 
   // Redux state for theme management
   const { theme } = useSelector((state) => state.themeSlice);
   const { role } = useSelector((state) => state.authSlice);
 
+  // Redux state for theme management
+  const { isLoading, user } = useSelector((state) => state.userSlice);
   // State for managing dropdowns with consolidated naming convention
   const [dropdowns, setDropdowns] = useState({
     categories: false,
@@ -153,7 +159,7 @@ export const Header = () => {
 
     return (
       <div className="action-button-wrapper ms-auto me-4">
-        {role === "freelancer" ? (
+        {user.user_type === "freelancer" ? (
           <Link to="/add/service" className="add-action-btn">
             <span className="btn-text">Add Service</span>
             <span className="btn-icon">+</span>
@@ -368,7 +374,7 @@ export const Header = () => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                        src="https://i.imgur.com/6AglEUF.jpeg"
+                        src={!user.photo?'/avatar.png': user.photo}
                         roundedCircle
                         width="32"
                         height="32"
@@ -388,7 +394,7 @@ export const Header = () => {
                         className="border-0 shadow-custom">
                         <Popover.Header className="bg-light d-flex align-items-center popup-header">
                           <Image
-                            src="https://i.imgur.com/6AglEUF.jpeg"
+                            src={user.photo == null?'/avatar.png': user.photo}
                             roundedCircle
                             width="40"
                             height="40"
@@ -396,9 +402,9 @@ export const Header = () => {
                             alt="Profile"
                           />
                           <div>
-                            <div className="fw-bold">Ayman Samir</div>
+                            <div className="fw-bold">{user.first_name} {user.second_name}</div>
                             <div className="small text-muted">
-                              Ayman@gmail.com
+                              {user.email}
                             </div>
                           </div>
                         </Popover.Header>
@@ -407,22 +413,11 @@ export const Header = () => {
                             {profileMenuOptions.map((option, idx) => (
                               <Nav.Link
                                 key={idx}
-                                onClick={
-                                  option.text === "Logout"
-                                    ? handleLogout
-                                    : undefined
-                                } // Call handleLogout for Logout
-                                href={
-                                  option.text !== "Logout"
-                                    ? `/${option.text
-                                        .toLowerCase()
-                                        .replace(/ /g, "-")}`
-                                    : undefined
-                                }
-                                className="px-3 py-2 text-dark menu-item">
-                                <span className="menu-icon me-2">
-                                  {option.icon}
-                                </span>
+                                onClick={option.text === 'Logout' ? handleLogout : undefined} // Call handleLogout for Logout
+                                href={option.text !== 'Logout' ?(option.text === 'Profile' ? `/profile/${user.id}` :`/${option.text.toLowerCase().replace(/ /g, '-')}` ): undefined}
+                                className="px-3 py-2 text-dark menu-item"
+                              >
+                                <span className="menu-icon me-2">{option.icon}</span>
                                 {option.text}
                               </Nav.Link>
                             ))}
