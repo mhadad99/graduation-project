@@ -6,6 +6,7 @@ import { loginUser } from '../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from "../store/slices/authSlice";
+import { getMyProfileAction, updateFreelancerProfileAction } from '../store/slices/userSlice';
 
 
 
@@ -48,6 +49,7 @@ export default function LoginPage() {
     dispatch(loginAction({ email, password }))
       .unwrap()
       .then(() => {
+        dispatch(getMyProfileAction());
         navigate("/");
       })
       .catch((err) => {

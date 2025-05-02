@@ -103,10 +103,11 @@ const EditProfile = () => {
             {(userType === "freelancer" ) && (
               <Tab eventKey="freelancer" title="Professional Information">
                 <FreelancerTab
-                  formData={formData}
+                  formData={formData.freelancer_profile}
                   handleChange={handleChange}
                   navigate={navigate}
                   id={id}
+                  setFormData={setFormData}
                 />
               </Tab>
             )}
@@ -118,6 +119,7 @@ const EditProfile = () => {
                   handleChange={handleChange}
                   navigate={navigate}
                   id={id}
+                  setFormData={setFormData}
                 />
               </Tab>
             )}

@@ -2,17 +2,18 @@ import React, { useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { updateUserProfileAction } from "../../store/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const UserTab = ({ setFormData, formData, handleChange, navigate, id }) => {
-      const dispatch = useDispatch();
-      const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
+    const dispatch = useDispatch();
+    const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
 
-
-      useEffect(() => {
+    useEffect(() => {
         if (user) {
-          setFormData(user);
+            setFormData(user);
         }
-      }, [user]);
+    }, [user]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -20,11 +21,28 @@ const UserTab = ({ setFormData, formData, handleChange, navigate, id }) => {
             delete filteredData.freelancer_profile;
             delete filteredData.client_profile;
             delete filteredData.photo;
+            delete filteredData.id; // Exclude id
 
-            await dispatch(updateUserProfileAction(filteredData)).unwrap();
-            setTimeout(() => {
-                navigate(`/profile/${id}`);
-            }, 2000);
+            await dispatch(updateUserProfileAction(filteredData))
+                .unwrap()
+                .then(() => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated",
+                        text: "Your profile has been updated successfully",
+                        timer: 3000,
+                        showConfirmButton: false,
+                    })
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: "failure",
+                        title: "Profile Not Updated",
+                        text: "Your profile has not been updated successfully",
+                        timer: 3000,
+                        showConfirmButton: false,
+                    });
+                });
         } catch (err) {
             console.log(err);
             setError("Failed to update profile. Please try again.");
@@ -61,14 +79,69 @@ const UserTab = ({ setFormData, formData, handleChange, navigate, id }) => {
                 </Col>
             </Row>
             <Row>
-                <Col md={12}>
+                <Col md={6}>
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" value={formData.email || ""} disabled />
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            value={formData.email || ""}
+                            onChange={handleChange}
+                            disabled
+                        />
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="user_name"
+                            value={formData.user_name || ""}
+                            onChange={handleChange}
+                            required
+                            disabled
+                        />
                     </Form.Group>
                 </Col>
             </Row>
-
+            <Row>
+                <Col md={6}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Phone</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="phone"
+                            value={formData.phone || ""}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Birth Date</Form.Label>
+                        <Form.Control
+                            type="date"
+                            name="birth_date"
+                            value={formData.birth_date || ""}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={12}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Address</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="address"
+                            value={formData.address || ""}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+                </Col>
+            </Row>
             <Form.Group className="mb-4">
                 <Form.Label>Bio</Form.Label>
                 <Form.Control
@@ -81,7 +154,9 @@ const UserTab = ({ setFormData, formData, handleChange, navigate, id }) => {
             </Form.Group>
 
             <div className="d-flex gap-2 justify-content-end mt-4">
-                <Button variant="outline-secondary" onClick={() => navigate(`/profile/${id}`)}>
+                <Button
+                    variant="outline-secondary"
+                    onClick={() => navigate(`/profile/${id}`)}>
                     Cancel
                 </Button>
                 <Button variant="primary" type="submit">
