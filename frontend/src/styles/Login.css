@@ -1,0 +1,123 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f7f7f7;
+    padding: 2rem;
+    margin-top: 0%;  }
+
+  .logo-container {
+    margin-bottom: 1.5rem;
+    text-align: left;
+    text-align: center;
+    margin: 10px auto;
+}
+  input::placeholder {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.4);
+    opacity: 0.8;
+
+  }
+  input.form-control.is-valid {
+    background-image: none !important;
+  }
+  
+  .logo {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+    /* border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 8px rgba(49, 49, 49, 0.2);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%; */
+}
+
+  .login-card {
+    background: #ffffff;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    margin: 2rem 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: #dee2e6;
+  }
+
+  .divider-text {
+    padding: 0 1rem;
+  }
+
+  .social-buttons {
+    margin: 2rem 0;
+  }
+
+  .signup-prompt a {
+    color: #14a800;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid #14a800;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  .signup-prompt a:hover {
+    background-color: #14a800;
+    color: white;
+    text-decoration: none;
+  }
+
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .is-invalid {
+    border-color: #dc3545 !important;
+  }
+
+  .continue-btn {
+    background: #14a800;
+    color: white;
+    font-weight: 500;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+  }
+
+  .continue-btn:hover {
+    background: #0f8a00;
+    color: white;
+
+  }
+
+  @media (max-width: 576px) {
+    .login-card {
+      padding: 2rem;
+    }
+
+    .logo {
+      width: 130px;
+      height: 130px;
+    }
+  }
+
+  
