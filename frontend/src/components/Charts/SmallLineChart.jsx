@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale,
@@ -6,17 +7,6 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  datasets: [
-    {
-      data: [12, 19, 10, 22, 15],
-      borderColor: '#f59e0b',
-      tension: 0.4,
-    },
-  ],
-};
-
 const options = {
   responsive: true,
   plugins: { legend: { display: false } },
@@ -24,5 +14,27 @@ const options = {
 };
 
 export default function SmallLineChart() {
-  return <div style={{ height: '100px' }}><Line data={data} options={options} /></div>;
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    fetch('/data/dashboardData.json')
+      .then(res => res.json())
+      .then(data => {
+        const small = data.smallLineChart;
+
+        setChartData({
+          labels: small.labels,
+          datasets: [{
+            data: small.data,
+            borderColor: '#f59e0b',
+            tension: 0.4,
+          }],
+        });
+      })
+      .catch(err => console.error("Failed to load small line chart data:", err));
+  }, []);
+
+  if (!chartData) return <p>Loading small chart...</p>;
+
+  return <div style={{ height: '100px' }}><Line data={chartData} options={options} /></div>;
 }

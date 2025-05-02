@@ -1,18 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS, ArcElement, Tooltip, Legend
 } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-const data = {
-  labels: ['Paying', 'Non-Paying'],
-  datasets: [{
-    data: [70, 30],
-    backgroundColor: ['#10b981', '#f43f5e'],
-    borderWidth: 1,
-  }],
-};
 
 const options = {
   circumference: 180,
@@ -24,5 +16,31 @@ const options = {
 };
 
 export default function HalfDoughnutChart() {
-  return <div style={{ height: '200px' }}><Doughnut data={data} options={options} /></div>;
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    fetch('/data/dashboardData.json')
+      .then(res => res.json())
+      .then(data => {
+        const halfDoughnut = data.halfDoughnutChart;
+
+        setChartData({
+          labels: halfDoughnut.labels,
+          datasets: [{
+            data: halfDoughnut.values,
+            backgroundColor: ['#10b981', '#f43f5e'],
+            borderWidth: 1,
+          }]
+        });
+      })
+      .catch(err => console.error("Failed to load half doughnut chart data:", err));
+  }, []);
+
+  if (!chartData) return <p>Loading payment chart...</p>;
+
+  return (
+    <div style={{ height: '200px' }}>
+      <Doughnut data={chartData} options={options} />
+    </div>
+  );
 }

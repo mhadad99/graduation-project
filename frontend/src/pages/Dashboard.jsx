@@ -5,89 +5,74 @@ import SmallLineChart from '../components/Charts/SmallLineChart';
 import DoughnutChart from '../components/Charts/DoughnutChart';
 import HalfDoughnutChart from '../components/Charts/HalfDoughnutChart';
 import '../styles/dashboard.css';
+import { useEffect, useState } from 'react';
+
 
 export default function Dashboard() {
+
+
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    fetch('/data/dashboardData.json')
+      .then(res => res.json())
+      .then(data => setCards(data.statCards || []));
+  }, []);
+
+
   return (
     <DashboardLayout>
       <div className="container mt-4">
-        <div className="row mb-4">
-          <div className="col-md-4">
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title text-success">24 new jobs</h5>
-                <p className="card-text text-muted">Posted today</p>
-              </div>
-            </div>
+      <div className="stats-container">
+      {cards.map((card, index) => (
+        <div className="stat-card" key={index}>
+          <div className="stat-icon">
+            {index === 0 && (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6z" />
+                <path d="M4 2v14a2 2 0 0 0 2 2h12" />
+              </svg>
+            )}
+            {index === 1 && (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            )}
+            {index === 2 && (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+            )}
           </div>
-          <div className="col-md-4">
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title text-warning">12 pending applications</h5>
-                <p className="card-text text-muted">Awaiting review</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title text-danger">8 disputes</h5>
-                <p className="card-text text-muted">Require attention</p>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-        <div className="row">
-          <div className="col-md-8 mb-4">
-            <div className="card shadow-sm h-100">
-              <div className="card-body">
-                <h5 className="card-title">Total Earnings</h5>
-                <Charts />
-              </div>
-            </div>
-          </div>
-  
-          <div className="col-md-4">
-            <div className="row">
-              <div className="col-6 mb-4">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">Jobs Posted</h6>
-                    <BarChart />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6 mb-4">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">New Freelancers</h6>
-                    <SmallLineChart />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">Top Categories</h6>
-                    <DoughnutChart />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h6 className="card-title">Verified vs Unverified</h6>
-                    <HalfDoughnutChart />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="stat-content">
+            <h3>{card.title}</h3>
+            <p className="text-muted">{card.subtitle}</p>
           </div>
         </div>
+      ))}
+    </div>
+
+  
+        <div className="dashboard-grid">
+            <div className="main-chart">
+              <Charts />
+            </div>
+            <div className="side-grid">
+              <div className="chart-item"><BarChart /></div>
+              <div className="chart-item"><DoughnutChart /></div>
+              <div className="chart-item"><SmallLineChart /></div>
+              <div className="chart-item"><HalfDoughnutChart /></div>
+            </div>
+       </div>
       </div>
     </DashboardLayout>
   );
   
-}  
-///if we have time and make it dynamically with api 
-//
+}

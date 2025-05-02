@@ -1,17 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS, ArcElement, Tooltip, Legend
 } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-const data = {
-  labels: ['Coupon A', 'Coupon B', 'Coupon C'],
-  datasets: [{
-    data: [30, 50, 20],
-    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
-  }],
-};
 
 const options = {
   plugins: {
@@ -21,5 +14,32 @@ const options = {
 };
 
 export default function DoughnutChart() {
-  return <div style={{ height: '250px' }}><Doughnut data={data} options={options} /></div>;
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    fetch('/data/dashboardData.json')
+      .then(res => res.json())
+      .then(data => {
+        const doughnut = data.doughnutChart;
+
+        setChartData({
+          labels: doughnut.labels,
+          datasets: [
+            {
+              data: doughnut.values,
+              backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+            },
+          ],
+        });
+      })
+      .catch(err => console.error("Failed to load doughnut chart data:", err));
+  }, []);
+
+  if (!chartData) return <p>Loading doughnut chart...</p>;
+
+  return (
+    <div style={{ height: '250px' }}>
+      <Doughnut data={chartData} options={options} />
+    </div>
+  );
 }
