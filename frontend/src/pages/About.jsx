@@ -46,7 +46,7 @@ export default function About() {
         <div style={styles.teamGrid}>
           {[
             { name: "Mohamed Hassan", img: "./images/mohamed-hassan.jpg" },
-            { name: "AYMAN samer", img: "./images/ayman-samer.jpg" },
+            { name: "Ayman Samir", img: "./images/ayman-samer.jpg" },
             { name: "Saraa Talat Ali", img: "./images/saraa-talat.jpg" },
             { name: "Mohamed Akram", img: "./images/mohamed-akram.jpg" },
             { name: "Mohamed Emad", img: "./images/mohamed-emad.jpg" },
