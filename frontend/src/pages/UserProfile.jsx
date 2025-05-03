@@ -21,12 +21,12 @@ import {
   ProjectsTab,
 } from "../components/profile";
 import { useSelector, useDispatch } from "react-redux";
-import { getMyProfileAction } from "../store/slices/userSlice";
+import { fetchUserProfile, getMyProfileAction } from "../store/slices/userSlice";
 
 const UserProfile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
+  const { user, profile, isLoading, error } = useSelector((state) => state.userSlice);
 
   const [activeTab, setActiveTab] = useState("about");
 
@@ -37,8 +37,16 @@ const UserProfile = () => {
     }
   }, [user, dispatch]);
 
+  useEffect(() => {
+    // Fetch the profile by id if id exists and is different from the logged-in user
+    if (id && (!profile || String(profile.id) !== String(id))) {
+      dispatch(fetchUserProfile(id));
+    }
+  }, [id, profile, dispatch]);
+
+
   // Show a spinner while loading
-  if (isLoading || !user) {
+  if (isLoading) {
     return (
       <Container className="py-5 text-center">
         <Spinner animation="border" role="status" variant="primary">
@@ -49,18 +57,46 @@ const UserProfile = () => {
     );
   }
 
-  // Handle case where user data is not available
-  if (!user) {
+  if (error) {
     return (
       <Container className="py-5">
-        <Alert variant="danger">User profile not found</Alert>
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
+      </Container>
+    );
+  }
+  if (!profile) {
+    return (
+      <Container className="py-5">
+        <Alert variant="warning" className="text-center">
+          User profile not found
+        </Alert>
       </Container>
     );
   }
 
-  const isMyProfile = id === user.id.toString();
-  const role = user.user_type;
-  const profileData = role ? user : null;
+  // Only use user to check if this is your own profile
+  const isMyProfile = user && profile && String(user.id) === String(profile.id);
+  const profileData = profile;
+
+  // Handle case where user data is not available
+  // if (!user || !profileData) {
+  //   return (
+  //     <Container className="py-5">
+  //       <Alert variant="danger" className="text-center">
+  //         User profile not found
+  //       </Alert>
+  //     </Container>
+  //   );
+  // }
+
+  // const isMyProfile = id === user.id.toString();4
+  // const isMyProfile = user && profile && user.id === profile.id;
+  // const role = user.user_type;
+  // const profileData = role ? user : null;
+  // const profileData = profile;
+
 
   const renderTabs = () => {
     const userRole = profileData?.role || "freelancer";
@@ -102,7 +138,7 @@ const UserProfile = () => {
         icon: <Collection className="me-2" />,
         component: (
           <PortfolioTab
-            portfolioItems={profileData.portfolio}
+            portfolioItems={profileData.portfolio || []}
             isMyProfile={isMyProfile}
           />
         ),
@@ -130,8 +166,8 @@ const UserProfile = () => {
 
   return (
     <div className="bg-light min-vh-100">
-      <ProfileHeader profileData={user} isMyProfile={isMyProfile} />
-
+      <ProfileHeader profileData={profileData} isMyProfile={isMyProfile} />
+      
       <Container className="mt-4">
         <Tabs
           activeKey={activeTab}

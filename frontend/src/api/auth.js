@@ -110,3 +110,25 @@ export const updatePassword = async (passwordData) => {
     };
   }
 };
+
+// Function to get user profile data
+export const getUserProfile = async (id) => {
+  try {
+    const response = await axios.get(`${baseURL}user-profile/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        throw new Error("User profile not found");
+      }
+      if (error.response.status === 401) {
+        throw new Error("Please login to view this profile");
+      }
+    }
+    throw new Error("Failed to fetch user profile");
+  }
+};
