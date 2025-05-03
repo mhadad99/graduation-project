@@ -46,9 +46,10 @@ export const Header = () => {
     
     navigate("/login"); // Redirect to the login page
   };
+  
   useEffect(() => {
     dispatch(getMyProfileAction());
-  }, [dispatch]);
+  }, []);
 
   // Redux state for theme management
   const { theme } = useSelector((state) => state.themeSlice);
@@ -157,7 +158,7 @@ export const Header = () => {
   };
 
   const renderActionButton = () => {
-    if (!isLoggedIn) return null;
+    if (!isLoggedIn || !user) return null;
 
     return (
       <div className="action-button-wrapper ms-auto me-4">

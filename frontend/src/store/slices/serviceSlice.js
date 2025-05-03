@@ -15,7 +15,6 @@ export const getAllServicesAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await getAllServices();
-            console.log("hey"+response.data)
             return response.data;
             
         } catch (error) {

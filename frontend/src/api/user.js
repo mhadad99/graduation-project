@@ -41,7 +41,6 @@ export const getMyFreelancerProfile = async () => {
                 Authorization: `Bearer ${localStorage.getItem("authToken")}`,
             },
         });
-        console.log(response.data)
         return response
     } catch (error) {
         throw error;

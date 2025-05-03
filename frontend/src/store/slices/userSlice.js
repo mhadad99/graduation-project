@@ -51,7 +51,6 @@ export const getMyFreelancerProfileAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await getMyFreelancerProfile();
-            console.log(response.data);
             return response.data;
 
         } catch (error) {
@@ -160,7 +159,6 @@ const userSlice = createSlice(
                 state.error = null;
             }).addCase(updateFreelancerProfileAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                console.log(action.payload);
                 const updatedUser = { ...state.freelancer, ...action.payload };
                 state.freelancer = updatedUser;
                 // saveUserToLocalStorage(updatedUser);
