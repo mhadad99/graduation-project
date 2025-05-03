@@ -21,29 +21,35 @@ import {
   ProjectsTab,
 } from "../components/profile";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserProfile, getMyProfileAction } from "../store/slices/userSlice";
+import {
+  clearProfile,
+  fetchUserProfile,
+  getMyProfileAction,
+} from "../store/slices/userSlice";
+
 
 const UserProfile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user, profile, isLoading, error } = useSelector((state) => state.userSlice);
+  const { user, profile, isLoading, error } = useSelector(
+    (state) => state.userSlice
+  );
 
   const [activeTab, setActiveTab] = useState("about");
 
-  // Fetch user data if it is null or undefined
   useEffect(() => {
-    if (!user) {
-      dispatch(getMyProfileAction());
-    }
-  }, [user, dispatch]);
+    dispatch(getMyProfileAction());
+  }, [dispatch]);
 
   useEffect(() => {
-    // Fetch the profile by id if id exists and is different from the logged-in user
     if (id && (!profile || String(profile.id) !== String(id))) {
       dispatch(fetchUserProfile(id));
     }
-  }, [id, profile, dispatch]);
-
+    // clear profile on unmount or id change to avoid stale data
+    return () => {
+      dispatch(clearProfile());
+    };
+  }, [id, dispatch]);
 
   // Show a spinner while loading
   if (isLoading) {
@@ -66,7 +72,9 @@ const UserProfile = () => {
       </Container>
     );
   }
-  if (!profile) {
+
+  // Only show "not found" if NOT loading and NOT error
+  if (!isLoading && !error && !profile) {
     return (
       <Container className="py-5">
         <Alert variant="warning" className="text-center">
@@ -79,24 +87,6 @@ const UserProfile = () => {
   // Only use user to check if this is your own profile
   const isMyProfile = user && profile && String(user.id) === String(profile.id);
   const profileData = profile;
-
-  // Handle case where user data is not available
-  // if (!user || !profileData) {
-  //   return (
-  //     <Container className="py-5">
-  //       <Alert variant="danger" className="text-center">
-  //         User profile not found
-  //       </Alert>
-  //     </Container>
-  //   );
-  // }
-
-  // const isMyProfile = id === user.id.toString();4
-  // const isMyProfile = user && profile && user.id === profile.id;
-  // const role = user.user_type;
-  // const profileData = role ? user : null;
-  // const profileData = profile;
-
 
   const renderTabs = () => {
     const userRole = profileData?.user_type || "freelancer";
@@ -115,7 +105,9 @@ const UserProfile = () => {
         title: "Reviews",
         icon: <Star className="me-2" />,
         component: (
-          <ReviewsTab reviews={profileData.reviews} isMyProfile={isMyProfile} />
+          <ReviewsTab
+          reviews={profileData.reviews || []}
+          isMyProfile={isMyProfile} />
         ),
       },
     ];
@@ -127,8 +119,8 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ServicesTab
-            services={profileData.services}
-            isMyProfile={isMyProfile}
+          services={profileData.services || []}
+          isMyProfile={isMyProfile}
           />
         ),
       },
@@ -153,8 +145,8 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ProjectsTab
-            projects={profileData.projects}
-            isMyProfile={isMyProfile}
+          projects={profileData.projects || []}
+          isMyProfile={isMyProfile}
           />
         ),
       },
@@ -167,7 +159,7 @@ const UserProfile = () => {
   return (
     <div className="bg-light min-vh-100">
       <ProfileHeader profileData={profileData} isMyProfile={isMyProfile} />
-      
+
       <Container className="mt-4">
         <Tabs
           activeKey={activeTab}

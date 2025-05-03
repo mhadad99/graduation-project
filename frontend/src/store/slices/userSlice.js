@@ -172,13 +172,11 @@ const userSlice = createSlice(
         name: "user",
         initialState,
         reducers: {
-            reducers: {
                 clearProfile: (state) => {
                   state.profile = null;
                   state.error = null;
                 }
               },
-        },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
