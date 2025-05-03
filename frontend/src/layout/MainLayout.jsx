@@ -1,4 +1,7 @@
+// src/layout/MainLayout.js
 import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { SharedLayout } from "../sharedLayout/SharedLayout";
 import { Home } from "../pages/Home";
 import { NotFound } from "../pages/NotFound";
 import AddProject from '../pages/AddProject';
@@ -6,10 +9,8 @@ import ProjectDetails from '../pages/ProjectDetails';
 
 import {
   BrowserRouter,
-  Route,
-  Routes,
+ 
 } from "react-router-dom";
-import { SharedLayout } from "../sharedLayout/SharedLayout";
 import { RegisterPage } from "../pages/RegisterPage";
 import CreateService from "../pages/CreateService";
 import { ServiceDetailsPage } from "../pages/ServiceDetailsPage";
@@ -22,7 +23,6 @@ import ServicesPage from "../pages/ServicesPage";
 import Help from "../components/Help";
 import EditProfile from "../pages/EditProfile";
 import Projects from "../pages/Projects";
-
 
 export function MainLayout() {
   return (
