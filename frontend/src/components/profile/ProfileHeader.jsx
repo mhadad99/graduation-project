@@ -76,17 +76,22 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
   }
 
   const {
-    photo = "https://i.imgur.com/6AglEUF.jpeg",
+    photo = "/avatar.png",
     first_name = "User",
     second_name = "User",
     user_type = "Freelancer",
-    location = "Not specified",
+    address = "Not specified",
     averageRating = 0,
     numberOfReviews = 0,
     completionRate = 0,
     averageResponse = "N/A",
-    role = "freelancer",
-  } = profileData;
+    client_profile = null,
+    freelancer_profile = null,
+  } = profileData || {};
+
+  // Safe destructuring with null checks
+  const clientCreatedAt = client_profile?.created_at || "2023-01-01";
+  const freelancerCreatedAt = freelancer_profile?.created_at || "2023-01-01";
 
   const stats = [
     {
@@ -103,8 +108,8 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
     { icon: Envelope, text: "Message", variant: "light" },
   ];
 
-  const getRoleBadgeVariant = (role) => {
-    switch (role.toLowerCase()) {
+  const getRoleBadgeVariant = (user_type) => {
+    switch (user_type.toLowerCase()) {
       case "freelancer":
         return "primary";
       case "client":
@@ -124,7 +129,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
             src={photo == null ? '/avatar.png' : photo}
             roundedCircle
             className="profile-avatar"
-            alt={name}
+            alt={`${first_name} ${second_name}`}
           />
           {isMyProfile && (
             <>
@@ -148,12 +153,12 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         <h2 className="fw-bold mb-1">
           {first_name} {second_name}
           <Badge
-            bg={getRoleBadgeVariant(role)}
+            bg={getRoleBadgeVariant(user_type)}
             className="ms-2 role-badge text-capitalize"
             size="sm"
             pill>
             <PersonBadge size={12} className="me-1" />
-            {role}
+            {user_type}
           </Badge>
         </h2>
         <div className="text-muted mb-3"> Web Developer</div>
@@ -161,11 +166,13 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">
             <GeoAlt size={18} className="me-2" />
-            {location}
+            {address}
           </span>
           <span className="profile-badge">
             <Calendar3 size={18} className="me-2" />
-            Member since {new Date().getFullYear()}
+            Member since {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short" }).format(
+              new Date(user_type.toLowerCase() === "client" ? clientCreatedAt : freelancerCreatedAt)
+            )}
           </span>
         </div>
 
