@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 # Create your views here.
 # views.py
 from rest_framework.permissions import IsAuthenticated
@@ -18,10 +16,21 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 # Create
+
+
 class ProjectCreateView(generics.CreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectCreateSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        print("User Type:", user.user_type)  # Debugging line
+
+        if user.user_type != "client":
+            raise PermissionDenied("Only clients can create projects.")
+
+        serializer.save(clientId=user)
 
 
 # List
