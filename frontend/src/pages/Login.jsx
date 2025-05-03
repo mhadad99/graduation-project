@@ -5,14 +5,14 @@ import '../styles/Login.css';
 import { loginUser } from '../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginAction } from "../store/authSlice";
+import { loginAction } from "../store/slices/authSlice";
 
 
 
 
 export default function LoginPage() {
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
   useEffect(() => {
@@ -46,25 +46,25 @@ export default function LoginPage() {
     if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(password)) return;
 
     dispatch(loginAction({ email, password }))
-    .unwrap()
-    .then(() => {
-      navigate("/");
-    })
-    .catch((err) => {
-      console.error("Login failed:", err);
-    });
+      .unwrap()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("Login failed:", err);
+      });
   };
 
   const handleBlur = () => setTouched(true);
 
   return (
     <div className="login-container">
-      <div className="logo-container">
-        <img src="../TANFEEZ.png" alt="Tanfeez Logo" className="logo" />
-      </div>
 
       <div className="login-card">
+      <div className="logo-container">
+        <img src="logo/Tanfeez.png" alt="Tanfeez Logo" className="logo " />
         <h2 className="text-center mb-4">Login to Tanfeez</h2>
+      </div>
 
         <form onSubmit={handleSubmit} noValidate>
           {/* Email */}

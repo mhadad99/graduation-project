@@ -31,13 +31,13 @@ function StarRating({ value }) {
 export default function ReviewsSection() {
   return (
     <Card className="p-4 shadow-sm border-0">
-      <h6 className="fw-bold mb-3">Reviews</h6>
+      {/* <h6 className="fw-bold mb-3 color-inverse ">Reviews</h6> */}
       <Stack gap={3}>
         {reviews.map((r, i) => (
           <div key={i} className="d-flex gap-3 align-items-start">
             <Image src={r.avatar} roundedCircle width={40} height={40} alt={r.name} />
             <div>
-              <div className="fw-semibold" style={{fontSize: '1.02rem'}}>{r.name}
+              <div className="fw-semibold text-muted" style={{fontSize: '1.02rem'}}>{r.name}
                 <span className="ms-2"><StarRating value={r.rating} /></span>
                 <span className="ms-2 text-secondary" style={{fontSize:12}}>{r.date}</span>
               </div>

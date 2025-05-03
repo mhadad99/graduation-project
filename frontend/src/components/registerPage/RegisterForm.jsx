@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/Login.css';
-import { registerUser } from '../../api/auth';
 import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerAction } from "../../store/authSlice";
+import { registerAction } from "../../store/slices/authSlice";
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
-
-export default function RegisterForm() {
-    const navigate = useNavigate(); 
+export default function RegisterForm({ role }) {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { isLoading, isLoggedIn, error } = useSelector((state) => state.authSlice);
     useEffect(() => {
-      const url = window.location.pathname;
-      if (url === "/register" && isLoggedIn) {
-        navigate("/");
-      }
+        const url = window.location.pathname;
+        if (url === "/register" && isLoggedIn) {
+            navigate("/");
+        }
     }, []);
-  
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         first_name: '',
         second_name: '',
         user_name: '',
+        user_type: role,
+
+
     });
     const [showPassword, setShowPassword] = useState(false);
     const [touched, setTouched] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
 
     const isEmailEmpty = isFieldEmpty(formData.email);
     const isEmailValid = !isEmailEmpty && validateEmail(formData.email);
@@ -49,31 +49,54 @@ export default function RegisterForm() {
         e.preventDefault();
         setSubmitted(true);
         setTouched(true);
-        setErrorMessage('');
-        setSuccessMessage('');
 
         if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(formData.password)) return;
 
-            dispatch(registerAction(formData))
-    .unwrap()
-    .then(() => {
-      navigate("/login");
-    })
-    .catch((err) => {
-      console.error("Register failed:", err);
-    });
+        dispatch(registerAction(formData))
+            .unwrap()
+            .then(() => {
+                // Show success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful',
+                    text: 'You have successfully registered! Redirecting to login...',
+                    timer: 3000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    navigate("/login");
+                });
+            })
+            .catch((error) => {
+                // Extract error messages from the response
+                const errorMessages = [];
+                if (error.data) {
+                    for (const key in error.data) {
+                        if (Array.isArray(error.data[key])) {
+                            errorMessages.push(...error.data[key]);
+                        } else {
+                            errorMessages.push(error.data[key]);
+                        }
+                    }
+                }
+
+                // Show error alert with the extracted messages
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    html: errorMessages.join('<br>'), // Display messages as HTML
+                });
+            });
     };
 
     const handleBlur = () => setTouched(true);
 
     return (
         <div className="login-container">
-            <div className="logo-container">
-                <img src="../TANFEEZ.png" alt="Tanfeez Logo" className="logo" />
-            </div>
-
             <div className="login-card">
-                <h2 className="text-center mb-4">Register for Tanfeez</h2>
+                <div className="logo-container">
+                    <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" />
+                </div>
+                <h2 className="text-center mb-3">{role === 'client' ? 'Register as Client' : 'Register as Freelancer'}</h2>
 
                 <form onSubmit={handleSubmit} noValidate>
                     {/* First Name */}
@@ -175,9 +198,6 @@ export default function RegisterForm() {
                             </div>
                         )}
                     </div>
-
-                    {error && <div className="alert alert-danger py-2">{error}</div>}
-                    {successMessage && <div className="alert alert-success py-2">{successMessage}</div>}
 
                     <button
                         type="submit"

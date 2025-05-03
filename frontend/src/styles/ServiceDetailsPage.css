@@ -1,0 +1,239 @@
+/* Main Layout */
+.service-details-page {
+    background-color: var(--color-background);
+    min-height: calc(100vh - 80px);
+  }
+  
+  .service-title{
+    font-size: 2rem !important; 
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+  /* Card Components */
+  .custom-card {
+    border: none;
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-card-bg);
+    margin-bottom: 2rem;
+  }
+  
+  .card-header-custom {
+    background: var(--primary-600);
+    /* color: var(--color-text-inverse); */
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+  }
+  
+  .card-body-custom {
+    padding: 1.5rem;
+    background: var(--color-card-bg);
+    color: var(--color-text);
+  }
+  
+  /* Badges */
+  .category-badge,
+  .tag-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .tag-badge {
+    background: var(--primary-500);
+    color: var(--color-text-inverse);
+  }
+  
+  /* Service Gallery */
+  .service-gallery {
+    margin-bottom: 2rem;
+  }
+  
+  .main-image-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+  }
+  
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .main-image:hover {
+    transform: scale(1.02);
+  }
+  
+  .thumbnails-container {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+  }
+  
+  .thumbnail-wrapper {
+    flex: 0 0 100px;
+    height: 70px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  
+  .thumbnail-wrapper:hover {
+    opacity: 0.9;
+  }
+  
+  .thumbnail-wrapper.active {
+    opacity: 1;
+    border-color: var(--primary-500);
+  }
+  
+  .thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Profile Elements */
+  .freelancer-avatar,
+  .seller-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .seller-avatar {
+    border: 2px solid var(--primary-100);
+  }
+  
+  /* YouTube Container */
+  .youtube-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .youtube-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  
+  /* Modal Styles */
+  .gallery-modal .modal-content {
+    background: transparent;
+    border: none;
+  }
+  
+  .modal-image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-image {
+    max-height: 80vh;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-button.prev { left: 1rem; }
+  .nav-button.next { right: 1rem; }
+  .nav-button:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  /* Layout Utilities */
+  .sticky-sidebar {
+    position: sticky;
+    top: 92px;
+  }
+  
+  /* Dark Mode */
+  [data-theme="dark"] {
+    .custom-card {
+      background: var(--color-card-bg);
+      border-color: var(--color-border);
+    }
+  
+    .card-header-custom {
+      background: var(--primary-700);
+    }
+  
+    .card-body-custom h5 {
+      color: var(--color-text-inverse);
+    }
+    .color-inverse{
+        color: var(--color-text-inverse) !important;
+    }
+    .tag-badge {
+      background: var(--primary-700);
+    }
+  
+    .thumbnail-wrapper {
+      background: var(--color-card-bg);
+      border-color: var(--color-border);
+    }
+  
+    .thumbnail-wrapper.active {
+      border-color: var(--primary-400);
+    }
+  
+    .nav-button {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  
+    .nav-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 991.98px) {
+    .sticky-sidebar {
+      position: static;
+      margin-top: 2rem;
+    }
+  
+    .main-image-container {
+      height: 300px;
+    }
+  }

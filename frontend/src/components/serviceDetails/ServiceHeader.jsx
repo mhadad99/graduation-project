@@ -1,34 +1,51 @@
-import React from 'react';
-import { Badge, Card, Col, Row } from 'react-bootstrap';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import Image from 'react-bootstrap/Image';
-import Stack from 'react-bootstrap/Stack';
+/** @format */
 
-const serviceTitle = 'Professional Logo Design for Your Brand';
-const coverImg = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80';
+import React from "react";
+import { Breadcrumb, Badge, Stack, Image } from "react-bootstrap";
+import { StarFill, Clock } from "react-bootstrap-icons";
 
-export default function ServiceHeader() {
+export default function ServiceHeader({ serviceData }) {
+  const { title, image, rating, reviewCount, deliveryTime, freelancer } =
+    serviceData;
+
   return (
-    <div className="bg-white p-4 rounded border mb-3 shadow-sm d-flex flex-column align-items-center">
-      <Breadcrumb className="mb-2" style={{ fontSize: '0.9rem' }}>
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/services">Services</Breadcrumb.Item>
-        <Breadcrumb.Item active>Logo Design</Breadcrumb.Item>
-      </Breadcrumb>
-      <h2 className="fw-bold mb-3 text-center" style={{fontSize: '2rem'}}>{serviceTitle}</h2>
-      <Card className="mb-3 p-3 align-items-center flex-row gap-4 border-0 shadow-sm" >
-      <Image src="https://randomuser.me/api/portraits/women/68.jpg" roundedCircle width={72} height={72} alt="Seller Avatar" style={{objectFit: 'cover', border: '2px solid #d8e6fc'}} />
-      <Stack gap={1} style={{flex: 1}}>
-        <div className="d-flex align-items-center gap-2 justify-content-center">
-          <span className="fw-semibold" style={{fontSize: '1.12rem'}}>Muhammad H</span>
-           <Badge bg="success" className="ms-1">Top Rated</Badge>
+    <div className="service-header">
+      <div className="cover-image-wrapper">
+        <Image src={image} className="cover-image" alt={title} />
+      </div>
+      <div className="header-content">
+        <Breadcrumb className="breadcrumb-custom">
+          <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+          <Breadcrumb.Item href="/services">Services</Breadcrumb.Item>
+          <Breadcrumb.Item active>{title}</Breadcrumb.Item>
+        </Breadcrumb>
+
+        <h1 className="service-title">{title}</h1>
+
+        <div className="freelancer-card">
+          <Stack direction="horizontal" gap={3} className="align-items-center">
+            <Image
+              src={freelancer.avatar}
+              className="freelancer-avatar"
+              alt={freelancer.name}
+            />
+            <div>
+              <div className="d-flex align-items-center gap-2">
+                <span className="fw-bold fs-5">{freelancer.name}</span>
+                <Badge bg="success">{freelancer.level}</Badge>
+              </div>
+              <div className="d-flex align-items-center gap-2 text-muted mt-1">
+                <StarFill className="text-warning" />
+                <span>{rating}</span>
+                <span>({reviewCount} reviews)</span>
+                <span>·</span>
+                <Clock className="ms-1" />
+                <span>{deliveryTime} delivery</span>
+              </div>
+            </div>
+          </Stack>
         </div>
-      
-      </Stack>
-    </Card>
-      <Stack direction="horizontal" gap={3} className="align-items-center justify-content-center">
-        <Image src={coverImg} alt="Service Cover" fluid rounded style={{maxHeight: 220, objectFit: 'cover', width: '100%'}} />
-      </Stack>
+      </div>
     </div>
   );
 }
