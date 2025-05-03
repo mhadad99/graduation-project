@@ -46,6 +46,18 @@ export const getMyFreelancerProfile = async () => {
         throw error;
     }
 };
+export const getMyClientProfile = async () => {
+    try {
+        const response = await axios.get(`${baseURL}clients/detail/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response
+    } catch (error) {
+        throw error;
+    }
+};
 
 
 
@@ -79,6 +91,18 @@ export const updateUserProfile = async (formData) => {
 export const updateFreelancerProfile = async (formData) => {
     try {
         const response = await axios.patch(`${baseURL}freelancers/update/`, formData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+}
+export const updateClientProfile = async (formData) => {
+    try {
+        const response = await axios.patch(`${baseURL}clients/update/`, formData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("authToken")}`,
             },

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getMyFreelancerProfile, getMyProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
 
 
 const saveUserToLocalStorage = (user) => {
@@ -58,6 +58,20 @@ export const getMyFreelancerProfileAction = createAsyncThunk(
         }
     }
 )
+export const getMyClientProfileAction = createAsyncThunk(
+
+    "user/getMyClientProfileAction",
+    async (args, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await getMyClientProfile();
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
 
 
 export const updateUserImageAction = createAsyncThunk(
@@ -91,6 +105,18 @@ export const updateFreelancerProfileAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await updateFreelancerProfile(formData);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
+export const updateClientProfileAction = createAsyncThunk(
+    "user/updateClientProfileAction",
+    async (formData, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await updateClientProfile(formData);
             return response;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -154,6 +180,16 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             });
+            builder.addCase(getMyClientProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(getMyClientProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.client = action.payload;
+            }).addCase(getMyClientProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
             builder.addCase(updateFreelancerProfileAction.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -163,6 +199,18 @@ const userSlice = createSlice(
                 state.freelancer = updatedUser;
                 // saveUserToLocalStorage(updatedUser);
             }).addCase(updateFreelancerProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+            builder.addCase(updateClientProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(updateClientProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const updatedUser = { ...state.client, ...action.payload };
+                state.client = updatedUser;
+                // saveUserToLocalStorage(updatedUser);
+            }).addCase(updateClientProfileAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });

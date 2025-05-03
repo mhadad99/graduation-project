@@ -155,7 +155,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
             {user_type}
           </Badge>
         </h2>
-        <div className="text-muted mb-3"> Web Developer</div>
+        {  <div className="text-muted mb-3"> {user_type === "client"? profileData.client_profile.company : profileData.user_name}</div>}
 
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">
