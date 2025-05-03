@@ -2,7 +2,7 @@
 
 /* Gradient Background */
 .footer {
-    background: linear-gradient(135deg, #0425A6, #2F6B66);
+  background-color:#0765BC !important;/* Tomato Color */
     color: white;
     padding: 40px 0;
   }
@@ -45,3 +45,76 @@
     background-color: #FFA07A; /* Coral Hover */
   }
   
+
+  /* Container background and general styles */
+.footer {
+  background-color: #121212; /* Dark mode background */
+  color: #ffffff; /* Light text */
+  font-size: 1.1rem; /* Bigger base font size */
+}
+
+/* Headings */
+.footer h5 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Paragraph and list items */
+.footer p,
+.footer .footer-link {
+  font-size: 1.05rem;
+  color: #bbbbbb;
+}
+.footer .footer-link {
+  font-size: 1.2rem;
+  color: #f7f7f7;
+}
+.footer .footer-link:hover {
+  color: #d37b7b;
+  transition: ease;
+  transition-duration: 0.3s;
+}
+
+/* Social icons */
+.footer .social-icon {
+  font-size: 1.6rem; /* Bigger icon size */
+  color: #ffffff;
+  transition: color 0.3s;
+}
+
+.footer .social-icon:hover {
+  color: #d37b7b;
+}
+
+/* Newsletter input */
+.footer .newsletter-form input {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #fff;
+}
+
+.footer .newsletter-form input::placeholder {
+  color: #888;
+}
+
+.footer .newsletter-form .btn-primary {
+  background-color: #007bff;
+  border: none;
+  font-weight: bold;
+}
+
+.footer .newsletter-form .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Divider */
+.footer hr {
+  border-color: #333;
+}
+
+/* Copyright */
+.footer .text-muted {
+  color: #cecccc;
+}
+
