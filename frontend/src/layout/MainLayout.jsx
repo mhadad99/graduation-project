@@ -38,7 +38,7 @@ export function MainLayout() {
           <Route path="register" element={<RegisterPage />} />
           <Route path="/about" element={<About />} />
           <Route path="servicedetails" element={<ServiceDetailsPage />} />
-          <Route path="add/service" element={<CreateService />} />
+          <Route path=":id/service" element={<CreateService />} />
           <Route path="profile/:id" element={<UserProfile />} />
           <Route path="profile/edit/:id" element={<EditProfile />} />
           <Route path="/services/:id" element={<ServiceDetailsPage />} />          

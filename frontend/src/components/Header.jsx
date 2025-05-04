@@ -163,7 +163,7 @@ export const Header = () => {
     return (
       <div className="action-button-wrapper ms-auto me-4">
         {user.user_type === "freelancer" ? (
-          <Link to="/add/service" className="add-action-btn">
+          <Link to="/0/service" className="add-action-btn">
             <span className="btn-text">Add Service</span>
             <span className="btn-icon">+</span>
           </Link>

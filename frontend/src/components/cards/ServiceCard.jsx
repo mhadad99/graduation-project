@@ -61,7 +61,7 @@ const ServiceCard = ({ service, isOwner }) => {
           <Button 
             variant="outline-primary" 
             as={Link}
-            to={`/services/${id}/edit`}
+            to={`/${id}/service`}
             className="service-action-btn"
           >
             Edit Service
