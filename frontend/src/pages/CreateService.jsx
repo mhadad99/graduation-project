@@ -5,44 +5,32 @@ import '../styles/CreateService.css';
 import { addService } from '../api/service';
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { useNavigate } from 'react-router-dom';
-
-
+import { useDispatch } from 'react-redux';
+import { addServiceAction } from '../store/slices/serviceSlice';
 
 const CreateService = () => {
   // Ref for file input
   const galleryInputRef = useRef(null);
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   // State for form fields
-  // const [formData, setFormData] = useState({
-  //   title: '',
-  //   category: '',
-  //   tags: [],
-  //   priceFrom: '',
-  //   description: '',
-  //   thumbnailImage: null,
-  //   galleryImages: [],
-  //   youtubeUrl: ''
-  // });
   const [formData, setFormData] = useState({
     service_name: '',
+    category: '',
+    tags: [],
+    price: '',
     description: '',
+    photo: null,
+    video: ''
   });
 
-  // State for current tag being entered
-  // const [currentTag, setCurrentTag] = useState('');
-
-  // State for form validation
+  const [currentTag, setCurrentTag] = useState('');
   const [validated, setValidated] = useState(false);
+  const [youtubeVideoId, setYoutubeVideoId] = useState('');
+  const [youtubeError, setYoutubeError] = useState('');
 
-  // State for alerts
-  // const [showMaxImagesAlert, setShowMaxImagesAlert] = useState(false);
-
-  // // State for YouTube video preview
-  // const [youtubeVideoId, setYoutubeVideoId] = useState('');
-  // const [youtubeError, setYoutubeError] = useState('');
-
-  // Sample categories (you can replace with your actual categories)
   const categories = [
     'Web Development',
     'Graphic Design',
@@ -56,7 +44,6 @@ const CreateService = () => {
     'Other'
   ];
 
-  // Handle text/select inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -64,55 +51,22 @@ const CreateService = () => {
       [name]: value
     });
 
-    // Clear YouTube error when user modifies input
-    // if (name === 'youtubeUrl') {
-    //   setYoutubeError('');
-    // }
+    if (name === 'video') {
+      setYoutubeError('');
+    }
   };
 
-  // Handle thumbnail image upload
-  // const handleThumbnailUpload = (e) => {
-  //   if (e.target.files[0]) {
-  //     setFormData({
-  //       ...formData,
-  //       thumbnailImage: e.target.files[0]
-  //     });
-  //   }
-  // };
+  const handleThumbnailUpload = (e) => {
+    if (e.target.files[0]) {
+      setFormData({
+        ...formData,
+        photo: e.target.files[0]
+      });
+    }
+  };
 
-  // // Handle gallery images upload
-  // const handleGalleryUpload = (e) => {
-  //   if (e.target.files) {
-  //     const newImages = Array.from(e.target.files);
-  //     const totalImages = formData.galleryImages.length + newImages.length;
+ 
 
-  //     if (totalImages <= 6) {
-  //       setFormData({
-  //         ...formData,
-  //         galleryImages: [...formData.galleryImages, ...newImages]
-  //       });
-  //       setShowMaxImagesAlert(false);
-  //     } else {
-  //       // Only add images up to the maximum of 6
-  //       const availableSlots = 6 - formData.galleryImages.length;
-  //       if (availableSlots > 0) {
-  //         const imagesToAdd = newImages.slice(0, availableSlots);
-  //         setFormData({
-  //           ...formData,
-  //           galleryImages: [...formData.galleryImages, ...imagesToAdd]
-  //         });
-  //       }
-  //       setShowMaxImagesAlert(true);
-
-  //       // Clear the file input
-  //       if (galleryInputRef.current) {
-  //         galleryInputRef.current.value = '';
-  //       }
-  //     }
-  //   }
-  // };
-
-  // // Add tag to the tags array
   // const handleAddTag = (e) => {
   //   e.preventDefault();
   //   if (currentTag.trim() !== '' && !formData.tags.includes(currentTag.trim())) {
@@ -124,7 +78,6 @@ const CreateService = () => {
   //   }
   // };
 
-  // // Handle tag input keypress (add on Enter)
   // const handleTagKeyPress = (e) => {
   //   if (e.key === 'Enter') {
   //     e.preventDefault();
@@ -132,7 +85,6 @@ const CreateService = () => {
   //   }
   // };
 
-  // // Remove tag from the tags array
   // const handleRemoveTag = (tagToRemove) => {
   //   setFormData({
   //     ...formData,
@@ -140,58 +92,37 @@ const CreateService = () => {
   //   });
   // };
 
-  // // Remove gallery image
-  // const handleRemoveGalleryImage = (index) => {
-  //   const updatedGalleryImages = [...formData.galleryImages];
-  //   updatedGalleryImages.splice(index, 1);
-  //   setFormData({
-  //     ...formData,
-  //     galleryImages: updatedGalleryImages
-  //   });
-  //   setShowMaxImagesAlert(false);
+  const extractYoutubeId = (url) => {
+    if (!url) return null;
 
-  //   // Clear the file input
-  //   if (galleryInputRef.current) {
-  //     galleryInputRef.current.value = '';
-  //   }
-  // };
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
 
-  // // Extract YouTube video ID from URL
-  // const extractYoutubeId = (url) => {
-  //   if (!url) return null;
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
-  //   // Match YouTube URL patterns
-  //   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  //   const match = url.match(regExp);
+  const handleYoutubePreview = (e) => {
+    e.preventDefault();
+    const videoId = extractYoutubeId(formData.video);
 
-  //   return (match && match[2].length === 11) ? match[2] : null;
-  // };
+    if (videoId) {
+      setYoutubeVideoId(videoId);
+      setYoutubeError('');
+    } else {
+      setYoutubeError('Please enter a valid YouTube URL');
+      setYoutubeVideoId('');
+    }
+  };
 
-  // // Handle YouTube URL validation and preview
-  // const handleYoutubePreview = (e) => {
-  //   e.preventDefault();
-  //   const videoId = extractYoutubeId(formData.youtubeUrl);
+  const handleRemoveYoutubeVideo = () => {
+    setFormData({
+      ...formData,
+      video: ''
+    });
+    setYoutubeVideoId('');
+    setYoutubeError('');
+  };
 
-  //   if (videoId) {
-  //     setYoutubeVideoId(videoId);
-  //     setYoutubeError('');
-  //   } else {
-  //     setYoutubeError('Please enter a valid YouTube URL');
-  //     setYoutubeVideoId('');
-  //   }
-  // };
-
-  // // Remove YouTube video
-  // const handleRemoveYoutubeVideo = () => {
-  //   setFormData({
-  //     ...formData,
-  //     youtubeUrl: ''
-  //   });
-  //   setYoutubeVideoId('');
-  //   setYoutubeError('');
-  // };
-
-  // Handle form submission
   const handleSubmit = (e) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -202,7 +133,16 @@ const CreateService = () => {
       return;
     }
 
-    addService(formData).then((response) => {
+    const serviceData = new FormData();
+    serviceData.append('service_name', formData.service_name);
+    serviceData.append('category', formData.category);
+    serviceData.append('price', formData.price);
+    serviceData.append('description', formData.description);
+    serviceData.append('photo', formData.photo);
+    serviceData.append('video', formData.video);
+    console.log(...serviceData);
+
+    dispatch(addServiceAction(serviceData)).unwrap().then(() => {
       Swal.fire({
         icon: 'success',
         title: 'Service created successfully',
@@ -211,16 +151,44 @@ const CreateService = () => {
       }).then(() => {
         navigate('/services');
       })
-    }).catch((error) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Service creation failed',
-        text: error || 'Something went wrong. Please try again.',
+      }).catch((error) => {
+                const errorMessages = [];
+                if (error.data) {
+                    for (const key in error.data) {
+                        if (Array.isArray(error.data[key])) {
+                            errorMessages.push(...error.data[key]);
+                        } else {
+                            errorMessages.push(error.data[key]);
+                        }
+                    }
+                }
+
+                // Show error alert with the extracted messages
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    html: errorMessages.join('<br>'), // Display messages as HTML
+                });
       })
-    });
+      
 
 
-    // Here you would typically send the data to your backend API
+    // addService(formData).then((response) => {
+    //   Swal.fire({
+    //     icon: 'success',
+    //     title: 'Service created successfully',
+    //     showConfirmButton: false,
+    //     timer: 1500
+    //   }).then(() => {
+    //     navigate('/services');
+    //   })
+    // }).catch((error) => {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Service creation failed',
+    //     text: error || 'Something went wrong. Please try again.',
+    //   })
+    // });
   };
 
   return (
@@ -257,9 +225,9 @@ const CreateService = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  {/* <Form.Group className="mb-4">
+                  <Form.Group className="mb-4">
                     <Form.Label>Category</Form.Label>
-                    <Form.Select 
+                    <Form.Select
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
@@ -274,7 +242,7 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please select a category.
                     </Form.Control.Feedback>
-                  </Form.Group> */}
+                  </Form.Group>
 
                   {/* <Form.Group className="mb-4">
                     <Form.Label>Tags</Form.Label>
@@ -287,8 +255,8 @@ const CreateService = () => {
                         placeholder="E.g., responsive, modern, etc."
                         className="form-control-custom"
                       />
-                      <Button 
-                        variant="primary" 
+                      <Button
+                        variant="primary"
                         onClick={handleAddTag}
                         className="px-3"
                       >
@@ -302,7 +270,7 @@ const CreateService = () => {
                       {formData.tags.map((tag, index) => (
                         <span className="tag-badge" key={index}>
                           {tag}
-                          <FiX 
+                          <FiX
                             className="remove-tag-icon"
                             onClick={() => handleRemoveTag(tag)}
                           />
@@ -311,7 +279,7 @@ const CreateService = () => {
                     </div>
                   </Form.Group> */}
 
-                  {/* <Form.Group className="mb-3">
+                  <Form.Group className="mb-3">
                     <Form.Label>Starting Price ($)</Form.Label>
                     <div className="input-group input-group-custom">
                       <span className="input-group-text">
@@ -319,8 +287,8 @@ const CreateService = () => {
                       </span>
                       <Form.Control
                         type="number"
-                        name="priceFrom"
-                        value={formData.priceFrom}
+                        name="price"
+                        value={formData.price}
                         onChange={handleInputChange}
                         placeholder="Price starting from"
                         className="form-control-custom"
@@ -331,7 +299,7 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please provide a valid starting price.
                     </Form.Control.Feedback>
-                  </Form.Group> */}
+                  </Form.Group>
                 </Card.Body>
               </Card>
 
@@ -366,20 +334,20 @@ const CreateService = () => {
                   <h5 className="mb-0 text-light">Media</h5>
                 </div>
                 <Card.Body className="card-body-custom">
-                  {/* <Form.Group className="mb-4">
+                  <Form.Group className="mb-4">
                     <Form.Label>Thumbnail Image</Form.Label>
                     <div className="mb-3">
-                      {formData.thumbnailImage ? (
+                      {formData.photo ? (
                         <div className="thumbnail-preview">
-                          <img 
-                            src={URL.createObjectURL(formData.thumbnailImage)} 
-                            alt="Thumbnail preview" 
+                          <img
+                            src={URL.createObjectURL(formData.photo)}
+                            alt="Thumbnail preview"
                             className="thumbnail-image"
                           />
-                          <Button 
+                          <Button
                             variant="light"
                             className="remove-button "
-                            onClick={() => setFormData({...formData, thumbnailImage: null})}
+                            onClick={() => setFormData({ ...formData, photo: null })}
                           >
                             <FiX size={18} style={{ margin: '-6px 0 6px -8px ' }} />
                           </Button>
@@ -393,8 +361,8 @@ const CreateService = () => {
                             type="file"
                             className="d-none"
                             accept="image/*"
-                            // onChange={handleThumbnailUpload}
-                            required={!formData.thumbnailImage}
+                            onChange={handleThumbnailUpload}
+                            required={!formData.photo}
                           />
                         </label>
                       )}
@@ -402,33 +370,33 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please upload a thumbnail image.
                     </Form.Control.Feedback>
-                  </Form.Group> */}
+                  </Form.Group>
 
-                  {/* <Form.Group className="mb-4">
+                  <Form.Group className="mb-4">
                     <Form.Label>YouTube Video (Optional)</Form.Label>
                     <div className="youtube-form">
                       <div className="input-group input-group-custom">
                         <Form.Control
                           type="text"
-                          name="youtubeUrl"
-                          value={formData.youtubeUrl}
+                          name="video"
+                          value={formData.video}
                           onChange={handleInputChange}
                           placeholder="Paste YouTube URL"
                           className="form-control-custom"
                         />
-                        <Button 
-                          variant="primary" 
+                        <Button
+                          variant="primary"
                           onClick={handleYoutubePreview}
                           className="px-3"
                         >
                           <FiYoutube /> Preview
                         </Button>
                       </div>
-                      
+
                       {youtubeError && (
                         <div className="text-danger small mt-2">{youtubeError}</div>
                       )}
-                      
+
                       {youtubeVideoId && (
                         <div className="youtube-preview mt-3">
                           <div className="youtube-container">
@@ -440,12 +408,12 @@ const CreateService = () => {
                               allowFullScreen
                               className="youtube-iframe"
                             ></iframe>
-                            <Button 
+                            <Button
                               variant="light"
                               className="remove-button"
                               onClick={handleRemoveYoutubeVideo}
                             >
-                            <FiX size={18} style={{ margin: '-6px 0 6px -8px ' }} />
+                              <FiX size={18} style={{ margin: '-6px 0 6px -8px ' }} />
                             </Button>
                           </div>
                           <div className="text-muted small mt-2">
@@ -454,85 +422,13 @@ const CreateService = () => {
                         </div>
                       )}
                     </div>
-                  </Form.Group> */}
-
-                  {/* <Form.Group className="mb-3">
-                    <Form.Label className="d-flex justify-content-between align-items-center">
-                      Gallery Images
-                      <span className="text-muted fs-6">
-                        {formData.galleryImages.length}/6
-                      </span>
-                    </Form.Label>
-                    
-                    {showMaxImagesAlert && (
-                      <Alert variant="warning" className="py-2">
-                        <FiInfo className="me-2" /> You can upload a maximum of 6 images.
-                      </Alert>
-                    )}
-                    
-                    <div className="gallery-grid">
-                      {formData.galleryImages.map((image, index) => (
-                        <div key={index} className="gallery-item">
-                          <img 
-                            src={URL.createObjectURL(image)} 
-                            alt={`Gallery ${index}`} 
-                            className="gallery-image"
-                          />
-                          <Button 
-                            variant="light"
-                            className="remove-button"
-                            onClick={() => handleRemoveGalleryImage(index)}
-                          >
-                            <FiX size={18} style={{ margin: '-6px 0 6px -8px ' }} />
-                            </Button>
-                        </div>
-                      ))}
-                      
-                      {formData.galleryImages.length < 6 && (
-                        <label htmlFor="gallery-upload" className="upload-placeholder">
-                          <FiUpload size={24} className="text-muted mb-2" />
-                          <small className="text-muted">Add Image</small>
-                        </label>
-                      )}
-                    </div>
-                    
-                    <input
-                      ref={galleryInputRef}
-                      id="gallery-upload"
-                      type="file"
-                      className={formData.galleryImages.length >= 6 ? "d-none" : "d-none"}
-                      accept="image/*"
-                      multiple
-                      onChange={handleGalleryUpload}
-                      disabled={formData.galleryImages.length >= 6}
-                    />
-                    
-                    {formData.galleryImages.length < 6 && (
-                      <Button 
-                        variant="outline-primary" 
-                        className="w-100 mt-2"
-                        onClick={() => document.getElementById('gallery-upload').click()}
-                      >
-                        <FiUpload className="me-2" /> Upload Images
-                      </Button>
-                    )}
-                    
-                    <Form.Text className="text-muted d-block mt-2">
-                      Upload up to 6 images showcasing your work
-                    </Form.Text>
-                  </Form.Group> */}
+                  </Form.Group>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
 
           <div className="d-flex justify-content-between mt-4">
-            {/* <Button 
-              variant="outline-secondary" 
-              className="button-outline"
-            >
-              Save as Draft
-            </Button> */}
             <Button
               variant="primary"
               type="submit"

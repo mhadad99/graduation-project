@@ -7,6 +7,7 @@ export const addService = async (service) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
         },
     };
     try {
@@ -31,4 +32,16 @@ export const getAllServices = async () => {
     }
 };
 
+export const getMyServices = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/personal-services/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
 

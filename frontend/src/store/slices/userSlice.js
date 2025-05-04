@@ -40,7 +40,11 @@ export const getMyProfileAction = createAsyncThunk(
             return response.data;
 
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -54,7 +58,11 @@ export const getMyFreelancerProfileAction = createAsyncThunk(
             return response.data;
 
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -68,7 +76,11 @@ export const getMyClientProfileAction = createAsyncThunk(
             return response.data;
 
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -82,7 +94,11 @@ export const updateUserImageAction = createAsyncThunk(
             const response = await updateUserImage(image);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -95,7 +111,11 @@ export const updateUserProfileAction = createAsyncThunk(
             const response = await updateUserProfile(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -107,7 +127,11 @@ export const updateFreelancerProfileAction = createAsyncThunk(
             const response = await updateFreelancerProfile(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -119,7 +143,11 @@ export const updateClientProfileAction = createAsyncThunk(
             const response = await updateClientProfile(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
