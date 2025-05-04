@@ -10,7 +10,8 @@ db.sqlite3  # SQLite database file, if you are using SQLite
 venv/
 env/
 *.env
-
+myenv/
+.venv/
 # Django-related
 *.sqlite3
 media/

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "user",
+    "payment",#########
 ]
 
 MIDDLEWARE = [
@@ -80,15 +81,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",  # Change to PostgreSQL
-        "NAME": "project_db",  # Replace with your database name
-        "USER": "project_user",  # Your PostgreSQL username
-        "PASSWORD": "1234",  # Your PostgreSQL password
-        # Set to your PostgreSQL host (localhost if it's on the same machine)
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "project_db",
+        "USER": "postgres",
+        "PASSWORD": "Hosny1919",
         "HOST": "localhost",
-        "PORT": "5432",  # Default PostgreSQL port
+        "PORT": "5432",
     }
 }
+
 
 
 # Password validation
@@ -145,3 +146,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
+
+#########################################################
+
+
