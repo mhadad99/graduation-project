@@ -10,20 +10,25 @@ const initialState = {
   error: null,
 };
 
- const getAllProjectAction = createAsyncThunk(
+const getAllProjectAction = createAsyncThunk(
   "project/getAllProjectAction",
-  async (args, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+  async (_, { rejectWithValue }) => {
+    console.log("getAllProject response in thunk");
     try {
-      const response = await getAllProject();
+      console.log("getAllProject response in try");
+      const response = await getAllProject(); // This should call your backend
+      console.log("getAllProject response in try after response", response.data);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(
+        error.response?.data?.detail ||
+        (typeof error.response?.data === "string" ? error.response.data : error.message)
+      );
     }
   }
 );
 
- const createProjectAction = createAsyncThunk(
+const createProjectAction = createAsyncThunk(
   "project/createProjectAction",
   async (projectData, { rejectWithValue }) => {
     console.log("addProject response in thunk");

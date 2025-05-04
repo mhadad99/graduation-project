@@ -36,7 +36,10 @@ const ProjectSummary = ({ formData, handleSubmit, isLoading }) => {
             <Button
               variant="primary"
               size="lg"
-              onClick={handleSubmit}
+              onClick={() => {
+                handleSubmit();
+                if (!isLoading) navigate('/projects');
+              }}
               className="submit-button"
               disabled={isLoading}>
               {isLoading ? "Posting..." : "Post Project"}
