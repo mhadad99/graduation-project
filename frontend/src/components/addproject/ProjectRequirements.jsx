@@ -1,16 +1,14 @@
 /** @format */
 
-import { Form, Card } from "react-bootstrap";
+import { Form, Card, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { FiChevronDown } from "react-icons/fi";
 
 const ProjectRequirements = ({
   formData,
   handleChange,
   errors,
-  levelOpen,
-  setLevelOpen,
-  handleLevelToggle,
   levelOptions,
+  handleLevelToggle,
   skillSuggestions,
   handleSkillClick,
   suggestionsRef,
@@ -21,7 +19,7 @@ const ProjectRequirements = ({
     </div>
     <Card.Body className="card-body-custom">
       {/* Skills Section */}
-      <Form.Group className="mb-3 position-relative">
+      {/* <Form.Group className="mb-3 position-relative">
         <Form.Label>Skills Required</Form.Label>
         <Form.Control
           name="skills"
@@ -45,45 +43,42 @@ const ProjectRequirements = ({
             ))}
           </div>
         )}
-      </Form.Group>
+      </Form.Group> */}
 
-      {/* Experience Level Section */}
-      <Form.Group className="mb-3 position-relative">
-        <Form.Label>Experience Level</Form.Label>
-        <div
-          className={`level-dropdown ${levelOpen ? "active" : ""}`}
-          onClick={() => setLevelOpen(!levelOpen)}>
-          <span className="selected-level">
-            {formData.level[0] || "Select Level"}
-          </span>
-          <FiChevronDown
-            className={`dropdown-icon ${levelOpen ? "open" : ""}`}
-          />
-        </div>
-        {levelOpen && (
-          <div className="level-options">
-            {levelOptions.map((level, idx) => (
-              <div
-                key={idx}
-                className={`level-option ${
-                  formData.level[0] === level ? "selected" : ""
-                }`}
-                onClick={() => {
-                  handleLevelToggle([level]);
-                  setLevelOpen(false);
-                }}>
-                {level}
-              </div>
-            ))}
+      {/* Improved Experience Level Section */}
+      <Form.Group className="mb-3">
+      <Form.Label className="mb-2 me-5">Experience Level</Form.Label>
+      <div className="mt-2">
+      <ButtonGroup>
+          {levelOptions.map((level, idx) => (
+            <ToggleButton
+              key={idx}
+              id={`exp-level-${level}`}
+              type="radio"
+              variant={
+                formData.experience_level === level
+                  ? "primary"
+                  : "outline-primary"
+              }
+              name="experience_level"
+              value={level}
+              checked={formData.experience_level === level}
+              onChange={() => handleLevelToggle(level)}
+            >
+              {level}
+            </ToggleButton>
+          ))}
+        </ButtonGroup>
+      </div>
+        {errors.experience_level && (
+          <div className="invalid-feedback d-block mt-2">
+            {errors.experience_level}
           </div>
-        )}
-        {errors.level && (
-          <div className="invalid-feedback d-block">{errors.level}</div>
         )}
       </Form.Group>
 
       {/* Location Section */}
-      <Form.Group>
+      {/* <Form.Group>
         <Form.Label>Location</Form.Label>
         <Form.Control
           name="location"
@@ -98,7 +93,7 @@ const ProjectRequirements = ({
         <Form.Text className="text-muted">
           Leave empty if location is not relevant
         </Form.Text>
-      </Form.Group>
+      </Form.Group> */}
     </Card.Body>
   </Card>
 );

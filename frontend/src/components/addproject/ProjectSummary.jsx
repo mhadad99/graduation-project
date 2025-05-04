@@ -3,7 +3,7 @@
 import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const ProjectSummary = ({ formData, handleSubmit }) => {
+const ProjectSummary = ({ formData, handleSubmit, isLoading }) => {
   const navigate = useNavigate();
 
   return (
@@ -26,8 +26,8 @@ const ProjectSummary = ({ formData, handleSubmit }) => {
           <div className="summary-item">
             <small className="text-muted">Timeline:</small>
             <span>
-              {formData.deliveryTime
-                ? `${formData.deliveryTime} days`
+              {formData.duration
+                ? `${formData.duration} days`
                 : "Not specified"}
             </span>
           </div>
@@ -37,8 +37,9 @@ const ProjectSummary = ({ formData, handleSubmit }) => {
               variant="primary"
               size="lg"
               onClick={handleSubmit}
-              className="submit-button">
-              Post Project
+              className="submit-button"
+              disabled={isLoading}>
+              {isLoading ? "Posting..." : "Post Project"}
             </Button>
             <Button
               variant="outline-secondary"
