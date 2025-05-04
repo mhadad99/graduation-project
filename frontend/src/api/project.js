@@ -10,9 +10,12 @@ export const addProject = async (service) => {
         },
     };
     try {
+        console.log("addProject service in try");
         const response = await axios.post(`${baseURL}create/`, service, config);
+        console.log("addProject response", response.data);
         return response
     } catch (error) {
+        console.log("addProject error", error.response.data);
         throw error;
     }
 };

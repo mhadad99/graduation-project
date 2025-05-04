@@ -89,7 +89,7 @@ const UserProfile = () => {
   const profileData = profile;
 
   const renderTabs = () => {
-    const userRole = profileData?.role || "freelancer";
+    const userRole = profileData?.user_type || "freelancer";
 
     const commonTabs = [
       {
