@@ -102,7 +102,7 @@ const CreateService = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-  
+
     if (form.checkValidity() === false || (!formData.photo && id === "0")) {
       e.stopPropagation();
       setValidated(true);
@@ -115,13 +115,13 @@ const CreateService = () => {
       }
       return;
     }
-  
+
     if (formData.video && !extractYoutubeId(formData.video)) {
       setYoutubeError('Invalid YouTube URL.');
       return;
     }
     console.log(formData);
-  
+
     const serviceData = new FormData();
     serviceData.append('service_name', formData.service_name);
     console.log(serviceData);
@@ -134,13 +134,13 @@ const CreateService = () => {
     if (formData.photo instanceof File) {
       serviceData.append('photo', formData.photo);
     }
-  
+
     // formData.tags.forEach(tag => serviceData.append('tags[]', tag));
-  
+
     const action = id !== "0"
       ? updateServiceAction({ id, data: serviceData })
       : addServiceAction(serviceData);
-  
+
     dispatch(action).unwrap()
       .then(() => {
         Swal.fire({
@@ -163,7 +163,7 @@ const CreateService = () => {
         } else {
           errorMessages.push('An unknown error occurred.');
         }
-  
+
         console.error("Submission Error:", error);
         Swal.fire({
           icon: 'error',
@@ -179,7 +179,7 @@ const CreateService = () => {
         <div className="page-header">
           <h1 className="fw-bold">Add a New Service</h1>
           <p className="text-muted mb-0">
-            Complete the form below to create a service that clients can order.
+            {id !== "0" ? 'Edit' : 'Add a new '}service to your portfolio.
           </p>
         </div>
 

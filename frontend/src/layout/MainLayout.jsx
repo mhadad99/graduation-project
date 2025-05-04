@@ -22,6 +22,7 @@ import ServicesPage from "../pages/ServicesPage";
 import Help from "../components/Help";
 import EditProfile from "../pages/EditProfile";
 import Projects from "../pages/Projects";
+import Chatbot from "../components/chatbot/Chatbot";
 
 
 export function MainLayout() {
@@ -49,6 +50,7 @@ export function MainLayout() {
         <Route path="services" element={<ServicesPage />} />
         <Route path="help" element={<Help />} />
         <Route path="projects" element={<Projects />} />
+        <Route path="tanfeezbot" element={<Chatbot />} />
         </Route>
       </Routes>
     </BrowserRouter>
