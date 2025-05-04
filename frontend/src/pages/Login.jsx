@@ -7,7 +7,7 @@ import { validateEmail, isFieldEmpty, isPasswordTooShort } from '../utils/valida
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from "../store/slices/authSlice";
 import { getMyProfileAction, updateFreelancerProfileAction } from '../store/slices/userSlice';
-
+import Swal from 'sweetalert2';
 
 
 
@@ -46,15 +46,33 @@ export default function LoginPage() {
 
     if (!isEmailValid || isPasswordEmpty || isPasswordTooShort(password)) return;
 
-    dispatch(loginAction({ email, password }))
+    
+    await dispatch(loginAction({ email, password }))
       .unwrap()
       .then(() => {
-        dispatch(getMyProfileAction());
+         dispatch(getMyProfileAction()).unwrap();
         navigate("/");
       })
-      .catch((err) => {
-        console.error("Login failed:", err);
-      });
+            .catch((error) => {
+                // Extract error messages from the response
+                const errorMessages = [];
+                if (error.data) {
+                    for (const key in error.data) {
+                        if (Array.isArray(error.data[key])) {
+                            errorMessages.push(...error.data[key]);
+                        } else {
+                            errorMessages.push(error.data[key]);
+                        }
+                    }
+                }
+
+                // Show error alert with the extracted messages
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    html: errorMessages.join('<br>'), // Display messages as HTML
+                });
+            });
   };
 
   const handleBlur = () => setTouched(true);
@@ -127,7 +145,6 @@ export default function LoginPage() {
           </div>
 
 
-          {error && <div className="alert alert-danger py-2">{error}</div>}
 
           <button
             type="submit"

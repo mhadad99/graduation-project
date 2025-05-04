@@ -17,7 +17,6 @@ const FreelancerTab = ({ navigate, id }) => {
         if (!freelancer) {
             dispatch(getMyFreelancerProfileAction());
         }
-        console.log("free" + freelancer)
 
     }, [freelancer, dispatch]);
     const handleChange = (e) => {
@@ -43,7 +42,6 @@ const FreelancerTab = ({ navigate, id }) => {
                 experience_level: formData.experience_level,
                 portfolio: formData.portfolio,
             };
-            console.log(filteredData)
             await dispatch(updateFreelancerProfileAction(filteredData)).unwrap().then(() => {
                 Swal.fire({
                     icon: "success",
@@ -63,7 +61,6 @@ const FreelancerTab = ({ navigate, id }) => {
             });
 
         } catch (err) {
-            console.log(err);
             setError("Failed to update profile. Please try again.");
         }
     };

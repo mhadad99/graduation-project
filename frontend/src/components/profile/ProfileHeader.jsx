@@ -84,8 +84,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
     averageRating = 0,
     numberOfReviews = 0,
     completionRate = 0,
-    averageResponse = "N/A",
-    role = "freelancer",
+    averageResponse = "N/Addd",
   } = profileData;
 
   const stats = [
@@ -103,8 +102,8 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
     { icon: Envelope, text: "Message", variant: "light" },
   ];
 
-  const getRoleBadgeVariant = (role) => {
-    switch (role.toLowerCase()) {
+  const getRoleBadgeVariant = (user_type) => {
+    switch (user_type.toLowerCase()) {
       case "freelancer":
         return "primary";
       case "client":
@@ -148,15 +147,15 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         <h2 className="fw-bold mb-1">
           {first_name} {second_name}
           <Badge
-            bg={getRoleBadgeVariant(role)}
+            bg={getRoleBadgeVariant(user_type)}
             className="ms-2 role-badge text-capitalize"
             size="sm"
             pill>
             <PersonBadge size={12} className="me-1" />
-            {role}
+            {user_type}
           </Badge>
         </h2>
-        <div className="text-muted mb-3"> Web Developer</div>
+        {  <div className="text-muted mb-3"> {user_type === "client"? profileData.client_profile.company : profileData.user_name}</div>}
 
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">

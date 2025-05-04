@@ -63,7 +63,7 @@ const UserProfile = () => {
   const profileData = role ? user : null;
 
   const renderTabs = () => {
-    const userRole = profileData?.role || "freelancer";
+    const userRole = profileData?.user_type || "freelancer";
 
     const commonTabs = [
       {

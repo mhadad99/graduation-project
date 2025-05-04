@@ -7,6 +7,7 @@ export const addService = async (service) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
         },
     };
     try {
@@ -31,4 +32,46 @@ export const getAllServices = async () => {
     }
 };
 
+export const getMyServices = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/personal-services/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
 
+
+
+export const getServiceById = async (id) => {
+    try {
+        const response = await axios.get(`${baseURL}/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const updateService = async (id, service) => {
+    const token = localStorage.getItem("authToken");
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+        },
+    };
+    try {
+        const response = await axios.put(`${baseURL}/update/${id}/`, service, config);
+        return response
+    } catch (error) {
+        throw error;
+    }
+};

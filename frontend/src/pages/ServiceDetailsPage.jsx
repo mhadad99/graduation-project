@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Badge, Alert } from "react-bootstrap";
 import { FiTag, FiYoutube } from "react-icons/fi";
@@ -10,10 +10,25 @@ import PricingBox from "../components/serviceDetails/PricingBox";
 // import FAQSection from "../components/serviceDetails/FAQSection";
 import ReviewsSection from "../components/serviceDetails/ReviewsSection";
 import "../styles/ServiceDetailsPage.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getServiceByIdAction } from "../store/slices/serviceSlice";
 
 export function ServiceDetailsPage() {
   const { id } = useParams();
-  const serviceData = servicesData.find(service => service.id === parseInt(id));
+  const dispatch = useDispatch();
+  const serviceData = servicesData[1];
+  const { service, isLoading } = useSelector((myStore) => myStore.serviceSlice);
+
+  useEffect(() => {
+
+    dispatch(getServiceByIdAction(id))
+      .unwrap().then((response) => {
+        console.log(response.data)
+
+      })
+
+
+  }, [id, dispatch]);
 
   if (!serviceData) {
     return (
@@ -23,14 +38,23 @@ export function ServiceDetailsPage() {
     );
   }
 
-  const youtubeVideoId = serviceData.youtubeUrl?.split("v=")[1];
-
+  const youtubeVideoId = service.video?.split("v=")[1];
+  if (isLoading) {
+    return (
+      <Container className="py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </Container>
+    );
+  }else{
   return (
+    
     <div className="service-details-page">
       <Container fluid className="p-0">
         {/* Main Image Gallery */}
         <ImageGallery
-          mainImage={serviceData.image}
+          mainImage={service.photo}
           galleryImages={serviceData.galleryImages}
         />
 
@@ -41,11 +65,11 @@ export function ServiceDetailsPage() {
               {/* Service Info */}
               <div className="custom-card mb-4">
                 <div className="card-body-custom">
-                  <h1 className="service-title mb-4">{serviceData.title}</h1>
-                  
+                  <h1 className="service-title mb-4">{service.service_name}</h1>
+
                   <div className="service-tags mb-4">
                     <Badge bg="primary" className="category-badge me-2">
-                      {serviceData.category}
+                      {service.category}
                     </Badge>
                     {serviceData.tags.map((tag, index) => (
                       <Badge key={index} className="tag-badge me-2">
@@ -54,7 +78,7 @@ export function ServiceDetailsPage() {
                     ))}
                   </div>
 
-                  <ServiceDetails serviceData={serviceData} />
+                  <ServiceDetails serviceData={service} />
                 </div>
               </div>
 
@@ -116,7 +140,7 @@ export function ServiceDetailsPage() {
             <Col lg={4}>
               <div className="sticky-sidebar">
                 <PricingBox
-                  price={serviceData.price}
+                  price={service.price}
                   deliveryTime={serviceData.deliveryTime}
                 />
               </div>
@@ -125,5 +149,5 @@ export function ServiceDetailsPage() {
         </Container>
       </Container>
     </div>
-  );
+  );}
 }

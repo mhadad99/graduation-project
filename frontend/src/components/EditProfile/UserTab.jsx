@@ -44,7 +44,6 @@ const UserTab = ({ setFormData, formData, handleChange, navigate, id }) => {
                     });
                 });
         } catch (err) {
-            console.log(err);
             setError("Failed to update profile. Please try again.");
         }
     };
