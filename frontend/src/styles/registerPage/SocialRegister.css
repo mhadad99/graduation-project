@@ -1,0 +1,19 @@
+.social-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.google-icon {
+  background-color: #4285F4;
+}
+
+.apple-icon {
+  background-color: #000;
+}
+
+/* Optional: Add border for better visibility in dark mode */
+[data-theme="dark"] .social-icon {
+  border: 1px solid var(--color-border);
+}

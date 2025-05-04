@@ -1,0 +1,160 @@
+/** @format */
+
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Container, Tabs, Tab, Alert, Spinner } from "react-bootstrap";
+import {
+  Briefcase,
+  PersonFill,
+  Collection,
+  Star,
+  GeoAlt,
+} from "react-bootstrap-icons";
+
+// Import profile components
+import {
+  ProfileHeader,
+  ServicesTab,
+  PortfolioTab,
+  AboutTab,
+  ReviewsTab,
+  ProjectsTab,
+} from "../components/profile";
+import { useSelector, useDispatch } from "react-redux";
+import { getMyProfileAction } from "../store/slices/userSlice";
+
+const UserProfile = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
+
+  const [activeTab, setActiveTab] = useState("about");
+
+  // Fetch user data if it is null or undefined
+  useEffect(() => {
+    if (!user) {
+      dispatch(getMyProfileAction());
+    }
+  }, [user, dispatch]);
+
+  // Show a spinner while loading
+  if (isLoading || !user) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <p className="mt-3">Loading user profile...</p>
+      </Container>
+    );
+  }
+
+  // Handle case where user data is not available
+  if (!user) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger">User profile not found</Alert>
+      </Container>
+    );
+  }
+
+  const isMyProfile = id === user.id.toString();
+  const role = user.user_type;
+  const profileData = role ? user : null;
+
+  const renderTabs = () => {
+    const userRole = profileData?.role || "freelancer";
+
+    const commonTabs = [
+      {
+        eventKey: "about",
+        title: "About",
+        icon: <PersonFill className="me-2" />,
+        component: (
+          <AboutTab profileData={profileData} isMyProfile={isMyProfile} />
+        ),
+      },
+      {
+        eventKey: "reviews",
+        title: "Reviews",
+        icon: <Star className="me-2" />,
+        component: (
+          <ReviewsTab reviews={profileData.reviews} isMyProfile={isMyProfile} />
+        ),
+      },
+    ];
+
+    const freelancerTabs = [
+      {
+        eventKey: "services",
+        title: "Services",
+        icon: <Briefcase className="me-2" />,
+        component: (
+          <ServicesTab
+            services={profileData.services}
+            isMyProfile={isMyProfile}
+          />
+        ),
+      },
+      {
+        eventKey: "portfolio",
+        title: "Portfolio",
+        icon: <Collection className="me-2" />,
+        component: (
+          <PortfolioTab
+            portfolioItems={profileData.portfolio}
+            isMyProfile={isMyProfile}
+          />
+        ),
+      },
+      ...commonTabs,
+    ];
+
+    const clientTabs = [
+      {
+        eventKey: "projects",
+        title: "Projects",
+        icon: <Briefcase className="me-2" />,
+        component: (
+          <ProjectsTab
+            projects={profileData.projects}
+            isMyProfile={isMyProfile}
+          />
+        ),
+      },
+      ...commonTabs,
+    ];
+
+    return userRole === "freelancer" ? freelancerTabs : clientTabs;
+  };
+
+  return (
+    <div className="bg-light min-vh-100">
+      <ProfileHeader profileData={user} isMyProfile={isMyProfile} />
+
+      <Container className="mt-4">
+        <Tabs
+          activeKey={activeTab}
+          onSelect={(k) => setActiveTab(k)}
+          className="mb-4 custom-tab"
+          justify>
+          {renderTabs().map(({ eventKey, title, icon, component }) => (
+            <Tab
+              key={eventKey}
+              eventKey={eventKey}
+              title={
+                <span className="d-flex align-items-center">
+                  {icon}
+                  {title}
+                </span>
+              }>
+              {component}
+            </Tab>
+          ))}
+        </Tabs>
+      </Container>
+    </div>
+  );
+};
+
+export default UserProfile;

@@ -1,0 +1,66 @@
+.app {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.text-primary {
+  color: var(--primary-500) !important;
+}
+
+.btn-success {
+  background-color: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+  color: var(--color-white) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-500) !important;
+  border-bottom: 3px solid var(--primary-500) !important;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.text-success {
+  color: var(--primary-500) !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.signup-page {
+  background-color: var(--color-background);
+  transition: background 0.3s;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .signup-page {
+  background-color: var(--color-background);
+}
+
+[data-theme="dark"] .btn-success {
+  background-color: var(--primary-400) !important;
+  border-color: var(--primary-400) !important;
+}
+
+[data-theme="dark"] .btn-success:hover,
+[data-theme="dark"] .btn-success:focus {
+  background-color: var(--primary-300) !important;
+  border-color: var(--primary-300) !important;
+}
+
+[data-theme="dark"] .text-primary,
+[data-theme="dark"] .text-success {
+  color: var(--primary-400) !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  color: var(--primary-400) !important;
+  border-bottom: 3px solid var(--primary-400) !important;
+}

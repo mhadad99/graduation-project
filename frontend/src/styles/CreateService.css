@@ -1,0 +1,243 @@
+/* CreateServicePage.css */
+
+.page-container {
+  background-color: var(--color-background);
+  min-height: calc(100vh - 80px);
+  padding: 40px 0;
+}
+
+.page-header {
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 15px;
+}
+
+.custom-card {
+  border: none;
+  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-card-bg);
+}
+
+.card-header-custom {
+  background: var(--primary-600);
+  color: var(--color-text-inverse);
+  padding: 15px 20px;
+  font-weight: 500;
+}
+
+.card-body-custom {
+  padding: 25px;
+  background: var(--color-card-bg);
+}
+
+.input-group-custom {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.form-control-custom {
+  border: 1px solid var(--color-border);
+  padding: 12px 15px;
+  font-size: 16px;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+}
+
+.form-control-custom:focus {
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 0.25rem var(--primary-100);
+}
+
+.textarea-custom {
+  resize: vertical;
+}
+
+.tag-badge {
+  background: var(--primary-500);
+  color: var(--color-text-inverse);
+  font-weight: normal;
+  padding: 8px 12px;
+  border-radius: 50px;
+  margin: 0 8px 8px 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.remove-tag-icon {
+  margin-left: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.remove-tag-icon:hover {
+  opacity: 1;
+}
+
+.thumbnail-container {
+  border-radius: 8px;
+  border: 2px dashed var(--color-border);
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  background: var(--color-background);
+}
+
+.thumbnail-preview {
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail-image {
+  width: 100%;
+  object-fit: cover;
+  height: 200px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--color-background);
+  border-radius: 8px;
+  border: 2px dashed var(--color-border);
+  cursor: pointer;
+}
+
+.button-primary {
+  background: var(--primary-500);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
+}
+
+.button-primary:hover {
+  background: var(--primary-600);
+  box-shadow: var(--shadow-md);
+}
+
+.button-outline {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: var(--color-text);
+  background: var(--color-card-bg);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.button-outline:hover {
+  background: var(--color-background);
+}
+
+.remove-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  border: none;
+}
+
+.remove-button:hover {
+  background: var(--color-background);
+}
+
+/* YouTube Video Styling */
+.youtube-form {
+  margin-bottom: 15px;
+}
+
+.youtube-preview {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.youtube-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.youtube-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Form Elements */
+.input-group-text {
+  background: var(--color-card-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.form-select {
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.form-text {
+  color: var(--color-text-muted);
+}
+
+/* Alerts */
+.alert-warning {
+  background-color: var(--warning);
+  color: var(--color-text);
+  border: none;
+}
+
+/* Placeholders */
+.form-control-custom::placeholder {
+  color: var(--color-text-muted);
+}

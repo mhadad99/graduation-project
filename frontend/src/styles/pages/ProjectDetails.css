@@ -1,0 +1,119 @@
+.client-info p  {
+    margin-bottom: 0.75rem;
+}
+
+.client-rating {
+    font-size: 0.875rem;
+}
+
+.client-stats {
+    color: var(--color-text-muted);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .client-stats {
+    color: var(--color-text-muted-dark);
+}
+
+.project-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.project-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.project-title {
+    color: var(--color-text) !important;
+    font-size: 1.9rem !important; 
+}
+.project-meta-item {
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+    padding: 0.5rem 1rem;
+    background: var(--color-background);
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.project-meta-item svg {
+    color: var(--primary-500);
+    margin-right: 0.75rem;
+}
+
+.section-title {
+    color: var(--color-text);
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+.skill-badge {
+    background: var(--color-background) !important;
+    color: var(--color-text) !important;
+    border: 1px solid var(--color-border);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.skill-badge:hover {
+    background: var(--primary-50) !important;
+    border-color: var(--primary-200);
+    color: var(--primary-700) !important;
+}
+
+.client-info {
+    background: var(--color-background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.client-stat {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.client-stat-label {
+    color: var(--color-text-muted);
+    margin-right: 0.5rem;
+}
+
+.client-stat-value {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.star-rating .star {
+    color: var(--color-border);
+}
+
+.star-rating .star.active {
+    color: var(--warning-500);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] {
+    .project-meta-item {
+        background: var(--color-card-bg);
+    }
+
+    .skill-badge {
+        background: var(--color-card-bg) !important;
+    }
+
+    .skill-badge:hover {
+        background: var(--primary-900) !important;
+        border-color: var(--primary-700);
+        color: var(--primary-300) !important;
+    }
+
+    .client-info {
+        background: var(--color-card-bg);
+    }
+}
