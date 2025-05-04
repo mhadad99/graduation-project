@@ -23,11 +23,13 @@ export const addProject = async (service) => {
 
 export const getAllProject = async () => {
     try {
-        const response = await axios.get(`${baseURL}/`, {
+        const response = await axios.get(`${baseURL}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("authToken")}`,
             },
-        });
+        }
+    );
+        console.log("getAllProject response", response.data);
         return response
     } catch (error) {
         throw error;
