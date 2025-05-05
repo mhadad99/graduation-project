@@ -38,7 +38,7 @@ export function ServiceDetailsPage() {
     );
   }
 
-  const youtubeVideoId = service.video?.split("v=")[1];
+  const youtubeVideoId =  service.video?.split("v=")[1];
   if (isLoading) {
     return (
       <Container className="py-5 text-center">

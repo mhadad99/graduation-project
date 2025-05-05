@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import { FiUpload, FiDollarSign, FiX, FiImage, FiInfo, FiYoutube } from 'react-icons/fi';
+import { FiUpload, FiDollarSign, FiX, FiImage, FiInfo, FiYoutube, FiTag } from 'react-icons/fi';
 import '../styles/CreateService.css';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -89,6 +89,33 @@ const CreateService = () => {
       setYoutubeVideoId('');
     }
   };
+  // Add tag to the tags array
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    if (currentTag.trim() !== '' && !formData.tags.includes(currentTag.trim())) {
+      setFormData({
+        ...formData,
+        tags: [...formData.tags, currentTag.trim()]
+      });
+      setCurrentTag('');
+    }
+  };
+
+  // Handle tag input keypress (add on Enter)
+  const handleTagKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTag(e);
+    }
+  };
+
+  // Remove tag from the tags array
+  const handleRemoveTag = (tagToRemove) => {
+    setFormData({
+      ...formData,
+      tags: formData.tags.filter(tag => tag !== tagToRemove)
+    });
+  };
 
   const handleRemoveYoutubeVideo = () => {
     setFormData(prev => ({
@@ -102,7 +129,7 @@ const CreateService = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-  
+
     if (form.checkValidity() === false || (!formData.photo && id === "0")) {
       e.stopPropagation();
       setValidated(true);
@@ -115,13 +142,13 @@ const CreateService = () => {
       }
       return;
     }
-  
+
     if (formData.video && !extractYoutubeId(formData.video)) {
       setYoutubeError('Invalid YouTube URL.');
       return;
     }
     console.log(formData);
-  
+
     const serviceData = new FormData();
     serviceData.append('service_name', formData.service_name);
     console.log(serviceData);
@@ -134,13 +161,16 @@ const CreateService = () => {
     if (formData.photo instanceof File) {
       serviceData.append('photo', formData.photo);
     }
-  
-    // formData.tags.forEach(tag => serviceData.append('tags[]', tag));
-  
+
+    formData.tags.forEach(tag => serviceData.append('tags', tag));
+    
+    console.log(...serviceData);
+
+
     const action = id !== "0"
       ? updateServiceAction({ id, data: serviceData })
       : addServiceAction(serviceData);
-  
+
     dispatch(action).unwrap()
       .then(() => {
         Swal.fire({
@@ -163,7 +193,7 @@ const CreateService = () => {
         } else {
           errorMessages.push('An unknown error occurred.');
         }
-  
+
         console.error("Submission Error:", error);
         Swal.fire({
           icon: 'error',
@@ -221,6 +251,41 @@ const CreateService = () => {
                     <Form.Control.Feedback type="invalid">
                       Please select a category.
                     </Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-4">
+                    <Form.Label>Tags</Form.Label>
+                    <div className="d-flex input-group-custom">
+                      <Form.Control
+                        type="text"
+                        value={currentTag}
+                        onChange={(e) => setCurrentTag(e.target.value)}
+                        onKeyPress={handleTagKeyPress}
+                        placeholder="E.g., responsive, modern, etc."
+                        className="form-control-custom"
+                      />
+                      <Button
+                        variant="primary"
+                        onClick={handleAddTag}
+                        className="px-3"
+                      >
+                        <FiTag /> Add
+                      </Button>
+                    </div>
+                    <Form.Text className="text-muted">
+                      Press Enter to add a tag
+                    </Form.Text>
+                    <div className="mt-3">
+                      {formData.tags.map((tag, index) => (
+                        <span className="tag-badge" key={index}>
+                          {tag}
+                          <FiX
+                            className="remove-tag-icon"
+                            onClick={() => handleRemoveTag(tag)}
+                          />
+                        </span>
+                      ))}
+                    </div>
                   </Form.Group>
 
                   <Form.Group className="mb-3">
