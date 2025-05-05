@@ -210,7 +210,6 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             }
-
             );
 
             builder.addCase(updateUserProfileAction.pending, (state) => {
@@ -256,19 +255,6 @@ const userSlice = createSlice(
             }).addCase(updateFreelancerProfileAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
-            });
-            builder
-            .addCase(fetchUserProfile.pending, (state) => {
-              state.isLoading = true;
-              state.error = null;
-            })
-            .addCase(fetchUserProfile.fulfilled, (state, action) => {
-              state.isLoading = false;
-              state.profile = action.payload;
-            })
-            .addCase(fetchUserProfile.rejected, (state, action) => {
-              state.isLoading = false;
-              state.error = action.payload;
             });
             builder
             .addCase(fetchUserProfile.pending, (state) => {
