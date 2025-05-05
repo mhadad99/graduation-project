@@ -147,24 +147,20 @@ const CreateService = () => {
       setYoutubeError('Invalid YouTube URL.');
       return;
     }
-    console.log(formData);
 
     const serviceData = new FormData();
     serviceData.append('service_name', formData.service_name);
-    console.log(serviceData);
 
     serviceData.append('category', formData.category);
     serviceData.append('price', formData.price);
     serviceData.append('description', formData.description);
     serviceData.append('video', formData.video);
-    console.log(...serviceData);
     if (formData.photo instanceof File) {
       serviceData.append('photo', formData.photo);
     }
 
     formData.tags.forEach(tag => serviceData.append('tags', tag));
     
-    console.log(...serviceData);
 
 
     const action = id !== "0"
@@ -194,7 +190,6 @@ const CreateService = () => {
           errorMessages.push('An unknown error occurred.');
         }
 
-        console.error("Submission Error:", error);
         Swal.fire({
           icon: 'error',
           title: 'Submission Failed',

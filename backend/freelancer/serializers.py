@@ -68,7 +68,7 @@ class FreelancerOutSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source="uid.user_name", read_only=True)
     email = serializers.EmailField(source="uid.email", read_only=True)
     skills = serializers.SerializerMethodField(read_only=True)
-
+    
     class Meta:
         model = Freelancer
         fields = [
