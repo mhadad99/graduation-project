@@ -25,6 +25,7 @@ const getUserFromLocalStorage = () => {
 const initialState = {
     user: "",
     profile: null,
+    profile: null,
     freelancer: "",
     client: "",
     isLoading: false,
@@ -177,6 +178,12 @@ const userSlice = createSlice(
                   state.error = null;
                 }
               },
+        reducers: {
+                clearProfile: (state) => {
+                  state.profile = null;
+                  state.error = null;
+                }
+              },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
@@ -249,6 +256,19 @@ const userSlice = createSlice(
             }).addCase(updateFreelancerProfileAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
+            });
+            builder
+            .addCase(fetchUserProfile.pending, (state) => {
+              state.isLoading = true;
+              state.error = null;
+            })
+            .addCase(fetchUserProfile.fulfilled, (state, action) => {
+              state.isLoading = false;
+              state.profile = action.payload;
+            })
+            .addCase(fetchUserProfile.rejected, (state, action) => {
+              state.isLoading = false;
+              state.error = action.payload;
             });
             builder
             .addCase(fetchUserProfile.pending, (state) => {

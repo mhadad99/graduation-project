@@ -16,7 +16,11 @@ const ServicesTab = ({ isMyProfile }) => {
   return (
     <div className="services-tab">
       {isMyProfile && hasServices && (
+      {isMyProfile && hasServices && (
         <div className="d-flex justify-content-end mb-4">
+          <Button variant="primary"
+          href="/add/service"
+          >
           <Button variant="primary"
           href="/add/service"
           >
@@ -38,6 +42,10 @@ const ServicesTab = ({ isMyProfile }) => {
             <div className="text-center py-5">
               <h5 className="text-muted mb-3">No services available</h5>
               {isMyProfile && (
+                <Button
+                  variant="primary"
+                  href="/add/service"
+                >
                 <Button
                   variant="primary"
                   href="/add/service"
