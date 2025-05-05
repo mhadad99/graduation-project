@@ -1,6 +1,8 @@
+# payment/urls.py
+
 from django.urls import path
-from .views import PaymobPaymentInitView
+from .views import InitiatePaymentView
 
 urlpatterns = [
-    path("pay/", PaymobPaymentInitView.as_view(), name="paymob-init")
+    path('initiate-payment/', InitiatePaymentView.as_view(), name='initiate_payment'),
 ]

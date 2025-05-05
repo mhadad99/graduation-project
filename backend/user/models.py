@@ -38,7 +38,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_deleted = models.BooleanField(default=False)
     is_registered = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
-
+    ############################################################
+    city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    street = models.CharField(max_length=255, null=True, blank=True)
+    building = models.CharField(max_length=10, null=True, blank=True)
+    floor = models.CharField(max_length=10, null=True, blank=True)
+    apartment = models.CharField(max_length=10, null=True, blank=True)
+    ##################################################################
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"

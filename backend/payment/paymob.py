@@ -1,59 +1,101 @@
-import requests
 
-PAYMOB_API_KEY = "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRBME1EZzBNeXdpYm1GdFpTSTZJbWx1YVhScFlXd2lmUS4tdEJDYkJNMGJrc2NZMXVGWUUtZHR1bTNLNVZYODFaU1FFdG9YT1lfY2tWQ2lUakplR3NuTUw2TXViTDNuUVdJQUxnLWtxbUhpQkEwR1FXd3lwTWdjQQ=="
-PAYMOB_INTEGRATION_ID = 5074658
-PAYMOB_IFRAME_ID = 917610
-PAYMOB_HMAC_SECRET = "BB29DD92D259FE3A135D6D683F503DAA"
+import requests
+import os
+import logging
+import hmac
+import hashlib
+
+logger = logging.getLogger(__name__)
+
+# Load sensitive data from environment variables
+PAYMOB_API_KEY = os.getenv("PAYMOB_API_KEY")
+PAYMOB_INTEGRATION_ID = int(os.getenv("PAYMOB_INTEGRATION_ID", "5074658"))
+PAYMOB_IFRAME_ID = int(os.getenv("PAYMOB_IFRAME_ID", "917610"))
+PAYMOB_HMAC_SECRET = os.getenv("PAYMOB_HMAC_SECRET")
+
 
 def get_auth_token():
-    response = requests.post("https://accept.paymob.com/api/auth/tokens", json={
-        "api_key": PAYMOB_API_KEY
-    })
-    return response.json()["token"]
+    url = "https://accept.paymob.com/api/auth/tokens"
+    payload = {"api_key": PAYMOB_API_KEY}
+
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()["token"]
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to get auth token: {e}")
+        raise
+    except KeyError:
+        logger.error("Token missing from PayMob response")
+        raise
+
 
 def create_order(token, amount_cents, user_email):
-    order_data = {
+    url = "https://accept.paymob.com/api/ecommerce/orders"
+    payload = {
         "auth_token": token,
         "delivery_needed": False,
         "amount_cents": amount_cents,
         "currency": "EGP",
-        "items": []
+        "items": [],
+        "merchant_order_id": user_email  # optional, for tracking
     }
-    response = requests.post("https://accept.paymob.com/api/ecommerce/orders", json=order_data)
-    return response.json()
+
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Order creation failed: {e}")
+        raise
+
 
 def get_payment_key(token, order_id, amount_cents, user):
-    """
-    Generate a payment key using Paymob API and user data.
+    billing_data = {
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.second_name or "N/A",
+        "phone_number": user.phone or "N/A",
+        "city": user.city or "Cairo",
+        "country": user.country or "EG",
+        "street": user.street or "Default Street",
+        "building": user.building or "123",
+        "floor": user.floor or "1",
+        "apartment": user.apartment or "1"
+    }
 
-    Args:
-        token (str): Authentication token from Paymob.
-        order_id (int): The ID of the order.
-        amount_cents (int): The amount in cents.
-        user (CustomUser): An instance of the CustomUser model.
-
-    Returns:
-        str: The payment key token.
-    """
-    payment_data = {
+    payload = {
         "auth_token": token,
         "amount_cents": amount_cents,
         "expiration": 3600,
         "order_id": order_id,
-        "billing_data": {
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.second_name or "N/A",  # Default to "N/A" if second_name is None
-            "phone_number": user.phone or "N/A",    # Default to "N/A" if phone is None
-            "city": "Cairo",                        # You can make this dynamic if needed
-            "country": "EG",                        # You can make this dynamic if needed
-            "street": "some street",                # You can make this dynamic if needed
-            "building": "123",                      # You can make this dynamic if needed
-            "floor": "1",                           # You can make this dynamic if needed
-            "apartment": "1"                        # You can make this dynamic if needed
-        },
         "currency": "EGP",
-        "integration_id": PAYMOB_INTEGRATION_ID
+        "integration_id": PAYMOB_INTEGRATION_ID,
+        "billing_data": billing_data
     }
-    response = requests.post("https://accept.paymob.com/api/acceptance/payment_keys", json=payment_data)
-    return response.json()["token"]
+
+    url = "https://accept.paymob.com/api/acceptance/payment_keys"
+
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()["token"]
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to get payment key: {e}")
+        raise
+    except KeyError:
+        logger.error("Payment token missing from response")
+        raise
+
+
+def verify_hmac_signature(data: dict, received_hmac: str) -> bool:
+    """
+    Verifies HMAC-SHA512 signature from PayMob webhook.
+    """
+    calculated_hmac = hmac.new(
+        PAYMOB_HMAC_SECRET.encode("utf-8"),
+        msg=str(data).encode("utf-8"),
+        digestmod=hashlib.sha512
+    ).hexdigest()
+
+    return hmac.compare_digest(calculated_hmac, received_hmac)
