@@ -4,12 +4,13 @@ from .models import Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    client_id = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
+
     class Meta:
         model = Project
         fields = [
             "id",
-            "clientId",
-            "freelancerId",
             "name",
             "description",
             "start_date",
@@ -18,7 +19,18 @@ class ProjectSerializer(serializers.ModelSerializer):
             "clientId",
             "duration",
             "progress",
+            "client_id",
+            "user_id",
+            "experience_level",
+            "type",
+            "budget",
         ]
+
+    def get_client_id(self, obj):
+        return obj.clientId.id if obj.clientId else None
+
+    def get_user_id(self, obj):
+        return obj.clientId.id if obj.clientId else None
 
 
 class ProjectCreateSerializer(serializers.ModelSerializer):

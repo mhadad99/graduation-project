@@ -45,10 +45,17 @@ class ProjectListView(generics.ListAPIView):
 
 # Retrieve (get one)
 class ProjectRetrieveView(generics.RetrieveAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectUpdateSerializer
+    queryset = Project.objects.select_related('clientId')
+    serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        
+        # Add user IDs to response
+        return Response(data)
 
 # class ProjectsByFreelancerView(generics.ListAPIView):
 #     serializer_class = ProjectSerializer
