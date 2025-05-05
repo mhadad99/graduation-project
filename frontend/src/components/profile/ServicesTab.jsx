@@ -15,15 +15,9 @@ const ServicesTab = ({ isMyProfile }) => {
   },[])
   return (
     <div className="services-tab">
-      {isMyProfile && hasServices && (
-      {isMyProfile && hasServices && (
+      {isMyProfile && (
         <div className="d-flex justify-content-end mb-4">
-          <Button variant="primary"
-          href="/add/service"
-          >
-          <Button variant="primary"
-          href="/add/service"
-          >
+          <Button variant="primary">
             <Plus className="me-2" />
             Add New Service
           </Button>
@@ -42,14 +36,7 @@ const ServicesTab = ({ isMyProfile }) => {
             <div className="text-center py-5">
               <h5 className="text-muted mb-3">No services available</h5>
               {isMyProfile && (
-                <Button
-                  variant="primary"
-                  href="/add/service"
-                >
-                <Button
-                  variant="primary"
-                  href="/add/service"
-                >
+                <Button variant="primary">
                   <Plus className="me-2" />
                   Create Your First Service
                 </Button>
