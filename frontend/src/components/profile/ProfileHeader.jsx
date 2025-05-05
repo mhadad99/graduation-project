@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container, Image, Button, Row, Col, Badge } from "react-bootstrap";
 import {
@@ -20,13 +20,13 @@ import {
 import "../../styles/UserProfile.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserImageAction } from "../../store/slices/userSlice";
+import { getMyProfileAction, updateUserImageAction } from "../../store/slices/userSlice";
 
 const ProfileHeader = ({ profileData, isMyProfile }) => {
   const fileInputRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const { } = useSelector((myStore) => myStore.userSlice);
   const dispatch = useDispatch();
+
 
 
 
@@ -64,8 +64,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       const formData = new FormData();
       formData.append("photo", file);
       dispatch(updateUserImageAction(formData))
-
-
+      window.location.reload();
 
 
     }

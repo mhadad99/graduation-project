@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Badge, Alert } from "react-bootstrap";
 import { FiTag, FiYoutube } from "react-icons/fi";
@@ -20,17 +20,15 @@ export function ServiceDetailsPage() {
   const { service, isLoading } = useSelector((myStore) => myStore.serviceSlice);
 
   useEffect(() => {
-
     dispatch(getServiceByIdAction(id))
       .unwrap().then((response) => {
-        console.log(response.data)
 
       })
 
 
-  }, [id, dispatch]);
+  }, [id,dispatch]);
 
-  if (!serviceData) {
+  if (!service) {
     return (
       <Container className="py-5">
         <Alert variant="danger">Service not found</Alert>
@@ -38,7 +36,6 @@ export function ServiceDetailsPage() {
     );
   }
 
-  const youtubeVideoId = service.video?.split("v=")[1];
   if (isLoading) {
     return (
       <Container className="py-5 text-center">
@@ -47,7 +44,15 @@ export function ServiceDetailsPage() {
         </div>
       </Container>
     );
-  }else{
+  }
+
+
+  const youtubeVideoId =
+  isLoading || !service?.video || !service.video.includes("v=")
+    ? ""
+    : service.video.split("v=")[1];
+
+  
   return (
     
     <div className="service-details-page">
@@ -149,5 +154,5 @@ export function ServiceDetailsPage() {
         </Container>
       </Container>
     </div>
-  );}
+  );
 }

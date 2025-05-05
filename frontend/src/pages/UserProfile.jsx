@@ -39,7 +39,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     dispatch(getMyProfileAction());
-  }, [dispatch]);
+  }, [ dispatch]);
 
   useEffect(() => {
     if (id && (!profile || String(profile.id) !== String(id))) {
