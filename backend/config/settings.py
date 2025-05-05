@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "project",
     "service",
     "client_rating",
+    "project_proposal",
 ]
 
 MIDDLEWARE = [
