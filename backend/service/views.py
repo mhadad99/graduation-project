@@ -26,6 +26,7 @@ class CreateServiceView(generics.CreateAPIView):
         print(user.user_type)
         if user.user_type != "freelancer" or not hasattr(user, "freelancer_profile"):
             raise PermissionDenied("Only freelancers can create a service.")
+        serializer.save(freelancerId=user)
 
 
 # List all Services
