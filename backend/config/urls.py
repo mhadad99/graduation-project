@@ -28,5 +28,6 @@ urlpatterns = [
     path("api/skills/", include("skill.urls")),
     path("api/project/", include("project.urls")),
     path("api/service/", include("service.urls")),
+    path("api/project-proposal/", include("project_proposal.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

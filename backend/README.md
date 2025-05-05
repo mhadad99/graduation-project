@@ -44,7 +44,7 @@ cd freelancer-platform
 
 4. Install required packages:
 
-   pip install django djangorestframework djangorestframework-simplejwt django-cors-headers
+   pip install -r requirements.txt
 
 4^. Add your Database credentials to PostgreSQL, in settings.py:
       ```
