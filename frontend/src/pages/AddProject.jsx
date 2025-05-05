@@ -13,35 +13,34 @@ function AddProject() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    budget: "",
     type: "Fixed Price",
-    duration: "",
-    // location: "",
-    experience_level: "",
+    budget: "",
     hourlyRate: "",
-    // estimatedHours: "",
-    // status: "open",
-    start_date: "",
-    end_date: "",
+    estimatedHours: "",
+    duration: "",
+    experience_level: "",
+    location: "",
+    status: "open",
+    skills: "",
     progress: "not_started",
   });
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [levelOpen, setLevelOpen] = useState(false);
-  // const [skillSuggestions, setSkillSuggestions] = useState([]);
+  const [skillSuggestions, setSkillSuggestions] = useState([]);
   const suggestionsRef = useRef(null);
 
   const typeOptions = ["Fixed Price", "Hourly"];
   const levelOptions = ["Entry", "Intermediate", "Expert"];
-  // const skillOptions = [
-  //   "React",
-  //   "JavaScript",
-  //   "Node.js",
-  //   "Python",
-  //   "Java",
-  //   "Angular",
-  // ];
+  const skillOptions = [
+    "React",
+    "JavaScript",
+    "Node.js",
+    "Python",
+    "Java",
+    "Angular",
+  ];
 
   const dispatch = useDispatch();
   const { isLoading, error, createdProject } = useSelector(
@@ -49,42 +48,32 @@ function AddProject() {
   );
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numericFields = [
-      "budget",
-      "hourlyRate",
-      "estimatedHours",
-      "duration",
-    ];
-
-    const finalValue = numericFields.includes(name)
-      ? value === ""
-        ? ""
-        : Number(value)
-      : value;
-
-    setFormData((prev) => ({ ...prev, [name]: finalValue }));
-
-    // if (name === "skills") {
-    //   const suggestions = skillOptions.filter((skill) =>
-    //     skill.toLowerCase().startsWith(value.toLowerCase())
-    //   );
-    //   setSkillSuggestions(suggestions);
-    // }
+    if (name === "type") {
+      setFormData((prev) => ({
+        ...prev,
+        type: value,
+        budget: value === "Fixed Price" ? prev.budget : "",
+        hourlyRate: value === "Hourly" ? prev.hourlyRate : "",
+        estimatedHours: value === "Hourly" ? prev.estimatedHours : "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  // const handleSkillClick = (skill) => {
-  //   const skillsArray = formData.skills
-  //     ? formData.skills.split(",").map((s) => s.trim())
-  //     : [];
+  const handleSkillClick = (skill) => {
+    const skillsArray = formData.skills
+      ? formData.skills.split(",").map((s) => s.trim())
+      : [];
 
-  //   if (!skillsArray.includes(skill)) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       skills: [...skillsArray, skill].join(", "),
-  //     }));
-  //   }
-  //   setSkillSuggestions([]);
-  // };
+    if (!skillsArray.includes(skill)) {
+      setFormData((prev) => ({
+        ...prev,
+        skills: [...skillsArray, skill].join(", "),
+      }));
+    }
+    setSkillSuggestions([]);
+  };
 
   const handleLevelToggle = (experience_level) => {
     setFormData((prev) => ({
@@ -112,8 +101,8 @@ function AddProject() {
     ) {
       newErrors.hourlyRate = "Minimum hourly rate is $3";
     }
-    if (!formData.start_date) newErrors.start_date = "Start date is required";
-    if (!formData.end_date) newErrors.end_date = "End date is required";
+    // if (!formData.start_date) newErrors.start_date = "Start date is required";
+    // if (!formData.end_date) newErrors.end_date = "End date is required";
     if (!formData.duration || formData.duration < 1)
       newErrors.duration = "Duration must be at least 1 day";
     if (!formData.experience_level)
@@ -126,9 +115,8 @@ function AddProject() {
     const formErrors = validate();
 
     if (Object.keys(formErrors).length === 0) {
-      // Map UI values to backend values
       const typeMap = {
-        "Fixed Price": "fixed",
+        "Fixed Price": "fixed_price",
         Hourly: "hourly",
       };
       const levelMap = {
@@ -140,19 +128,19 @@ function AddProject() {
       const projectData = {
         name: formData.name,
         description: formData.description,
-        start_date: formData.start_date,
-        end_date: formData.end_date,
         duration: Number(formData.duration),
         progress: formData.progress || "not_started",
-        experience_level:
-          levelMap[formData.experience_level] || formData.experience_level,
+        experience_level: levelMap[formData.experience_level] || formData.experience_level,
         type: typeMap[formData.type] || formData.type,
-        budget:
-          formData.type === "Hourly"
-            ? String(formData.hourlyRate)
-            : String(formData.budget),
+        budget: formData.type === "Fixed Price" ? String(formData.budget) : null,
+        hourly_rate: formData.type === "Hourly" ? String(formData.hourlyRate) : null,
+        estimated_hours: formData.type === "Hourly" ? Number(formData.estimatedHours) : null,
+        location: formData.location,
+        skills: formData.skills
+          ? formData.skills.split(",").map((s) => s.trim())
+          : [],
+        status: formData.status || "open",
       };
-      console.log("Submitting projectData:", projectData);
 
       dispatch(createProjectAction(projectData));
       setErrors({});
@@ -188,8 +176,8 @@ function AddProject() {
       setFormData({
         name: "",
         description: "",
-        start_date: "",
-        end_date: "",
+        // start_date: "",
+        // end_date: "",
         duration: "",
         progress: "not_started",
         experience_level: "",
@@ -226,7 +214,9 @@ function AddProject() {
 
         {error && (
           <Alert variant="danger">
-            {typeof error === "string" ? error : "Failed to post project."}
+            {typeof error === "string"
+              ? error
+              : error?.data?.detail || error?.data || "Failed to post project."}
           </Alert>
         )}
 
@@ -254,9 +244,9 @@ function AddProject() {
                 setLevelOpen={setLevelOpen}
                 handleLevelToggle={handleLevelToggle}
                 levelOptions={levelOptions}
-                // skillSuggestions={skillSuggestions}
-                // handleSkillClick={handleSkillClick}
-                // suggestionsRef={suggestionsRef}
+                skillSuggestions={skillSuggestions}
+                handleSkillClick={handleSkillClick}
+                suggestionsRef={suggestionsRef}
               />
             </Col>
 

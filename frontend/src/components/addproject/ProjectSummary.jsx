@@ -12,25 +12,37 @@ const ProjectSummary = ({ formData, handleSubmit, isLoading }) => {
         <Card.Body className="card-body-custom">
           <h6 className="mb-3">Project Summary</h6>
           <div className="summary-item">
-            <small className="text-muted">Type:</small>
-            <span>{formData.type || "Not specified"}</span>
-          </div>
-          <div className="summary-item">
-            <small className="text-muted">Budget:</small>
-            <span>
-              {formData.type === "Fixed Price"
-                ? `$${formData.budget || "0"}`
-                : `$${formData.hourlyRate || "0"}/hr`}
-            </span>
-          </div>
-          <div className="summary-item">
-            <small className="text-muted">Timeline:</small>
-            <span>
-              {formData.duration
-                ? `${formData.duration} days`
-                : "Not specified"}
-            </span>
-          </div>
+  <small className="text-muted">Type:</small>
+  <span>{formData.type || "Not specified"}</span>
+</div>
+<div className="summary-item">
+  <small className="text-muted">Budget:</small>
+  <span>
+    {formData.type === "Fixed Price"
+      ? `$${formData.budget || "0"}`
+      : `$${formData.hourlyRate || "0"}/hr`}
+  </span>
+</div>
+<div className="summary-item">
+  <small className="text-muted">Timeline:</small>
+  <span>
+    {formData.duration
+      ? `${formData.duration} days`
+      : "Not specified"}
+  </span>
+</div>
+<div className="summary-item">
+  <small className="text-muted">Experience Level:</small>
+  <span>{formData.experience_level || "Not specified"}</span>
+</div>
+<div className="summary-item">
+  <small className="text-muted">Location:</small>
+  <span>{formData.location || "Not specified"}</span>
+</div>
+<div className="summary-item">
+  <small className="text-muted">Skills:</small>
+  <span>{formData.skills || "Not specified"}</span>
+</div>
           <hr />
           <div className="d-grid gap-2">
             <Button

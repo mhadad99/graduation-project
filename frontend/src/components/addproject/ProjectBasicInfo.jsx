@@ -8,35 +8,35 @@ const ProjectBasicInfo = ({ formData, handleChange, errors }) => (
       <h5 className="mb-0 text-light">Basic Information</h5>
     </div>
     <Card.Body className="card-body-custom">
-      <Form.Group className="mb-3">
-        <Form.Label>Project Title</Form.Label>
-        <Form.Control
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          isInvalid={!!errors.name}
-        />
-        <Form.Control.Feedback type="invalid">
-          {errors.name}
-        </Form.Control.Feedback>
-      </Form.Group>
+    <Form.Group className="mb-3">
+  <Form.Label>Project Title</Form.Label>
+  <Form.Control
+    name="name"
+    value={formData.name}
+    onChange={handleChange}
+    isInvalid={!!errors.name}
+  />
+  <Form.Control.Feedback type="invalid">
+    {errors.name}
+  </Form.Control.Feedback>
+</Form.Group>
 
-      <Form.Group>
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={4}
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          isInvalid={!!errors.description}
-        />
-        <Form.Control.Feedback type="invalid">
-          {errors.description}
-        </Form.Control.Feedback>
-      </Form.Group>
+<Form.Group>
+  <Form.Label>Description</Form.Label>
+  <Form.Control
+    as="textarea"
+    rows={4}
+    name="description"
+    value={formData.description}
+    onChange={handleChange}
+    isInvalid={!!errors.description}
+  />
+  <Form.Control.Feedback type="invalid">
+    {errors.description}
+  </Form.Control.Feedback>
+</Form.Group>
 
-      <Form.Group className="mt-3">
+      {/* <Form.Group className="mt-3">
         <Form.Label>Start Date</Form.Label>
         <Form.Control
           type="date"
@@ -48,9 +48,9 @@ const ProjectBasicInfo = ({ formData, handleChange, errors }) => (
         <Form.Control.Feedback type="invalid">
           {errors.start_date}
         </Form.Control.Feedback>
-      </Form.Group>
+      </Form.Group> */}
 
-      <Form.Group className="mt-3">
+      {/* <Form.Group className="mt-3">
         <Form.Label>End Date</Form.Label>
         <Form.Control
           type="date"
@@ -62,7 +62,7 @@ const ProjectBasicInfo = ({ formData, handleChange, errors }) => (
         <Form.Control.Feedback type="invalid">
           {errors.end_date}
         </Form.Control.Feedback>
-      </Form.Group>
+      </Form.Group> */}
     </Card.Body>
   </Card>
 );

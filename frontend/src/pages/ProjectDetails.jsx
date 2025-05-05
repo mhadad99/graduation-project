@@ -1,7 +1,6 @@
-/** @format */
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { formatDistanceToNow, parseISO } from "date-fns";
 import {
   Container,
   Row,
@@ -11,21 +10,25 @@ import {
   Modal,
   Form,
   Button,
+  Spinner,
+  Alert,
 } from "react-bootstrap";
-import { mockProjects } from "../mock/projectsData";
+import { getAllProject } from "../api/project"; // Or create a getProjectById API if you have one
 import {
   Calendar3,
   GeoAlt,
   Cash,
-  Star,
   StarFill,
   Wallet,
 } from "react-bootstrap-icons";
 import "../styles/pages/ProjectDetails.css";
+
 function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [proposal, setProposal] = useState({
     coverLetter: "",
@@ -34,19 +37,37 @@ function ProjectDetails() {
   });
 
   useEffect(() => {
-    const projectData = mockProjects.find((p) => p.id === parseInt(id));
-    if (!projectData) {
-      navigate("/projects");
-      return;
-    }
-    setProject(projectData);
-  }, [id, navigate]);
+    // If you have a getProjectById API, use it here instead of getAllProject
+    getAllProject()
+      .then((response) => {
+        const projectData = response.data.find(
+          (p) => String(p.id) === String(id)
+        );
+        if (!projectData) {
+          setError("Project not found.");
+          setLoading(false);
+          return;
+        }
+        setProject(projectData);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError("Failed to load project.");
+        setLoading(false);
+      });
+  }, [id]);
 
-  if (!project) return <p>Loading...</p>;
+  if (loading) return <Spinner className="d-block mx-auto my-5" />;
+  if (error)
+    return (
+      <Alert variant="danger" className="my-5 text-center">
+        {error}
+      </Alert>
+    );
 
   const handleSubmitProposal = (e) => {
     e.preventDefault();
-    console.log("Submitting proposal:", proposal);
+    // TODO: Implement proposal submission to backend
     setShowProposalModal(false);
   };
 
@@ -66,26 +87,34 @@ function ProjectDetails() {
         <Card.Body className="p-4">
           <div className="project-header">
             <div className="d-flex justify-content-between align-items-start mb-3">
-              <h2 className="mb-0 project-title">{project.title}</h2>
+              <h2 className="mb-0 project-title">{project.name}</h2>
               <Badge
                 bg={getStatusBadgeColor(project.status)}
-                className="px-4 py-3">
+                className="px-4 py-3"
+              >
                 {project.status}
               </Badge>
             </div>
 
             <div className="d-flex gap-3 mt-4">
-              <div className="project-meta-item">
-                <Calendar3 size={18} />
-                Posted {project.postedDate}
-              </div>
+            <div className="project-meta-item">
+            <Calendar3 size={18} />
+            Posted {project.posted_at
+              ? formatDistanceToNow(parseISO(project.posted_at), { addSuffix: true })
+              : "Unknown"}
+          </div>
               <div className="project-meta-item">
                 <GeoAlt size={18} />
                 {project.location}
               </div>
               <div className="project-meta-item">
                 <Cash size={18} />
-                {project.budget}
+                {project.type === "fixed_price"
+                  ? `$${project.budget}`
+                  : `$${project.hourly_rate}/hr` +
+                    (project.estimated_hours
+                      ? `, ${project.estimated_hours} hrs`
+                      : "")}
               </div>
             </div>
           </div>
@@ -100,86 +129,39 @@ function ProjectDetails() {
               <h5 className="section-title">Project Details</h5>
               <div className="client-stat">
                 <span className="client-stat-label">Experience Level:</span>
-                <span className="client-stat-value">{project.level}</span>
+                <span className="client-stat-value">
+                  {project.experience_level}
+                </span>
               </div>
               <div className="client-stat">
                 <span className="client-stat-label">Project Type:</span>
                 <span className="client-stat-value">{project.type}</span>
               </div>
-              <div className="client-stat">
-                <span className="client-stat-label">Proposals:</span>
-                <span className="client-stat-value">{project.proposals}</span>
-              </div>
+              {/* You can add proposals count if available in your backend */}
             </Col>
             <Col md={6}>
               <h5 className="section-title">Required Skills</h5>
               <div className="d-flex flex-wrap gap-2">
-                {project.skills.map((skill, index) => (
-                  <Badge key={index} className="skill-badge py-2 px-3">
-                    {skill}
-                  </Badge>
-                ))}
+                {project.skills &&
+                  project.skills.map((skill, index) => (
+                    <Badge key={index} className="skill-badge py-2 px-3">
+                      {skill}
+                    </Badge>
+                  ))}
               </div>
             </Col>
           </Row>
 
-          <section className="client-info">
-            <h5 className="section-title mb-4">About the Client</h5>
-            <Row>
-              <Col md={6}>
-                <div className="client-stat">
-                  <GeoAlt size={18} className="me-2 text-primary" />
-                  <span className="client-stat-label">Location:</span>
-                  <span className="client-stat-value">{project.location}</span>
-                </div>
-                <div className="client-stat">
-                  <div className="d-flex align-items-center w-100">
-                    <span className="client-stat-label me-2">Rating:</span>
-                    <div className="star-rating d-flex align-items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <StarFill
-                          key={star}
-                          size={14}
-                          className={`star me-1 ${
-                            star <= project.clientInfo?.rating ? "active" : ""
-                          }`}
-                        />
-                      ))}
-                      <span className="ms-2 client-stat-value">
-                        {project.clientInfo?.rating.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Col>
-              <Col md={6}>
-                <div className="client-stat">
-                  <span className="client-stat-label">Projects Posted:</span>
-                  <span className="client-stat-value">
-                    {
-                      mockProjects.filter(
-                        (p) => p.clientId === project.clientId
-                      ).length
-                    }
-                  </span>
-                </div>
-                <div className="client-stat">
-                  <Wallet size={18} className="me-2 text-primary" />
-                  <span className="client-stat-label">Total Spent:</span>
-                  <span className="client-stat-value text-success">
-                    ${project.clientInfo?.totalSpent.toLocaleString()}
-                  </span>
-                </div>
-              </Col>
-            </Row>
-          </section>
+          {/* Optionally, add client info if available in your backend */}
+          {/* ... */}
 
           {project.status === "open" && (
             <div className="mt-4 d-flex justify-content-end">
               <Button
                 variant="primary"
                 size="lg"
-                onClick={() => setShowProposalModal(true)}>
+                onClick={() => setShowProposalModal(true)}
+              >
                 Submit Proposal
               </Button>
             </div>
@@ -190,7 +172,8 @@ function ProjectDetails() {
       <Modal
         show={showProposalModal}
         onHide={() => setShowProposalModal(false)}
-        size="lg">
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Submit Proposal</Modal.Title>
         </Modal.Header>
@@ -231,7 +214,10 @@ function ProjectDetails() {
                     type="number"
                     value={proposal.deliveryTime}
                     onChange={(e) =>
-                      setProposal({ ...proposal, deliveryTime: e.target.value })
+                      setProposal({
+                        ...proposal,
+                        deliveryTime: e.target.value,
+                      })
                     }
                     required
                   />
@@ -242,7 +228,8 @@ function ProjectDetails() {
             <div className="d-flex justify-content-end gap-2">
               <Button
                 variant="secondary"
-                onClick={() => setShowProposalModal(false)}>
+                onClick={() => setShowProposalModal(false)}
+              >
                 Cancel
               </Button>
               <Button variant="primary" type="submit">
