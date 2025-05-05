@@ -19,7 +19,7 @@ const ProjectRequirements = ({
     </div>
     <Card.Body className="card-body-custom">
       {/* Skills Section */}
-      {/* <Form.Group className="mb-3 position-relative">
+      <Form.Group className="mb-3 position-relative">
         <Form.Label>Skills Required</Form.Label>
         <Form.Control
           name="skills"
@@ -43,7 +43,7 @@ const ProjectRequirements = ({
             ))}
           </div>
         )}
-      </Form.Group> */}
+      </Form.Group>
 
       {/* Improved Experience Level Section */}
       <Form.Group className="mb-3">
@@ -78,7 +78,7 @@ const ProjectRequirements = ({
       </Form.Group>
 
       {/* Location Section */}
-      {/* <Form.Group>
+      <Form.Group>
         <Form.Label>Location</Form.Label>
         <Form.Control
           name="location"
@@ -93,7 +93,7 @@ const ProjectRequirements = ({
         <Form.Text className="text-muted">
           Leave empty if location is not relevant
         </Form.Text>
-      </Form.Group> */}
+      </Form.Group>
     </Card.Body>
   </Card>
 );

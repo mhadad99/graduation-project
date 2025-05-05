@@ -1,0 +1,145 @@
+/* Admin Dashboard Layout */
+.admin-dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fc;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-x: hidden;
+}
+
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 0.35rem;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.card .card-header {
+  background-color: #f8f9fc;
+  border-bottom: 1px solid #e3e6f0;
+  padding: 0.75rem 1.25rem;
+}
+
+.card-header h5, .card-header h6 {
+  font-weight: 700;
+  color: #4e73df;
+  margin: 0;
+}
+
+/* Border Cards */
+.border-left-primary {
+  border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+  border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+  border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+  border-left: 0.25rem solid #f6c23e !important;
+}
+
+/* Text Colors */
+.text-primary {
+  color: #4e73df !important;
+}
+
+.text-success {
+  color: #1cc88a !important;
+}
+
+.text-info {
+  color: #36b9cc !important;
+}
+
+.text-warning {
+  color: #f6c23e !important;
+}
+
+.text-gray-300 {
+  color: #dddfeb !important;
+}
+
+.text-gray-800 {
+  color: #5a5c69 !important;
+}
+
+/* Font Sizes */
+.text-xs {
+  font-size: 0.7rem;
+}
+
+/* Chart Areas */
+.chart-area {
+  position: relative;
+  height: 20rem;
+  width: 100%;
+}
+
+.chart-pie {
+  position: relative;
+  height: 15rem;
+  width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    flex-direction: column;
+  }
+  
+  .chart-area {
+    height: 15rem;
+  }
+  
+  .chart-pie {
+    height: 12rem;
+  }
+}
+
+/* Table Styling */
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fc;
+  border-top: none;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Avatar Placeholders */
+.avatar-placeholder, .service-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #4e73df;
+  color: white;
+  font-weight: bold;
+}
+
+.service-placeholder {
+  width: 50px;
+  height: 50px;
+}
+
+/* Tag Pills */
+.tag-pill {
+  display: inline-block;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  padding: 2px 8px;
+  margin-right: 5px;
+  font-size: 0.7rem;
+  color: #666;
+}

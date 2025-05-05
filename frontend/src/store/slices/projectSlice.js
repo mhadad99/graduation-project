@@ -1,14 +1,32 @@
 /** @format */
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addProject, getAllProject } from "../../api/project";
+import { addProject, getAllProject, getProjectById } from "../../api/project";
 
 const initialState = {
   projectList: [],
   createdProject: null,
   isLoading: false,
   error: null,
+  projectDetails: null, 
 };
+
+const getProjectByIdAction = createAsyncThunk(
+  "project/getProjectByIdAction",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await getProjectById(id);
+      console.log("getProjectById response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.detail ||
+        (typeof error.response?.data === "string" ? error.response.data : error.message)
+      );
+    }
+  }
+);
+
 
 const getAllProjectAction = createAsyncThunk(
   "project/getAllProjectAction",
@@ -81,8 +99,23 @@ const projectSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       });
+    builder
+      .addCase(getProjectByIdAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.projectDetails = null;
+      })
+      .addCase(getProjectByIdAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.projectDetails = action.payload;
+      })
+      .addCase(getProjectByIdAction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.projectDetails = null;
+      });
   },
 });
 
 export const projectReducer = projectSlice.reducer;
-export { createProjectAction, getAllProjectAction };
+export { createProjectAction, getAllProjectAction, getProjectByIdAction };

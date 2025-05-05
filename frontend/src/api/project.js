@@ -36,4 +36,4 @@ export const getAllProject = async () => {
     }
 };
 
-
+export const getProjectById = (id) => axios.get(`/api/project/${id}/`);
