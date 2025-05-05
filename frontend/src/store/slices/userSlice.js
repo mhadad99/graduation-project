@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getUserProfile } from "../../api/auth";
 
 
 const saveUserToLocalStorage = (user) => {
@@ -23,6 +24,8 @@ const getUserFromLocalStorage = () => {
 
 const initialState = {
     user: "",
+    profile: null,
+    profile: null,
     freelancer: "",
     client: "",
     isLoading: false,
@@ -48,6 +51,19 @@ export const getMyProfileAction = createAsyncThunk(
         }
     }
 )
+
+export const fetchUserProfile = createAsyncThunk(
+    'user/fetchProfile',
+    async (userId, { rejectWithValue }) => {
+      try {
+        const response = await getUserProfile(userId);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
 export const getMyFreelancerProfileAction = createAsyncThunk(
 
     "user/getMyFreelancerProfileAction",
@@ -156,7 +172,18 @@ const userSlice = createSlice(
     {
         name: "user",
         initialState,
-        reducers: {},
+        reducers: {
+                clearProfile: (state) => {
+                  state.profile = null;
+                  state.error = null;
+                }
+              },
+        reducers: {
+                clearProfile: (state) => {
+                  state.profile = null;
+                  state.error = null;
+                }
+              },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
@@ -183,7 +210,6 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             }
-
             );
 
             builder.addCase(updateUserProfileAction.pending, (state) => {
@@ -230,6 +256,19 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             });
+            builder
+            .addCase(fetchUserProfile.pending, (state) => {
+              state.isLoading = true;
+              state.error = null;
+            })
+            .addCase(fetchUserProfile.fulfilled, (state, action) => {
+              state.isLoading = false;
+              state.profile = action.payload;
+            })
+            .addCase(fetchUserProfile.rejected, (state, action) => {
+              state.isLoading = false;
+              state.error = action.payload;
+            });
             builder.addCase(updateClientProfileAction.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -243,7 +282,9 @@ const userSlice = createSlice(
                 state.error = action.payload;
             });
         },
+        
     }
 )
 
+export const { clearProfile } = userSlice.actions;
 export const userReducer = userSlice.reducer;

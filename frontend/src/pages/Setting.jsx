@@ -12,32 +12,40 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { mockUserSettings } from "../mock/settingsData";
+import { useSelector } from "react-redux";
+import { updatePassword } from "../api/auth";
+// import { mockUserSettings } from "../mock/settingsData";
 import "../styles/components/Settings.css";
 
 const Settings = () => {
-  // Use mock data instead of Redux
-  const currentUser = mockUserSettings.currentUser;
+  const { user } = useSelector((state) => state.authSlice);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const [activeTab, setActiveTab] = useState("account");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Initialize forms with mock data
+  // Initialize account form
   const [accountForm, setAccountForm] = useState({
-    email: currentUser.email,
-    password: "",
-    confirmPassword: "",
+    old_password: "",
+    new_password: "",
+    new_password_confirm: "",
   });
 
-  const [notificationSettings, setNotificationSettings] = useState(
-    currentUser.notificationSettings
-  );
+  // Initialize notification settings with default values
+  const [notificationSettings, setNotificationSettings] = useState({
+    emailNotifications: false,
+    messageNotifications: false,
+    proposalNotifications: false,
+    marketingEmails: false,
+    ...user?.notificationSettings, // Spread user settings if they exist
+  });
 
-  const [privacySettings, setPrivacySettings] = useState(
-    currentUser.privacySettings
-  );
+  // Initialize privacy settings with default values
+  const [privacySettings, setPrivacySettings] = useState({
+    profileVisibility: "public",
+    showContactInfo: false,
+    showLastSeen: true,
+    ...user?.privacySettings, // Spread user settings if they exist
+  });
 
   // Handle account form changes
   const handleAccountChange = (e) => {
@@ -46,7 +54,56 @@ const Settings = () => {
       ...prev,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    setError(null);
   };
+
+  // Handle password update
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Validate form values are not empty
+    if (
+      !accountForm.old_password ||
+      !accountForm.new_password ||
+      !accountForm.new_password_confirm
+    ) {
+      setError({ message: "All password fields are required" });
+      setLoading(false);
+      return;
+    }
+
+    // Validate passwords match
+    if (accountForm.new_password !== accountForm.new_password_confirm) {
+      setError({ message: "New passwords do not match" });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await updatePassword({
+        old_password: accountForm.old_password,
+        new_password: accountForm.new_password,
+        new_password_confirm: accountForm.new_password_confirm, // Added this field
+      });
+
+      // Clear form after success
+      setAccountForm({
+        old_password: "",
+        new_password: "",
+        new_password_confirm: "",
+      });
+      setSuccessMessage("Password updated successfully!");
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState("account");
 
   // Handle notification settings changes
   const handleNotificationChange = (e) => {
@@ -67,22 +124,6 @@ const Settings = () => {
   };
 
   // Handle form submissions with mock API calls
-  const handleAccountSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessMessage("Account settings updated successfully!");
-      setAccountForm((prev) => ({
-        ...prev,
-        password: "",
-        confirmPassword: "",
-      }));
-    }, 1000);
-  };
-
   const handleNotificationSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -105,7 +146,7 @@ const Settings = () => {
     }, 1000);
   };
 
-  if (!currentUser) {
+  if (!user) {
     return (
       <Container className="py-5 text-center">
         <p>Please log in to access settings.</p>
@@ -177,8 +218,7 @@ const Settings = () => {
                           <Form.Control
                             type="email"
                             name="email"
-                            value={accountForm.email}
-                            onChange={handleAccountChange}
+                            value={user.email}
                             disabled
                           />
                           <Form.Text className="text-muted">
@@ -186,14 +226,27 @@ const Settings = () => {
                           </Form.Text>
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="password">
+                        <Form.Group className="mb-3" controlId="oldPassword">
+                          <Form.Label>Current Password</Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="old_password"
+                            value={accountForm.old_password}
+                            onChange={handleAccountChange}
+                            placeholder="Enter your current password"
+                            required
+                          />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="newPassword">
                           <Form.Label>New Password</Form.Label>
                           <Form.Control
                             type="password"
-                            name="password"
-                            value={accountForm.password}
+                            name="new_password"
+                            value={accountForm.new_password}
                             onChange={handleAccountChange}
-                            placeholder="Leave blank to keep current password"
+                            placeholder="Enter your new password"
+                            required
                           />
                         </Form.Group>
 
@@ -203,14 +256,16 @@ const Settings = () => {
                           <Form.Label>Confirm New Password</Form.Label>
                           <Form.Control
                             type="password"
-                            name="confirmPassword"
-                            value={accountForm.confirmPassword}
+                            name="new_password_confirm"
+                            value={accountForm.new_password_confirm}
                             onChange={handleAccountChange}
+                            placeholder="Confirm your new password"
                             isInvalid={
-                              accountForm.password &&
-                              accountForm.password !==
-                                accountForm.confirmPassword
+                              accountForm.new_password &&
+                              accountForm.new_password !==
+                                accountForm.new_password_confirm
                             }
+                            required
                           />
                           <Form.Control.Feedback type="invalid">
                             Passwords do not match
@@ -221,7 +276,7 @@ const Settings = () => {
                           variant="primary"
                           type="submit"
                           disabled={loading}>
-                          {loading ? "Saving..." : "Save Changes"}
+                          {loading ? "Updating..." : "Update Password"}
                         </Button>
                       </Form>
                     </Tab.Pane>

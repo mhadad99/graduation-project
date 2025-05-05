@@ -21,24 +21,38 @@ import {
   ProjectsTab,
 } from "../components/profile";
 import { useSelector, useDispatch } from "react-redux";
-import { getMyProfileAction } from "../store/slices/userSlice";
+import {
+  clearProfile,
+  fetchUserProfile,
+  getMyProfileAction,
+} from "../store/slices/userSlice";
+
 
 const UserProfile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
+  const { user, profile, isLoading, error } = useSelector(
+    (state) => state.userSlice
+  );
 
   const [activeTab, setActiveTab] = useState("about");
 
-  // Fetch user data if it is null or undefined
   useEffect(() => {
-    if (!user) {
-      dispatch(getMyProfileAction());
+    dispatch(getMyProfileAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (id && (!profile || String(profile.id) !== String(id))) {
+      dispatch(fetchUserProfile(id));
     }
-  }, [user, dispatch]);
+    // clear profile on unmount or id change to avoid stale data
+    return () => {
+      dispatch(clearProfile());
+    };
+  }, [id, dispatch]);
 
   // Show a spinner while loading
-  if (isLoading || !user) {
+  if (isLoading) {
     return (
       <Container className="py-5 text-center">
         <Spinner animation="border" role="status" variant="primary">
@@ -49,18 +63,30 @@ const UserProfile = () => {
     );
   }
 
-  // Handle case where user data is not available
-  if (!user) {
+  if (error) {
     return (
       <Container className="py-5">
-        <Alert variant="danger">User profile not found</Alert>
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
       </Container>
     );
   }
 
-  const isMyProfile = id === user.id.toString();
-  const role = user.user_type;
-  const profileData = role ? user : null;
+  // Only show "not found" if NOT loading and NOT error
+  if (!isLoading && !error && !profile) {
+    return (
+      <Container className="py-5">
+        <Alert variant="warning" className="text-center">
+          User profile not found
+        </Alert>
+      </Container>
+    );
+  }
+
+  // Only use user to check if this is your own profile
+  const isMyProfile = user && profile && String(user.id) === String(profile.id);
+  const profileData = profile;
 
   const renderTabs = () => {
     const userRole = profileData?.user_type || "freelancer";
@@ -79,7 +105,9 @@ const UserProfile = () => {
         title: "Reviews",
         icon: <Star className="me-2" />,
         component: (
-          <ReviewsTab reviews={profileData.reviews} isMyProfile={isMyProfile} />
+          <ReviewsTab
+          reviews={profileData.reviews || []}
+          isMyProfile={isMyProfile} />
         ),
       },
     ];
@@ -91,8 +119,8 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ServicesTab
-            services={profileData.services}
-            isMyProfile={isMyProfile}
+          services={profileData.services || []}
+          isMyProfile={isMyProfile}
           />
         ),
       },
@@ -102,7 +130,7 @@ const UserProfile = () => {
         icon: <Collection className="me-2" />,
         component: (
           <PortfolioTab
-            portfolioItems={profileData.portfolio}
+            portfolioItems={profileData.portfolio || []}
             isMyProfile={isMyProfile}
           />
         ),
@@ -117,8 +145,8 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ProjectsTab
-            projects={profileData.projects}
-            isMyProfile={isMyProfile}
+          projects={profileData.projects || []}
+          isMyProfile={isMyProfile}
           />
         ),
       },
@@ -130,7 +158,7 @@ const UserProfile = () => {
 
   return (
     <div className="bg-light min-vh-100">
-      <ProfileHeader profileData={user} isMyProfile={isMyProfile} />
+      <ProfileHeader profileData={profileData} isMyProfile={isMyProfile} />
 
       <Container className="mt-4">
         <Tabs

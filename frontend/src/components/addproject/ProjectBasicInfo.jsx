@@ -11,13 +11,13 @@ const ProjectBasicInfo = ({ formData, handleChange, errors }) => (
       <Form.Group className="mb-3">
         <Form.Label>Project Title</Form.Label>
         <Form.Control
-          name="title"
-          value={formData.title}
+          name="name"
+          value={formData.name}
           onChange={handleChange}
-          isInvalid={!!errors.title}
+          isInvalid={!!errors.name}
         />
         <Form.Control.Feedback type="invalid">
-          {errors.title}
+          {errors.name}
         </Form.Control.Feedback>
       </Form.Group>
 
@@ -33,6 +33,34 @@ const ProjectBasicInfo = ({ formData, handleChange, errors }) => (
         />
         <Form.Control.Feedback type="invalid">
           {errors.description}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mt-3">
+        <Form.Label>Start Date</Form.Label>
+        <Form.Control
+          type="date"
+          name="start_date"
+          value={formData.start_date}
+          onChange={handleChange}
+          isInvalid={!!errors.start_date}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.start_date}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group className="mt-3">
+        <Form.Label>End Date</Form.Label>
+        <Form.Control
+          type="date"
+          name="end_date"
+          value={formData.end_date}
+          onChange={handleChange}
+          isInvalid={!!errors.end_date}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.end_date}
         </Form.Control.Feedback>
       </Form.Group>
     </Card.Body>
