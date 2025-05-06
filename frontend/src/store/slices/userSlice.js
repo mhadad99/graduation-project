@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getAllUsers, getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
 import { getUserProfile } from "../../api/auth";
 
 
@@ -25,6 +25,7 @@ const getUserFromLocalStorage = () => {
 const initialState = {
     user: "",
     profile: null,
+    users: [],
     freelancer: "",
     client: "",
     isLoading: false,
@@ -54,15 +55,15 @@ export const getMyProfileAction = createAsyncThunk(
 export const fetchUserProfile = createAsyncThunk(
     'user/fetchProfile',
     async (args, { rejectWithValue }) => {
-      try {
-        const response = await getUserProfile(args);
-        return response;
-      } catch (error) {
-        return rejectWithValue(error.message);
-      }
+        try {
+            const response = await getUserProfile(args);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
     }
-  );
-  
+);
+
 export const getMyFreelancerProfileAction = createAsyncThunk(
 
     "user/getMyFreelancerProfileAction",
@@ -165,24 +166,42 @@ export const updateClientProfileAction = createAsyncThunk(
             return rejectWithValue(serializedError);
         }
     }
-)
+);
+
+export const getAllUsersAction = createAsyncThunk(
+    "user/getAllUsersAction",
+    async (args, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await getAllUsers();
+            console.log(response.data)
+            return response.data;
+
+        } catch (error) {
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
+        }
+    })
 
 const userSlice = createSlice(
     {
         name: "user",
         initialState,
         reducers: {
-                clearProfile: (state) => {
-                  state.profile = null;
-                  state.error = null;
-                }
-              },
+            clearProfile: (state) => {
+                state.profile = null;
+                state.error = null;
+            }
+        },
         reducers: {
-                clearProfile: (state) => {
-                  state.profile = null;
-                  state.error = null;
-                }
-              },
+            clearProfile: (state) => {
+                state.profile = null;
+                state.error = null;
+            }
+        },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
@@ -256,18 +275,18 @@ const userSlice = createSlice(
                 state.error = action.payload;
             });
             builder
-            .addCase(fetchUserProfile.pending, (state) => {
-              state.isLoading = true;
-              state.error = null;
-            })
-            .addCase(fetchUserProfile.fulfilled, (state, action) => {
-              state.isLoading = false;
-              state.profile = action.payload;
-            })
-            .addCase(fetchUserProfile.rejected, (state, action) => {
-              state.isLoading = false;
-              state.error = action.payload;
-            });
+                .addCase(fetchUserProfile.pending, (state) => {
+                    state.isLoading = true;
+                    state.error = null;
+                })
+                .addCase(fetchUserProfile.fulfilled, (state, action) => {
+                    state.isLoading = false;
+                    state.profile = action.payload;
+                })
+                .addCase(fetchUserProfile.rejected, (state, action) => {
+                    state.isLoading = false;
+                    state.error = action.payload;
+                });
             builder.addCase(updateClientProfileAction.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -280,8 +299,18 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             });
+            builder.addCase(getAllUsersAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(getAllUsersAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.users = action.payload;
+            }).addCase(getAllUsersAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
         },
-        
+
     }
 )
 

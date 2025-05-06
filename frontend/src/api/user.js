@@ -112,3 +112,19 @@ export const updateClientProfile = async (formData) => {
         throw error;
     }
 }
+
+
+export const getAllUsers = async () => {
+
+    try {
+        const response = await axios.get(`${baseURL}user/all/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        console.log(response.data)
+        return response
+    } catch (error) {
+        throw error;
+    }
+}

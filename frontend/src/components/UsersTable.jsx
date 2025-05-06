@@ -5,6 +5,8 @@ import withReactContent from "sweetalert2-react-content";
 import { FaPlus } from "react-icons/fa";
 // import axios from "axios"; // Uncomment when using API
 import '../styles/tableStyles.css'; // Add this line at the top of your component
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsersAction } from "../store/slices/userSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -14,6 +16,8 @@ const UsersTable = () => {
   const [formData, setFormData] = useState({ id: null, name: "", details: "" });
   const [editMode, setEditMode] = useState(false);
 
+
+
   useEffect(() => {
     const staticData = [
       { id: 1, name: "John Doe", details: "Admin - john@example.com" },
@@ -22,19 +26,10 @@ const UsersTable = () => {
     ];
     setData(staticData);
 
-    // Uncomment for real API
-    /*
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/users");
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching UsersTable:", error);
-      }
-    };
-    fetchData();
-    */
-  }, []);
+
+
+
+  }, [users]);
 
   const handleDelete = (id) => {
     MySwal.fire({
@@ -105,14 +100,14 @@ const UsersTable = () => {
   return (
     <div className="orders-container p-3">
       <div className="text-center mb-4">
-          <Button
-            style={{ backgroundColor: "#198754", border: "none" }}
-            onClick={handleShowAdd}
-          >
-            <FaPlus className="me-1" />
-             Add User
-          </Button>
-        </div>
+        <Button
+          style={{ backgroundColor: "#198754", border: "none" }}
+          onClick={handleShowAdd}
+        >
+          <FaPlus className="me-1" />
+          Add User
+        </Button>
+      </div>
 
 
       <Table className="orders-table" striped bordered hover responsive>
