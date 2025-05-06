@@ -37,6 +37,11 @@ test-results/
 .DS_Store  # macOS
 Thumbs.db  # Windows
 
+# Migrations
+.migrations/
 migrations/
-
-*/migrations/
+**/migrations/
+__pycache__
+*.pyc
+*.pyo
+*.pyd
