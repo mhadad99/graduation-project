@@ -1,0 +1,82 @@
+/* tableStyles.css */
+
+/* General table styling */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #fff;
+  }
+  
+  .table th,
+  .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  /* Table header styling */
+  .table thead {
+    background-color: #f1f1f1;
+  }
+  
+  .table thead th {
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  /* Hover effect for rows */
+  .table tbody tr:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  /* Alternate row color for better readability */
+  .table tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+  }
+  
+  /* Add padding for the table container */
+  .projects-container {
+    padding: 20px;
+  }
+  
+  /* Styling buttons inside the table */
+  .table .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  /* Styling for info button */
+  .table .btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+  
+  /* Styling for delete button */
+  .table .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  /* Add spacing between table and other elements */
+  .table-container {
+    margin-top: 30px;
+  }
+  
+  /* Button Styles */
+  .btn-add {
+    background-color: #198754;
+    border: none;
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .btn-add:hover {
+    background-color: #155d45;
+  }
+  
+  

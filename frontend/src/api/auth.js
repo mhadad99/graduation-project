@@ -6,6 +6,7 @@ const baseURL = "http://127.0.0.1:8000/api/user/"; // Now it routes through Vite
 // Function to authenticate user
 export const loginUser = async (credentials) => {
   try {
+    console.log(credentials)
     const response = await axios.post(`${baseURL}login/`, credentials);
     return response;
   } catch (error) {

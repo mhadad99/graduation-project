@@ -115,6 +115,7 @@ class ApproveProposalView(APIView):
         # Assign freelancer and mark both as approved
         project.freelancerId = proposal.freelancer.uid
         project.progress = Progress.IN_PROGRESS
+        proposal.is_approved = True
         project.save()
         # Create chat room now that freelancer is officially assigned
         chatroom, created = ChatRoom.objects.get_or_create(
@@ -124,6 +125,7 @@ class ApproveProposalView(APIView):
             project_proposal=proposal,
             defaults={"is_negotiation": False},
         )
+        proposal.save()
 
         return Response(
             {
