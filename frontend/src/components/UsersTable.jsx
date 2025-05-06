@@ -1,16 +1,20 @@
-
 import { useState, useEffect } from "react";
-import { Table, Dropdown, Modal, Button } from "react-bootstrap";
-import { FaCog } from "react-icons/fa";
-// import "../Styles/ManageOrdersTable.css";
+import { Table, Modal, Button, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { FaPlus } from "react-icons/fa";
+// import axios from "axios"; // Uncomment when using API
+import '../styles/tableStyles.css'; // Add this line at the top of your component
+
+const MySwal = withReactContent(Swal);
 
 const UsersTable = () => {
   const [data, setData] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ id: null, name: "", details: "" });
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    // Static sample data
     const staticData = [
       { id: 1, name: "John Doe", details: "Admin - john@example.com" },
       { id: 2, name: "Jane Smith", details: "Receptionist - jane@example.com" },
@@ -18,7 +22,7 @@ const UsersTable = () => {
     ];
     setData(staticData);
 
-    // Commented out real API call
+    // Uncomment for real API
     /*
     const fetchData = async () => {
       try {
@@ -32,39 +36,86 @@ const UsersTable = () => {
     */
   }, []);
 
-  const handleDeleteClick = (id) => {
-    setItemToDelete(id);
-    setShowDeleteModal(true);
+  const handleDelete = (id) => {
+    MySwal.fire({
+      title: "Are you sure?",
+      text: "This user will be deleted permanently!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setData((prev) => prev.filter((item) => item.id !== id));
+        MySwal.fire("Deleted!", "User has been deleted.", "success");
+
+        // Uncomment for real API
+        /*
+        await axios.delete(`http://localhost:3000/users/${id}`);
+        */
+      }
+    });
   };
 
-  const handleDeleteConfirm = () => {
-    setData((prev) => prev.filter((item) => item.id !== itemToDelete));
-    setShowDeleteModal(false);
+  const handleShowAdd = () => {
+    setFormData({ id: null, name: "", details: "" });
+    setEditMode(false);
+    setShowModal(true);
+  };
 
-    // Commented out real DELETE request
-    /*
-    try {
-      await axios.delete(`http://localhost:3000/users/${itemToDelete}`);
-      setData((prev) => prev.filter((item) => item.id !== itemToDelete));
-      setShowDeleteModal(false);
-    } catch (error) {
-      console.error("Error deleting:", error);
+  const handleShowEdit = (user) => {
+    setFormData(user);
+    setEditMode(true);
+    setShowModal(true);
+  };
+
+  const handleSubmit = () => {
+    if (!formData.name || !formData.details) {
+      MySwal.fire("Error", "Please fill in all fields.", "error");
+      return;
     }
-    */
-  };
 
-  const handleDeleteCancel = () => {
-    setShowDeleteModal(false);
-    setItemToDelete(null);
-  };
-  const handleEdit = (id) => {
-    alert(`Edit proposal with ID: ${id}`);
-    // Add your actual edit logic here
+    if (editMode) {
+      // Update existing
+      setData((prev) =>
+        prev.map((item) =>
+          item.id === formData.id ? { ...formData } : item
+        )
+      );
+      MySwal.fire("Updated!", "User has been updated.", "success");
+
+      // Uncomment for real API
+      /*
+      await axios.put(`http://localhost:3000/users/${formData.id}`, formData);
+      */
+    } else {
+      // Add new
+      const newUser = { ...formData, id: Date.now() };
+      setData((prev) => [...prev, newUser]);
+      MySwal.fire("Added!", "New user has been added.", "success");
+
+      // Uncomment for real API
+      /*
+      await axios.post("http://localhost:3000/users", newUser);
+      */
+    }
+
+    setShowModal(false);
   };
 
   return (
-    <div className="orders-container">
-      <Table className="orders-table">
+    <div className="orders-container p-3">
+      <div className="text-center mb-4">
+          <Button
+            style={{ backgroundColor: "#198754", border: "none" }}
+            onClick={handleShowAdd}
+          >
+            <FaPlus className="me-1" />
+             Add User
+          </Button>
+        </div>
+
+
+      <Table className="orders-table" striped bordered hover responsive>
         <thead>
           <tr>
             <th>ID</th>
@@ -84,14 +135,14 @@ const UsersTable = () => {
                   variant="info"
                   size="sm"
                   className="me-2"
-                  onClick={() => handleEdit(item.id)}
+                  onClick={() => handleShowEdit(item)}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => handleDeleteClick(item.id)}
+                  onClick={() => handleDelete(item.id)}
                 >
                   Delete
                 </Button>
@@ -101,14 +152,40 @@ const UsersTable = () => {
         </tbody>
       </Table>
 
-      <Modal show={showDeleteModal} onHide={handleDeleteCancel}>
+      {/* Add/Edit Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete</Modal.Title>
+          <Modal.Title>{editMode ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>User Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Details</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter role or email"
+                value={formData.details}
+                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteCancel}>Cancel</Button>
-          <Button variant="danger" onClick={handleDeleteConfirm}>Delete</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSubmit}>
+            {editMode ? "Save Changes" : "Add User"}
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
@@ -116,3 +193,4 @@ const UsersTable = () => {
 };
 
 export default UsersTable;
+
