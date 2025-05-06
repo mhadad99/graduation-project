@@ -112,3 +112,16 @@ export const updateClientProfile = async (formData) => {
         throw error;
     }
 }
+
+export const getUserProfile = async (userId) => {
+    try {
+        const response = await axios.get(`${baseURL}user/user-profile/${userId}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+}
