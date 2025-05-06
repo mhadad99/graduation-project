@@ -125,7 +125,7 @@ class UserPhotoUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserOutSerializer(serializers.ModelSerializer):
-    freelancer_profile = FreelancerOutSerializer(read_only=True)
+    freelancer_profile = serializers.SerializerMethodField()
     client_profile = serializers.SerializerMethodField()
 
     class Meta:
@@ -146,13 +146,16 @@ class UserOutSerializer(serializers.ModelSerializer):
             "client_profile",
         ]
 
+    def get_freelancer_profile(self, obj):
+        if hasattr(obj, "freelancer_profile"):
+            # Lazy import to avoid circular dependency
+            from freelancer.serializers import FreelancerOutSerializer
+            return FreelancerOutSerializer(obj.freelancer_profile).data
+        return None
+
     def get_client_profile(self, obj):
         if hasattr(obj, "client_profile"):
-            return {
-                "id": obj.client_profile.id,
-                "phone": obj.client_profile.phone,
-                "company": obj.client_profile.company,
-                "created_at": obj.client_profile.created_at,
-                "updated_at": obj.client_profile.updated_at,
-            }
+            # Lazy import to avoid circular dependency
+            from client.serializers import ClientOutSerializer
+            return ClientOutSerializer(obj.client_profile).data
         return None

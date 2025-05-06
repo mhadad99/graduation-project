@@ -7,20 +7,14 @@ const saveUserToLocalStorage = (user) => {
     localStorage.setItem('user', JSON.stringify(user));
 };
 
-
 const removeUserFromLocalStorage = () => {
     localStorage.removeItem('user');
 };
-
 
 const getUserFromLocalStorage = () => {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
 };
-
-
-
-
 
 const initialState = {
     user: "",
@@ -172,12 +166,6 @@ const userSlice = createSlice(
     {
         name: "user",
         initialState,
-        reducers: {
-                clearProfile: (state) => {
-                  state.profile = null;
-                  state.error = null;
-                }
-              },
         reducers: {
                 clearProfile: (state) => {
                   state.profile = null;

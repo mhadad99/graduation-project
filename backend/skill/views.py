@@ -35,7 +35,9 @@ class SkillDetailView(RetrieveAPIView):
 class SkillCreateView(CreateAPIView):
     serializer_class = SkillSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    def perform_create(self, serializer):
+    # Optional: Add custom logic before saving
+        serializer.save()
 
 class SkillUpdateView(UpdateAPIView):
     serializer_class = SkillSerializer
