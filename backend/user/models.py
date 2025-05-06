@@ -70,6 +70,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         help_text="Tracks whether the user is a freelancer, client, or neither.",
     )
 
+    # 🔥 Add these two fields
+    is_staff = models.BooleanField(
+        default=False,
+        help_text="Designates whether the user can log into this admin site."
+    )
+    is_superuser = models.BooleanField(
+        default=False,
+        help_text="Designates this user as a superuser (has all permissions)."
+    )
+
+
     # Manager
     objects = CustomUserManager()
 

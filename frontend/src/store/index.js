@@ -3,6 +3,8 @@ import { authReducer } from "./slices/authSlice";
 import { themeReducer } from "./slices/themeSlice";
 import { serviceReducer } from "./slices/serviceSlice";
 import { userReducer } from "./slices/userSlice";
+import { projectReducer } from "./slices/projectSlice";
+import { proposalReducer } from "./slices/proposalSlice";
 
 export const myStore = configureStore({
   reducer: {
@@ -10,5 +12,7 @@ export const myStore = configureStore({
     themeSlice: themeReducer,
     serviceSlice: serviceReducer,
     userSlice: userReducer,
+    projectSlice: projectReducer,
+    proposalSlice: proposalReducer,
   },
 });

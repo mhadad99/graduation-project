@@ -1,0 +1,58 @@
+.service-requests-page-container {
+    background: var(--color-background);
+  }
+  
+  .section-title {
+    color: var(--color-text);
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+  
+  .service-card, .request-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: box-shadow 0.2s;
+  }
+  
+  .service-card:hover, .request-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  
+  .request-status-badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.8em;
+    border-radius: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  
+  .request-message {
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .request-meta span {
+    background: var(--color-background);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+  
+  [data-theme="dark"] .service-card,
+  [data-theme="dark"] .request-card {
+    background: var(--color-card-bg);
+    border-color: var(--color-border);
+  }
+  
+  [data-theme="dark"] .section-title {
+    color: var(--color-text-inverse);
+  }
+  
+  [data-theme="dark"] .request-meta span {
+    background: var(--color-card-bg);
+    color: var(--color-text-muted);
+  }

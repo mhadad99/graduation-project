@@ -1,11 +1,18 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import ServiceCard from "../cards/ServiceCard";
 import { Plus } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllServicesAction, getMyServicesAction } from "../../store/slices/serviceSlice";
 
-const ServicesTab = ({ services = [], isMyProfile }) => {
+const ServicesTab = ({ isMyProfile }) => {
+  const {myServices, isLoading, error} = useSelector((myStore)  => myStore.serviceSlice);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getMyServicesAction());
+  },[])
   return (
     <div className="services-tab">
       {isMyProfile && (
@@ -18,13 +25,13 @@ const ServicesTab = ({ services = [], isMyProfile }) => {
       )}
 
       <Row xs={1} md={2} lg={3} className="g-4">
-        {services.map((service) => (
+        {myServices.map((service) => (
           <Col key={service.id}>
             <ServiceCard service={service} isOwner={isMyProfile} />
           </Col>
         ))}
 
-        {services.length === 0 && (
+        {myServices.length === 0 && (
           <Col xs={12}>
             <div className="text-center py-5">
               <h5 className="text-muted mb-3">No services available</h5>

@@ -9,10 +9,10 @@ const ServiceCard = ({ service, isOwner }) => {
     service_name,
     description,
     price,
-    rating,
+    rating = 5,
     reviewCount,
     deliveryTime,
-    image,
+    photo,
     status = "active",
   } = service;
 
@@ -21,7 +21,7 @@ const ServiceCard = ({ service, isOwner }) => {
       <div className="service-card-image-wrapper">
         <Card.Img
           variant="top"
-          src={image}
+          src={photo}
           alt={service_name}
           className="service-image"
         />
@@ -61,7 +61,7 @@ const ServiceCard = ({ service, isOwner }) => {
           <Button 
             variant="outline-primary" 
             as={Link}
-            to={`/services/${id}/edit`}
+            to={`/${id}/service`}
             className="service-action-btn"
           >
             Edit Service

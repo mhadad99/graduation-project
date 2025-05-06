@@ -23,7 +23,8 @@ class CreateServiceView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        if user.user_type != "freelancer":
+        print(user.user_type)
+        if user.user_type != "freelancer" or not hasattr(user, "freelancer_profile"):
             raise PermissionDenied("Only freelancers can create a service.")
         serializer.save(freelancerId=user)
 
@@ -79,24 +80,23 @@ class ServiceUpdateView(generics.UpdateAPIView):
 
 
 # delete service
-class ServiceDeleteView(generics.UpdateAPIView):
-    queryset = Service.objects.all()
-    serializer_class = ServiceRetriveDeleteSerializer
+class ServiceDeleteView(APIView):
     permission_classes = [IsAuthenticated]
-    lookup_field = "id"
 
-    def update(self, request, *args, **kwargs):
-        """
-        Instead of deleting the object, we set is_deleted to True for soft deletion.
-        """
-        # Get the object to be updated
-        service = self.get_object()
+    def put(self, request, id):
+        try:
+            service = Service.objects.get(
+                id=id, freelancerId=request.user, is_deleted=False
+            )
+        except Service.DoesNotExist:
+            raise NotFound("Service not found or already deleted.")
 
-        # Set the 'is_deleted' flag to True
+        if request.user.user_type != "freelancer":
+            raise PermissionDenied("Only freelancers can delete services.")
+
         service.is_deleted = True
-        service.save()
+        service.save(update_fields=["is_deleted"])
 
-        # Return a successful response
         return Response(
             {"message": "Service marked as deleted"}, status=status.HTTP_204_NO_CONTENT
         )
@@ -115,7 +115,11 @@ class ServiceByTagView(APIView):
         if not tag:
             raise ValidationError("Query parameter 'tag' is required.")
 
-        services = Service.objects.filter(tags__icontains=tag, is_deleted=False)
+        # Normalize tag to lowercase
+        tag = tag.lower()
+
+        # Filter services where tag is in the tags array
+        services = Service.objects.filter(tags__icontains=f"{tag}")
         serializer = ServiceRetriveDeleteSerializer(services, many=True)
         return Response(serializer.data)
 

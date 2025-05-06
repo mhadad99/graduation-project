@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getMyFreelancerProfile, getMyProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { getUserProfile } from "../../api/auth";
 
 
 const saveUserToLocalStorage = (user) => {
@@ -23,6 +24,7 @@ const getUserFromLocalStorage = () => {
 
 const initialState = {
     user: "",
+    profile: null,
     freelancer: "",
     client: "",
     isLoading: false,
@@ -40,10 +42,27 @@ export const getMyProfileAction = createAsyncThunk(
             return response.data;
 
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
+
+export const fetchUserProfile = createAsyncThunk(
+    'user/fetchProfile',
+    async (args, { rejectWithValue }) => {
+      try {
+        const response = await getUserProfile(args);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
 export const getMyFreelancerProfileAction = createAsyncThunk(
 
     "user/getMyFreelancerProfileAction",
@@ -51,11 +70,32 @@ export const getMyFreelancerProfileAction = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
         try {
             const response = await getMyFreelancerProfile();
-            console.log(response.data);
             return response.data;
 
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
+        }
+    }
+)
+export const getMyClientProfileAction = createAsyncThunk(
+
+    "user/getMyClientProfileAction",
+    async (args, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await getMyClientProfile();
+            return response.data;
+
+        } catch (error) {
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -69,7 +109,11 @@ export const updateUserImageAction = createAsyncThunk(
             const response = await updateUserImage(image);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -82,7 +126,11 @@ export const updateUserProfileAction = createAsyncThunk(
             const response = await updateUserProfile(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -94,7 +142,27 @@ export const updateFreelancerProfileAction = createAsyncThunk(
             const response = await updateFreelancerProfile(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.message);
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
+        }
+    }
+)
+export const updateClientProfileAction = createAsyncThunk(
+    "user/updateClientProfileAction",
+    async (formData, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await updateClientProfile(formData);
+            return response;
+        } catch (error) {
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
         }
     }
 )
@@ -103,7 +171,18 @@ const userSlice = createSlice(
     {
         name: "user",
         initialState,
-        reducers: {},
+        reducers: {
+                clearProfile: (state) => {
+                  state.profile = null;
+                  state.error = null;
+                }
+              },
+        reducers: {
+                clearProfile: (state) => {
+                  state.profile = null;
+                  state.error = null;
+                }
+              },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
@@ -130,7 +209,6 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             }
-
             );
 
             builder.addCase(updateUserProfileAction.pending, (state) => {
@@ -155,12 +233,21 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             });
+            builder.addCase(getMyClientProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(getMyClientProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.client = action.payload;
+            }).addCase(getMyClientProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
             builder.addCase(updateFreelancerProfileAction.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             }).addCase(updateFreelancerProfileAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                console.log(action.payload);
                 const updatedUser = { ...state.freelancer, ...action.payload };
                 state.freelancer = updatedUser;
                 // saveUserToLocalStorage(updatedUser);
@@ -168,8 +255,35 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.error = action.payload;
             });
+            builder
+            .addCase(fetchUserProfile.pending, (state) => {
+              state.isLoading = true;
+              state.error = null;
+            })
+            .addCase(fetchUserProfile.fulfilled, (state, action) => {
+              state.isLoading = false;
+              state.profile = action.payload;
+            })
+            .addCase(fetchUserProfile.rejected, (state, action) => {
+              state.isLoading = false;
+              state.error = action.payload;
+            });
+            builder.addCase(updateClientProfileAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(updateClientProfileAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const updatedUser = { ...state.client, ...action.payload };
+                state.client = updatedUser;
+                // saveUserToLocalStorage(updatedUser);
+            }).addCase(updateClientProfileAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
         },
+        
     }
 )
 
+export const { clearProfile } = userSlice.actions;
 export const userReducer = userSlice.reducer;
