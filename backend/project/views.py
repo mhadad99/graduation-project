@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework import generics, status
 from rest_framework.response import Response
+from chatroom.models import ChatRoom
 from user.models import CustomUser
 from project.enums import Progress
 from project.serializers import (
@@ -30,7 +31,7 @@ class ProjectCreateView(generics.CreateAPIView):
         if user.user_type != "client":
             raise PermissionDenied("Only clients can create projects.")
 
-        serializer.save(clientId=user)
+        project = serializer.save(clientId=user)
 
 
 # List
@@ -45,7 +46,7 @@ class ProjectListView(generics.ListAPIView):
 
 # Retrieve (get one)
 class ProjectRetrieveView(generics.RetrieveAPIView):
-    queryset = Project.objects.select_related('clientId')
+    queryset = Project.objects.select_related("clientId")
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
 
@@ -53,28 +54,9 @@ class ProjectRetrieveView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         data = serializer.data
-        
+
         # Add user IDs to response
         return Response(data)
-
-# class ProjectsByFreelancerView(generics.ListAPIView):
-#     serializer_class = ProjectSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         freelancer_id = self.kwargs["freelancer_id"]
-#         return Project.objects.exclude(progress=Progress.CANCELLED)
-
-
-# class ProjectsByClientView(generics.ListAPIView):
-#     serializer_class = ProjectSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         client_id = self.kwargs["client_id"]
-#         return Project.objects.filter(
-#             client_id=clientId, progress__ne=Progress.CANCELLED
-#         )
 
 
 class ProjectUpdateView(generics.UpdateAPIView):

@@ -48,9 +48,15 @@ INSTALLED_APPS = [
     "project",
     "service",
     "client_rating",
+    "service_proposal",
     "project_proposal",
+<<<<<<< Updated upstream
     "service_proposal",
     "admin_dashboard"
+=======
+    "channels",
+    "chatroom",
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [
@@ -183,3 +189,10 @@ SIMPLE_JWT = {
 }
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+ASGI_APPLICATION = "your_project_name.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # Use Redis for production
+    }
+}

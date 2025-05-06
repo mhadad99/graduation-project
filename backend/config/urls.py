@@ -30,6 +30,10 @@ urlpatterns = [
     path("api/service/", include("service.urls")),
     path("api/project-proposal/", include("project_proposal.urls")),
     path("api/service-proposal/", include("service_proposal.urls")),
+<<<<<<< Updated upstream
     path("api/admin_dashboard/", include("admin_dashboard.urls")),
+=======
+    path("api/chatroom/", include("chatroom.urls")),
+>>>>>>> Stashed changes
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

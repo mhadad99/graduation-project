@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
+from chatroom.models import ChatRoom
+
 from .models import ServiceProposal
 from .serializers import ServiceProposalSerializer, UpdateServiceProposalSerializer
 from service.models import Service
@@ -34,7 +36,26 @@ class CreateServiceProposalView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         client = Client.objects.get(uid=self.request.user)
-        serializer.save(client=client)
+        proposal = serializer.save(client=client)
+        chatroom, _ = ChatRoom.objects.get_or_create(
+            client=client.uid,
+            freelancer=proposal.service.freelancerId,
+            service=proposal.service,
+            service_proposal=proposal,
+            defaults={"is_negotiation": True},
+        )
+
+        self.chatroom_id = chatroom.id
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response(
+            {
+                "detail": "Service proposal submitted and negotiation chatroom created.",
+                "chatroom_id": getattr(self, "chatroom_id", None),
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ClientServiceProposalsView(generics.ListAPIView):
@@ -66,7 +87,23 @@ class ApproveServiceProposalView(APIView):
 
         proposal.is_approved = True
         proposal.save()
-        return Response({"detail": "Proposal approved successfully."})
+
+        chatroom, _ = ChatRoom.objects.get_or_create(
+            client=proposal.client.uid,
+            freelancer=service.freelancerId,
+            service=service,
+            service_proposal=proposal,
+            defaults={"is_negotiation": False},
+        )
+
+        # If already exists, update flag
+        if not _:
+            chatroom.is_negotiation = False
+            chatroom.save()
+
+        return Response(
+            {"detail": "Proposal approved successfully.", "chatroom_id": chatroom.id}
+        )
 
 
 # List Proposals by Service ID (only for service owner)
@@ -113,19 +150,5 @@ class DeleteServiceProposalView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         if instance.client.uid != self.request.user:
             raise PermissionDenied("You can't delete this proposal.")
-        instance.is_deleted = True
-        instance.save()
-
-
-class DeleteServiceProposalView(generics.DestroyAPIView):
-    queryset = ServiceProposal.objects.all()
-    serializer_class = ServiceProposalSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_destroy(self, instance):
-        # Ensure the current user is the proposal creator
-        if instance.client.uid != self.request.user:
-            raise PermissionDenied("You can only delete your own proposals.")
-
         instance.is_deleted = True
         instance.save()
