@@ -50,13 +50,8 @@ INSTALLED_APPS = [
     "client_rating",
     "service_proposal",
     "project_proposal",
-<<<<<<< Updated upstream
-    "service_proposal",
-    "admin_dashboard"
-=======
-    "channels",
+    "admin_dashboard",
     "chatroom",
->>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [
