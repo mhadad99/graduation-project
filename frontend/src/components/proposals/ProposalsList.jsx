@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, Badge, Button } from 'react-bootstrap';
 import { formatDistanceToNow } from 'date-fns';
 
-const ProposalsList = ({ proposals, onApprove, isClientView, is_approved }) => {
-    
+const ProposalsList = ({ proposals, onApprove, isClientView }) => {
+
     return (
         <div className="proposals-section mt-4">
             <Card>
@@ -29,7 +29,17 @@ const ProposalsList = ({ proposals, onApprove, isClientView, is_approved }) => {
 
                                 <p className="proposal-body mb-3">{proposal.body}</p>
 
-                                {isClientView && !is_approved && (
+                                <div className="d-flex justify-content-end my-3">
+                                    <Button
+                                        variant="success"
+                                        size="sm"
+                                        href={`/profile/${proposal.freelancer}`}
+                                        target="_blank"
+                                    >
+                                        View Profile
+                                    </Button></div>
+
+                                {isClientView && !proposal.is_approved && (
                                     <div className="d-flex justify-content-end">
                                         <Button
                                             variant="success"
@@ -41,7 +51,7 @@ const ProposalsList = ({ proposals, onApprove, isClientView, is_approved }) => {
                                     </div>
                                 )}
 
-                                {is_approved && (
+                                {proposal.is_approved && (
                                     <Badge bg="success" className="approved-badge">Approved</Badge>
                                 )}
                             </div>

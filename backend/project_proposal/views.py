@@ -92,7 +92,9 @@ class ApproveProposalView(APIView):
         project.progress = Progress.IN_PROGRESS
 
         project.is_approved = True
+        proposal.is_approved = True
         project.save()
+        proposal.save()
 
         return Response(
             {"detail": "Proposal approved. Freelancer assigned to project."}

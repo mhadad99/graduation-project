@@ -310,7 +310,6 @@ function ProjectDetails() {
       </Card>
 
       {user.id === projectDetails?.user_id &&<ProposalsList 
-        is_approved = {projectDetails?.progress === "in_progress" ? true : false}  
         proposals={proposals}
         onApprove={handleApproveProposal}
         isClientView={profile?.user_type === 'client' && projectDetails?.clientId === profile?.id}

@@ -15,6 +15,7 @@ class ProjectProposal(models.Model):
     is_approved = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
+    days_to_finish = models.IntegerField(null=True, blank=False)
 
     class Meta:
         unique_together = (
