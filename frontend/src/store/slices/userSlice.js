@@ -210,12 +210,6 @@ const userSlice = createSlice(
                 state.error = null;
             }
         },
-        reducers: {
-            clearProfile: (state) => {
-                state.profile = null;
-                state.error = null;
-            }
-        },
         extraReducers: (builder) => {
             builder
                 .addCase(getMyProfileAction.pending, (state) => {
