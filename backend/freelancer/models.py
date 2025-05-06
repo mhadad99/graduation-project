@@ -66,6 +66,18 @@ class Freelancer(models.Model):
         help_text="Skills associated with the freelancer."
     )
 
+    languages = models.TextField(
+    blank=True,
+    null=True,
+    help_text="Languages the freelancer speaks (comma-separated)"
+    )
+    
+    qualities = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Personal qualities or expertise that define the freelancer"
+    )
+    
     certifications = models.ManyToManyField(Certification, blank=True, related_name="freelancers")
     educations = models.ManyToManyField(Education, blank=True, related_name="freelancers")
 
