@@ -66,11 +66,12 @@ const AboutTab = ({ profileData, isMyProfile }) => {
 
             <h6 className="mt-4 mb-3">Skills</h6>
             <div className="d-flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <Badge key={index} bg="light" text="dark">
-                  {skill}
-                </Badge>
-              ))}
+              {skills &&
+                skills.map((skill, idx) => (
+                  <Badge key={idx} bg="light" text="dark">
+                    {typeof skill === "string" ? skill : skill.skill_name}
+                  </Badge>
+                ))}
             </div>
 
             <h6 className="mt-4 mb-3">Languages</h6>
@@ -80,6 +81,46 @@ const AboutTab = ({ profileData, isMyProfile }) => {
                 <span className="text-muted ms-2">({lang.level})</span>
               </div>
             ))}
+
+            <h6 className="mt-4 mb-3">Certifications</h6>
+            {(profileData.certifications || []).length === 0 && (
+              <p>No certifications listed.</p>
+            )}
+            {profileData.certifications &&
+              profileData.certifications.map((cert, idx) => (
+                <div key={idx} className="mb-2">
+                  <strong>{cert.name}</strong>
+                  {cert.issuer && (
+                    <>
+                      {" "}
+                      - <span>{cert.issuer}</span>
+                    </>
+                  )}
+                  {cert.year && (
+                    <>
+                      {" "}
+                      (<span>{cert.year}</span>)
+                    </>
+                  )}
+                </div>
+              ))}
+
+            <h6 className="mt-4 mb-3">Education</h6>
+            {(profileData.educations || []).length === 0 && (
+              <p>No education listed.</p>
+            )}
+            {profileData.educations &&
+              profileData.educations.map((edu, idx) => (
+                <div key={idx} className="mb-2">
+                  <strong>{edu.degree}</strong> - {edu.school}
+                  {edu.year && (
+                    <>
+                      {" "}
+                      (<span>{edu.year}</span>)
+                    </>
+                  )}
+                </div>
+              ))}
           </Card.Body>
         </Card>
 

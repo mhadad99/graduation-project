@@ -2,6 +2,22 @@ from django.db import models
 from django.conf import settings
 from skill.models import Skill  
 
+class Certification(models.Model):
+    name = models.CharField(max_length=255)
+    issuer = models.CharField(max_length=255, blank=True, null=True)
+    year = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+class Education(models.Model):
+    degree = models.CharField(max_length=255)
+    school = models.CharField(max_length=255)
+    year = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.degree} - {self.school}"
+
 class Freelancer(models.Model):
     """
     Model representing a Freelancer profile linked to a CustomUser.
@@ -41,7 +57,7 @@ class Freelancer(models.Model):
     is_deleted = models.BooleanField(default=False, help_text="Soft delete flag for the freelancer.")
     created_at = models.DateTimeField(auto_now_add=True, help_text="Timestamp of when the freelancer profile was created.")
     updated_at = models.DateTimeField(auto_now=True, help_text="Timestamp of the last update to the freelancer profile.")
-
+    
     # Many-to-Many relationship with Skills
     skills = models.ManyToManyField(
         Skill,
@@ -49,6 +65,21 @@ class Freelancer(models.Model):
         related_name="freelancers",
         help_text="Skills associated with the freelancer."
     )
+
+    languages = models.TextField(
+    blank=True,
+    null=True,
+    help_text="Languages the freelancer speaks (comma-separated)"
+    )
+    
+    qualities = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Personal qualities or expertise that define the freelancer"
+    )
+    
+    certifications = models.ManyToManyField(Certification, blank=True, related_name="freelancers")
+    educations = models.ManyToManyField(Education, blank=True, related_name="freelancers")
 
     def __str__(self):
         return f"{self.uid.user_name} - {self.get_experience_level_display()}"
