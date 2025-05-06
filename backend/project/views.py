@@ -13,7 +13,8 @@ from project.serializers import (
 )
 from .models import Project
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 # Create
 
@@ -87,16 +88,6 @@ class ProjectUpdateView(generics.UpdateAPIView):
         serializer.save()
 
 
-# Delete
-class ProjectDeleteView(generics.DestroyAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-
-    def perform_destroy(self, instance):
-        instance.progress = Progress.CANCELLED
-        instance.save()
-
-
 # Special view to get all projects by a specific client
 
 
@@ -147,3 +138,50 @@ class ProjectsByUserIdView(generics.ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+# Complete project route
+
+
+class ProjectCompleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        project = get_object_or_404(Project, id=pk)
+
+        if project.clientId != request.user:
+            raise PermissionDenied("You are not the owner of this project.")
+
+        if project.progress != Progress.IN_PROGRESS:
+            return Response(
+                {"detail": "Only in-progress projects can be marked as completed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        project.progress = Progress.COMPLETED
+        project.save()
+
+        return Response(
+            {"detail": "Project marked as completed."}, status=status.HTTP_200_OK
+        )
+
+
+class ProjectDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        project = get_object_or_404(Project, id=pk)
+
+        if project.clientId != request.user:
+            raise PermissionDenied("You are not the owner of this project.")
+
+        if project.progress != Progress.NOT_STARTED:
+            return Response(
+                {"detail": "Only projects that haven't started can be deleted."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        project.delete()
+        return Response(
+            {"detail": "Project deleted successfully."}, status=status.HTTP_200_OK
+        )

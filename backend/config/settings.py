@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     "client_rating",
     "project_proposal",
     "service_proposal",
-    "admin_dashboard"
+    "admin_dashboard",
+    "channels",
+    "chatroom",
 ]
 
 MIDDLEWARE = [
