@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    AllServiceProposalsView,
     CreateServiceProposalView,
     ClientServiceProposalsView,
     ApproveServiceProposalView,
@@ -9,6 +10,8 @@ from .views import (
 )
 
 urlpatterns = [
+
+    path("all/", AllServiceProposalsView.as_view(), name="all-service-proposals"),
     path("apply/", CreateServiceProposalView.as_view(), name="create-service-proposal"),
     path(
         "my-proposals/",

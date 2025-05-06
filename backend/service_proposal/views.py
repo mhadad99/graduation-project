@@ -12,6 +12,11 @@ from freelancer.models import Freelancer
 from rest_framework.exceptions import PermissionDenied
 
 
+class AllServiceProposalsView(generics.ListAPIView):
+    queryset = ServiceProposal.objects.filter(is_deleted=False)
+    serializer_class = ServiceProposalSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 # Ensure only clients can create proposals
 class IsClient(permissions.BasePermission):
     def has_permission(self, request, view):

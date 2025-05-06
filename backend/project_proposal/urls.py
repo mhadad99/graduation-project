@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    AllProposalsView,
     ApplyToProjectView,
     DeleteProposalView,
     MyProposalsView,
@@ -9,6 +10,8 @@ from .views import (
 )
 
 urlpatterns = [
+    path("all/", AllProposalsView.as_view(), name="all-proposals"),
+    
     path("apply/", ApplyToProjectView.as_view()),
     path(
         "proposals/<int:project_id>/",
