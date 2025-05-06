@@ -1,20 +1,21 @@
-// src/layouts/DashboardLayout.js
-// src/layouts/DashboardLayout.js
-import React from 'react';
-import '../styles/DashboardLayout.css';
-import '../styles/dashboard.css';
-import Footer from '../components/Footer';
 
-export default function DashboardLayout({ children }) {
-  return (
-    <div className="flex dashboard-container h-screen">
-      <header className="bg-white dashboard-header p-4 shadow text-2xl font-semibold">
-        Admin Dashboard
-      </header>
-      <main className="p-6 bg-gray-100 flex-1">
-        {children}
-      </main>
-      <Footer />
-    </div>
-  );
-}
+  import Sidebar from "../components/Sidebar";
+  import Services from "../components/ServicesTable";
+  import UsersTable from "../components/UsersTable";
+  import Proposals from "../components/ProposalsTable";
+  import Projects from "../components/ProjectsTable";
+  import { Outlet } from "react-router-dom";
+  
+  function DashboardLayout() {
+    return (
+      <div style={{ display: "flex" }}>
+        <Sidebar />
+        <div style={{ flex: 1, padding: "10px" }}>
+          <Outlet /> {/* Displays the current route component (e.g., UsersTable) */}
+        </div>
+      </div>
+    );
+  }
+  
+  export default DashboardLayout;
+  

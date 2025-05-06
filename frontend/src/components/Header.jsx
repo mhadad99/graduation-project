@@ -52,7 +52,7 @@ export const Header = () => {
 
   // Redux state for theme management
   const { theme } = useSelector((state) => state.themeSlice);
-  const { role } = useSelector((state) => state.authSlice);
+  // const { role } = useSelector((state) => state.authSlice);
 
   // Redux state for theme management
   // State for managing dropdowns with consolidated naming convention
