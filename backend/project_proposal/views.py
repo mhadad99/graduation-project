@@ -141,3 +141,10 @@ class DeleteProposalView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_deleted = True
         instance.save()
+
+
+        
+class AllProposalsView(generics.ListAPIView):
+    queryset = ProjectProposal.objects.filter(is_deleted=False)
+    serializer_class = ProposalSerializer
+    permission_classes = [permissions.IsAuthenticated]
