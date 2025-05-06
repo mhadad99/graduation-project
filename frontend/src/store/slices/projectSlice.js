@@ -1,14 +1,15 @@
 /** @format */
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addProject, getAllProject, getProjectById } from "../../api/project";
+import { addProject, getAllProject, getMyProjects, getProjectById } from "../../api/project";
 
 const initialState = {
   projectList: [],
   createdProject: null,
+  myProjectList: [],
   isLoading: false,
   error: null,
-  projectDetails: null, 
+  projectDetails: null,
 };
 
 const getProjectByIdAction = createAsyncThunk(
@@ -26,6 +27,25 @@ const getProjectByIdAction = createAsyncThunk(
     }
   }
 );
+
+export const getMyProjectsAction = createAsyncThunk(
+
+  "service/getMyProjectsAction",
+  async (args, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI;
+    try {
+      const response = await getMyProjects();
+      console.log(response.data);
+      return response.data;
+
+    } catch (error) {
+      const serializedError = {
+        status: error.response?.status,
+        data: error.response?.data,
+      };
+      return rejectWithValue(serializedError);
+    }
+  });
 
 
 const getAllProjectAction = createAsyncThunk(
@@ -59,9 +79,9 @@ const createProjectAction = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.detail ||
-          (typeof error.response?.data === "string"
-            ? error.response.data
-            : error.message)
+        (typeof error.response?.data === "string"
+          ? error.response.data
+          : error.message)
       );
     }
   }
@@ -113,6 +133,19 @@ const projectSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         state.projectDetails = null;
+      });
+    builder
+      .addCase(getMyProjectsAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getMyProjectsAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.myProjectList = action.payload;
+      })
+      .addCase(getMyProjectsAction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });

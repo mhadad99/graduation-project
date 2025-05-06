@@ -25,7 +25,6 @@ const getUserFromLocalStorage = () => {
 const initialState = {
     user: "",
     profile: null,
-    profile: null,
     freelancer: "",
     client: "",
     isLoading: false,
@@ -54,9 +53,9 @@ export const getMyProfileAction = createAsyncThunk(
 
 export const fetchUserProfile = createAsyncThunk(
     'user/fetchProfile',
-    async (userId, { rejectWithValue }) => {
+    async (args, { rejectWithValue }) => {
       try {
-        const response = await getUserProfile(userId);
+        const response = await getUserProfile(args);
         return response;
       } catch (error) {
         return rejectWithValue(error.message);

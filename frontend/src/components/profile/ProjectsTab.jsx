@@ -1,13 +1,21 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Button, Badge } from "react-bootstrap";
 import { Plus } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import ProjectCard from "../cards/ProjectCard";
 import "../../styles/components/ProjectsTab.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getMyProjectsAction } from "../../store/slices/projectSlice";
 
-const ProjectsTab = ({ projects = [], isMyProfile }) => {
+const ProjectsTab = ({isMyProfile }) => {
+  const {myProjectList} = useSelector((myStore)  => myStore.projectSlice);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getMyProjectsAction()).then((data) => console.log(data));
+  },[])
+  const projects = myProjectList;
   const hasProjects = projects.length > 0;
 
   return (

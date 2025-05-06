@@ -19,6 +19,7 @@ function AddProject() {
     estimatedHours: "",
     duration: "",
     experience_level: "",
+
     location: "",
     status: "open",
     skills: "",
@@ -140,6 +141,8 @@ function AddProject() {
           ? formData.skills.split(",").map((s) => s.trim())
           : [],
         status: formData.status || "open",
+        start_date: "2025-04-09",
+        end_date: "2026-04-09",
       };
 
       dispatch(createProjectAction(projectData));

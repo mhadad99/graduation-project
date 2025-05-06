@@ -145,7 +145,6 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ProjectsTab
-          projects={profileData.projects || []}
           isMyProfile={isMyProfile}
           />
         ),

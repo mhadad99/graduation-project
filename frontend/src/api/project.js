@@ -36,4 +36,50 @@ export const getAllProject = async () => {
     }
 };
 
-export const getProjectById = (id) => axios.get(`/api/project/${id}/`);
+export const getProjectById = async (id) => {
+    try {
+        const response = await axios.get(`${baseURL}${id}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        console.log("getProjectById response", response.data);
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export const updateProject = async (id, service) => {
+    // send brear token
+    const token = localStorage.getItem("authToken");
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    try {
+        console.log("updateProject service in try");
+        const response = await axios.put(`${baseURL}update/${id}/`, service, config);
+        console.log("updateProject response", response.data);
+        return response
+    } catch (error) {
+        console.log("updateProject error", error.response.data);
+        throw error;
+    }
+}
+
+export const getMyProjects = async () => {
+    try {
+        const response = await axios.get(`${baseURL}my-projects/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        console.log("getMyProject response", response.data);
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
