@@ -21,6 +21,8 @@ const FreelancerTab = ({ navigate, id }) => {
     skills: [],
     certifications: [],
     educations: [],
+    languages: [],
+    qualities: [],
   });
   const [skillInput, setSkillInput] = useState("");
   const [allSkills, setAllSkills] = useState([]);
@@ -54,34 +56,29 @@ const FreelancerTab = ({ navigate, id }) => {
   }, []);
 
   
-  useEffect(() => {
-    if (freelancer) {
-      const normalizedData = {
-        ...freelancer,
-        skills: freelancer.skills?.map(skill => skill.id) || [],
-        certifications: freelancer.certifications || [],
-        educations: freelancer.educations || []
-      };
-  
-      setFormData(normalizedData);
-    }
-  }, [freelancer]);
   // Populate form when freelancer data is available
-  useEffect(() => {
-    if (freelancer) {
-      // Extract only the skill IDs from the nested skill objects
-      const skillIds = freelancer.skills?.map(skill => skill.id) || [];
-  
-      setFormData({
-        cv: freelancer.cv || "",
-        experience_level: freelancer.experience_level || "junior",
-        portfolio: freelancer.portfolio || "",
-        skills: skillIds,
-        certifications: freelancer.certifications || [],
-        educations: freelancer.educations || [],
-      });
-    }
-  }, [freelancer]);
+useEffect(() => {
+  if (freelancer) {
+    // Extract only the skill IDs from the nested skill objects
+    const skillIds = freelancer.skills?.map(skill => skill.id) || [];
+
+    setFormData({
+      cv: freelancer.cv || "",
+      experience_level: freelancer.experience_level || "junior",
+      portfolio: freelancer.portfolio || "",
+      skills: skillIds,
+      certifications: freelancer.certifications || [],
+      educations: freelancer.educations || [],
+      // Convert arrays to comma-separated strings for form display
+      languages: Array.isArray(freelancer.languages_list) 
+        ? freelancer.languages_list.join(", ") 
+        : (freelancer.languages || ""),
+      qualities: Array.isArray(freelancer.qualities_list) 
+        ? freelancer.qualities_list.join(", ") 
+        : (freelancer.qualities || ""),
+    });
+  }
+}, [freelancer]);
 
   // Debounce skill input
   useEffect(() => {
@@ -224,18 +221,18 @@ const FreelancerTab = ({ navigate, id }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate required fields
     if (!formData.experience_level) {
       setError("Please select an experience level.");
       return;
     }
-
+  
     if (formData.skills.length === 0) {
       setError("At least one skill is required.");
       return;
     }
-
+  
     try {
       const payload = {
         cv: formData.cv,
@@ -244,10 +241,13 @@ const FreelancerTab = ({ navigate, id }) => {
         skills: formData.skills.map(Number), // Ensure skills are numbers
         certifications: formData.certifications,
         educations: formData.educations,
+        // Send arrays in the proper field names
+        languages_list: formData.languages.split(",").map(lang => lang.trim()).filter(Boolean),
+        qualities_list: formData.qualities.split(",").map(q => q.trim()).filter(Boolean)
       };
-
+  
       console.log("Submitting Payload:", payload); // Debugging
-
+  
       await dispatch(updateFreelancerProfileAction(payload))
         .unwrap()
         .then(() => {
@@ -267,7 +267,7 @@ const FreelancerTab = ({ navigate, id }) => {
               .map(([key, value]) => `${key}: ${value.join(", ")}`)
               .join("; ");
           }
-
+  
           Swal.fire({
             icon: "error",
             title: "Profile Not Updated",
@@ -275,11 +275,12 @@ const FreelancerTab = ({ navigate, id }) => {
             footer: "Check console for full details",
           });
         });
-
+  
     } catch (err) {
       setError("Failed to update profile. Please try again.");
     }
   };
+
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -375,18 +376,22 @@ const FreelancerTab = ({ navigate, id }) => {
       {/* Certifications */}
       <Form.Group className="mb-3">
         <Form.Label>Certifications</Form.Label>
-        <div className="d-flex flex-wrap gap-2 mb-2">
-          {(formData.certifications || []).map((cert, idx) => (
-            <Badge key={cert.id || idx} bg="info" className="d-flex align-items-center">
-              {cert.name} {cert.issuer && `(${cert.issuer})`}{" "}
-              {cert.year && `- ${cert.year}`}
-              <CloseButton
-                className="ms-2"
-                onClick={() => handleRemoveCert(idx)}
-              />
-            </Badge>
-          ))}
-        </div>
+<div className="d-flex flex-wrap gap-2 mb-2">
+  {(formData.certifications || []).map((cert, idx) => (
+    <Badge 
+      key={`cert-${cert.id || idx}`} 
+      bg="info" 
+      className="d-flex align-items-center"
+    >
+      {cert.name} {cert.issuer && `(${cert.issuer})`}{" "}
+      {cert.year && `- ${cert.year}`}
+      <CloseButton
+        className="ms-2"
+        onClick={() => handleRemoveCert(idx)}
+      />
+    </Badge>
+  ))}
+</div>
         <Row>
           <Col>
             <Form.Control
@@ -424,17 +429,21 @@ const FreelancerTab = ({ navigate, id }) => {
       {/* Educations */}
       <Form.Group className="mb-3">
         <Form.Label>Educations</Form.Label>
-        <div className="d-flex flex-wrap gap-2 mb-2">
-          {(formData.educations || []).map((edu, idx) => (
-            <Badge key={edu.id || idx} bg="secondary" className="d-flex align-items-center">
-              {edu.degree} - {edu.school} {edu.year && `(${edu.year})`}
-              <CloseButton
-                className="ms-2"
-                onClick={() => handleRemoveEdu(idx)}
-              />
-            </Badge>
-          ))}
-        </div>
+<div className="d-flex flex-wrap gap-2 mb-2">
+  {(formData.educations || []).map((edu, idx) => (
+    <Badge 
+      key={`edu-${edu.id || idx}`} 
+      bg="secondary" 
+      className="d-flex align-items-center"
+    >
+      {edu.degree} - {edu.school} {edu.year && `(${edu.year})`}
+      <CloseButton
+        className="ms-2"
+        onClick={() => handleRemoveEdu(idx)}
+      />
+    </Badge>
+  ))}
+</div>
         <Row>
           <Col>
             <Form.Control
@@ -467,6 +476,32 @@ const FreelancerTab = ({ navigate, id }) => {
             <Button onClick={handleAddEdu}>Add</Button>
           </Col>
         </Row>
+      </Form.Group>
+
+      {/* Languages */}
+      <Form.Group className="mb-3">
+        <Form.Label>Languages</Form.Label>
+        <Form.Control
+          as="textarea"
+          name="languages"
+          value={formData.languages}
+          onChange={handleChange}
+          placeholder="Enter languages separated by commas (e.g., English, Arabic, French)"
+          rows={2}
+        />
+      </Form.Group>
+
+      {/* Add qualitites */}
+      <Form.Group className="mb-3">
+        <Form.Label>Personal Qualities / Expertise</Form.Label>
+        <Form.Control
+          as="textarea"
+          name="qualities"
+          value={formData.qualities}
+          onChange={handleChange}
+          placeholder="E.g., Detail-oriented, Creative, Fast learner"
+          rows={2}
+        />
       </Form.Group>
 
       {/* Submit Buttons */}

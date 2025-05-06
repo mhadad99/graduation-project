@@ -26,6 +26,19 @@ class FreelancerCreateSerializer(serializers.ModelSerializer):
         required=False,
         help_text="List of education dicts with degree, school, year",
     )
+    # Add fields for languages and qualities as lists
+    languages_list = serializers.ListField(
+        child=serializers.CharField(),
+        write_only=True,
+        required=False,
+        help_text="List of languages the freelancer speaks",
+    )
+    qualities_list = serializers.ListField(
+        child=serializers.CharField(),
+        write_only=True,
+        required=False,
+        help_text="List of personal qualities or expertise",
+    )
 
     class Meta:
         model = Freelancer
@@ -37,7 +50,9 @@ class FreelancerCreateSerializer(serializers.ModelSerializer):
             "is_verified",
             "skills",
             "certifications",
-            "educations"
+            "educations",
+            "languages_list",
+            "qualities_list"
         ]
 
     def validate(self, attrs):
@@ -68,6 +83,15 @@ class FreelancerCreateSerializer(serializers.ModelSerializer):
         skill_ids = validated_data.pop("skills", [])
         certifications_data = validated_data.pop("certifications", [])
         educations_data = validated_data.pop("educations", [])
+        
+        # Convert languages and qualities lists to comma-separated strings
+        languages_list = validated_data.pop("languages_list", None)
+        if languages_list is not None:
+            validated_data["languages"] = ", ".join(languages_list)
+            
+        qualities_list = validated_data.pop("qualities_list", None)
+        if qualities_list is not None:
+            validated_data["qualities"] = ", ".join(qualities_list)
 
         # Set the user from context
         validated_data["uid"] = self.context["request"].user
@@ -99,6 +123,15 @@ class FreelancerCreateSerializer(serializers.ModelSerializer):
         skill_ids = validated_data.pop("skills", None)
         certifications_data = validated_data.pop("certifications", []) or []
         educations_data = validated_data.pop("educations", []) or []
+        
+        # Convert languages and qualities lists to comma-separated strings
+        languages_list = validated_data.pop("languages_list", None)
+        if languages_list is not None:
+            validated_data["languages"] = ", ".join(languages_list)
+            
+        qualities_list = validated_data.pop("qualities_list", None)
+        if qualities_list is not None:
+            validated_data["qualities"] = ", ".join(qualities_list)
 
         # Update basic fields
         instance = super().update(instance, validated_data)
@@ -126,7 +159,6 @@ class FreelancerCreateSerializer(serializers.ModelSerializer):
 
         return instance
 
-
 class FreelancerOutSerializer(serializers.ModelSerializer):
     """
     Output serializer for freelancer data. Includes nested user info and skills list.
@@ -136,7 +168,9 @@ class FreelancerOutSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField(read_only=True)
     certifications = serializers.SerializerMethodField(read_only=True)
     educations = serializers.SerializerMethodField(read_only=True)
-
+    languages_list = serializers.SerializerMethodField()
+    qualities_list = serializers.SerializerMethodField()
+    
     class Meta:
         model = Freelancer
         fields = [
@@ -154,7 +188,9 @@ class FreelancerOutSerializer(serializers.ModelSerializer):
             "updated_at",
             "skills",
             "certifications",
-            "educations"
+            "educations",
+            "languages_list",
+            "qualities_list"
         ]
 
     def get_skills(self, obj):
@@ -184,3 +220,14 @@ class FreelancerOutSerializer(serializers.ModelSerializer):
             }
             for edu in obj.educations.all()
         ]
+        
+    def get_languages_list(self, obj):
+        if obj.languages:
+            return [lang.strip() for lang in obj.languages.split(",")]
+        return []
+
+
+    def get_qualities_list(self, obj):
+        if obj.qualities:
+            return [q.strip() for q in obj.qualities.split(",")]
+        return []
