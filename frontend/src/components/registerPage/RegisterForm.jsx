@@ -94,9 +94,9 @@ export default function RegisterForm({ role }) {
         <div className="login-container">
             <div className="login-card">
                 <div className="logo-container">
-                    <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" />
+                    {/* <img src="../logo/Tanfeez.png" alt="Tanfeez Logo" className="logo m-0" /> */}
                 </div>
-                <h2 className="text-center mb-3">{role === 'client' ? 'Register as Client' : 'Register as Freelancer'}</h2>
+                <h2 className="text-center mb-5">{role === 'client' ? 'Register as Client' : 'Register as Freelancer'}</h2>
 
                 <form onSubmit={handleSubmit} noValidate>
                     {/* First Name */}

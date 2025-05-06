@@ -196,8 +196,8 @@ export const Header = () => {
                     fontSize: "24px",
                   }}>
                   <tspan fill="#ffffff">Tan</tspan>
-                  <tspan fill="#0d6efd">feez</tspan>
-                  <tspan fill="#20c997">.</tspan>
+                  <tspan fill="#f09819">feez</tspan>
+                  <tspan fill="#f09819">.</tspan>
                 </text>
               </svg>
             </Navbar.Brand>
