@@ -1,57 +1,68 @@
-
-
 import React from 'react';
-import '../styles/footer.css'; // Custom CSS for Footer
+import { Link } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import '../styles/footer.css';
 
 const Footer = () => {
   return (
-    <footer className="footer text-center text-md-start">
+    <footer className="footer py-5 text-light">
       <div className="container">
-        <div className="row">
-          {/* Company Info */}
+        <div className="row gy-4">
+
+          {/* About */}
           <div className="col-md-3">
-            <h5>About Us</h5>
-            <p>We are dedicated to providing the best quality service.</p>
+            <h3 className="text-white">Tanfeez</h3>
+            <p className="small text-white">
+              We are dedicated to providing the best quality service and improving lives through care.
+            </p>
           </div>
 
           {/* Quick Links */}
           <div className="col-md-3">
-            <h5>Quick Links</h5>
+            <h5 className="text-white">Quick Links</h5>
             <ul className="list-unstyled">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Services</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><Link to="/" className="footer-link">Home</Link></li>
+              <li><Link to="/services" className="footer-link">Services</Link></li>
+              <li><Link to="/About" className="footer-link">About</Link></li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div className="col-md-3">
-            <h5>Follow Us</h5>
-            <div className="social-icons">
-              <a href="#"><i className="fab fa-facebook"></i></a>
-              <a href="#"><i className="fab fa-twitter"></i></a>
-              <a href="#"><i className="fab fa-instagram"></i></a>
-              <a href="#"><i className="fab fa-linkedin"></i></a>
+            <h5 className="text-white">Follow Us</h5>
+            <div className="d-flex gap-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="social-icon">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-icon">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-icon">
+                <i className="fab fa-linkedin-in"></i>
+              </a>
             </div>
           </div>
 
-          {/* Newsletter (optional) */}
-          {/* <div className="col-md-3 newsletter">
-            <h5>Newsletter</h5>
-            <input type="email" placeholder="Enter your email" />
-            <button type="submit">Subscribe</button>
-          </div> */}
+          {/* Newsletter */}
+          <div className="col-md-3">
+            <h5 className="text-white">Newsletter</h5>
+            <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
+              <input type="email" placeholder="Your Email" className="form-control mb-2" />
+              <button className="btn btn-primary w-100" type="submit">Subscribe</button>
+            </form>
+          </div>
+
         </div>
 
-        <hr className="my-4" />
+        <hr className="border-secondary my-4" />
 
-        {/* Copyright */}
-        <div className="text-center">
-          <p>&copy; 2025 YourCompany. All rights reserved.</p>
+        <div className="text-center small text-muted">
+          &copy; 2025 Tanfeez. All rights reserved.
         </div>
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;
