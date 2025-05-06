@@ -56,18 +56,18 @@ class FreelancerDetailView(generics.RetrieveAPIView):
         return obj
 
 
-class FreelancerUpdateView(generics.UpdateAPIView):
-    queryset = Freelancer.objects.filter(is_deleted=False)
-    serializer_class = FreelancerCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        # Retrieve the freelancer associated with the authenticated user
+class FreelancerUpdateView(APIView):
+    def patch(self, request):
         try:
-            obj = self.queryset.get(uid=self.request.user.id)
+            freelancer = request.user.freelancer_profile
         except Freelancer.DoesNotExist:
-            raise PermissionDenied("You do not have a freelancer profile to update.")
-        return obj
+            return Response({"detail": "Freelancer profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = FreelancerCreateSerializer(freelancer, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FreelancerDeleteView(APIView):

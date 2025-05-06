@@ -64,8 +64,8 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       const formData = new FormData();
       formData.append("photo", file);
       dispatch(updateUserImageAction(formData))
-      window.location.reload();
-
+      // window.location.reload();
+      profileData.address
 
     }
   };
@@ -89,9 +89,8 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
   } = profileData || {};
 
   // Safe destructuring with null checks
-  const clientCreatedAt = client_profile?.created_at || "2023-01-01";
-  const freelancerCreatedAt = freelancer_profile?.created_at || "2023-01-01";
-
+  const clientCreatedAt = client_profile?.created_at || "2025-01-01";
+  const freelancerCreatedAt = freelancer_profile?.created_at || "2024-01-01";
   const stats = [
     {
       icon: Star,

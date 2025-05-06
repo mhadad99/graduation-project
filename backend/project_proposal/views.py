@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
+from chatroom.models import ChatRoom
 from project.enums import Progress
 from .models import ProjectProposal
 from .serializers import ProposalSerializer
@@ -13,6 +14,10 @@ from project.models import Project
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from rest_framework.permissions import BasePermission
+
+from chatroom.models import ChatRoom
+from project_proposal.models import ProjectProposal
+from service_proposal.models import ServiceProposal
 
 
 class IsFreelancer(BasePermission):
@@ -40,7 +45,27 @@ class ApplyToProjectView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         freelancer = Freelancer.objects.get(uid=self.request.user)
-        serializer.save(freelancer=freelancer)
+        proposal = serializer.save(freelancer=freelancer)
+
+        chatroom, _ = ChatRoom.objects.get_or_create(
+            client=proposal.project.clientId,
+            freelancer=freelancer.uid,
+            project=proposal.project,
+            project_proposal=proposal,
+            defaults={"is_negotiation": True},
+        )
+
+        self.chatroom_id = chatroom.id  # Store for use in response
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response(
+            {
+                "detail": "Proposal submitted and negotiation chatroom created.",
+                "chatroom_id": getattr(self, "chatroom_id", None),
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 # Get all proposals by logged-in freelancer
@@ -90,14 +115,23 @@ class ApproveProposalView(APIView):
         # Assign freelancer and mark both as approved
         project.freelancerId = proposal.freelancer.uid
         project.progress = Progress.IN_PROGRESS
-
-        project.is_approved = True
         proposal.is_approved = True
         project.save()
+        # Create chat room now that freelancer is officially assigned
+        chatroom, created = ChatRoom.objects.get_or_create(
+            client=project.clientId,
+            freelancer=proposal.freelancer.uid,
+            project=project,
+            project_proposal=proposal,
+            defaults={"is_negotiation": False},
+        )
         proposal.save()
 
         return Response(
-            {"detail": "Proposal approved. Freelancer assigned to project."}
+            {
+                "detail": "Proposal approved. Freelancer assigned to project.",
+                "chatroom_id": chatroom.id,
+            }
         )
 
 
