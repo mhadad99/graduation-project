@@ -99,7 +99,11 @@ const projectSlice = createSlice({
       })
       .addCase(getAllProjectAction.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.projectList = action.payload;
+        // Filter out projects where the user/client exists
+        state.projectList = action.payload.filter(project => {
+          // Check if clientId exists and is not null/undefined
+          return project.clientId && project.user_id;
+        });
       })
       .addCase(getAllProjectAction.rejected, (state, action) => {
         state.isLoading = false;
@@ -127,7 +131,13 @@ const projectSlice = createSlice({
       })
       .addCase(getProjectByIdAction.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.projectDetails = action.payload;
+        // Only set projectDetails if the project's client still exists
+        if (action.payload.clientId && action.payload.user_id) {
+          state.projectDetails = action.payload;
+        } else {
+          state.error = "Project's client no longer exists";
+          state.projectDetails = null;
+        }
       })
       .addCase(getProjectByIdAction.rejected, (state, action) => {
         state.isLoading = false;

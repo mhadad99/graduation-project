@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllUsers, getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
+import { deleteUser, getAllUsers, getMyClientProfile, getMyFreelancerProfile, getMyProfile, updateClientProfile, updateFreelancerProfile, updateUserImage, updateUserProfile } from "../../api/user";
 import { getUserProfile } from "../../api/auth";
+import adminService from "../../api/adminService";
 
 
 const saveUserToLocalStorage = (user) => {
@@ -25,7 +26,7 @@ const getUserFromLocalStorage = () => {
 const initialState = {
     user: "",
     profile: null,
-    users: [],
+    users: null,
     freelancer: "",
     client: "",
     isLoading: false,
@@ -173,6 +174,7 @@ export const getAllUsersAction = createAsyncThunk(
     async (args, thunkAPI) => {
         const { rejectWithValue } = thunkAPI;
         try {
+            console.log("first")
             const response = await getAllUsers();
             console.log(response.data)
             return response.data;
@@ -185,6 +187,24 @@ export const getAllUsersAction = createAsyncThunk(
             return rejectWithValue(serializedError);
         }
     })
+
+    export const deleteUserAction = createAsyncThunk(
+        "user/deleteUserAction",
+        async (userId, thunkAPI) => {
+            const { rejectWithValue } = thunkAPI;
+            try {
+                const response = await adminService.deleteUser(userId);
+                return response.data;
+    
+            } catch (error) {
+                const serializedError = {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                };
+                return rejectWithValue(serializedError);
+            }
+        }
+    )
 
 const userSlice = createSlice(
     {
@@ -306,6 +326,16 @@ const userSlice = createSlice(
                 state.isLoading = false;
                 state.users = action.payload;
             }).addCase(getAllUsersAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+            builder.addCase(deleteUserAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            }).addCase(deleteUserAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.users = state.users.filter(user => user.id !== action.payload);
+            }).addCase(deleteUserAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });

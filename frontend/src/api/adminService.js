@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 // Base URL for API requests
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'http://localhost:8000/api/admin_dashboard/';
 
 // Get auth token from localStorage
 const getAuthToken = () => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  return userInfo?.token || '';
+  const token = localStorage.getItem('authToken');
+  return token;
 };
 
 // Configure axios instance with authentication
@@ -36,8 +36,8 @@ const adminService = {
     try {
       // In a real implementation, you would have a dedicated endpoint for admin to get all users
       // For now, we'll use the existing endpoint
-      const response = await axiosInstance.get('/user/users');
-      return response.data;
+      const response = await axiosInstance.get('users/');
+      return response;
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -63,8 +63,8 @@ const adminService = {
 
   deleteUser: async (userId) => {
     try {
-      const response = await axiosInstance.delete(`/user/${userId}`);
-      return response.data;
+      const response = await axiosInstance.delete(`/users/${userId}`);
+      return response;
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -73,8 +73,8 @@ const adminService = {
   // Projects
   getProjects: async () => {
     try {
-      const response = await axiosInstance.get('/project');
-      return response.data;
+      const response = await axiosInstance.get('/projects');
+      return response;
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -100,9 +100,11 @@ const adminService = {
 
   deleteProject: async (projectId) => {
     try {
-      const response = await axiosInstance.delete(`/project/${projectId}`);
-      return response.data;
+      const response = await axiosInstance.delete(`projects/${projectId}/`);
+      console.log(response)
+      return response;
     } catch (error) {
+      console.log(error)
       throw error.response?.data || error.message;
     }
   },

@@ -122,7 +122,20 @@ export const getAllUsers = async () => {
                 Authorization: `Bearer ${localStorage.getItem("authToken")}`,
             },
         });
-        console.log(response.data)
+        return response
+    } catch (error) {
+        throw error;
+    }
+}
+
+//delete http://127.0.0.1:8000/api/user/delete/14/
+export const deleteUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${baseURL}user/delete/${userId}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
         return response
     } catch (error) {
         throw error;

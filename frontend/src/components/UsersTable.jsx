@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Table, Modal, Button, Form } from "react-bootstrap";
+import { Table, Modal, Button, Form, Spinner, Badge } from "react-bootstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { FaPlus } from "react-icons/fa";
 // import axios from "axios"; // Uncomment when using API
 import '../styles/tableStyles.css'; // Add this line at the top of your component
 import { useDispatch, useSelector } from "react-redux";
-import { getAllUsersAction } from "../store/slices/userSlice";
+import { getAllUsersAction, deleteUserAction } from "../store/slices/userSlice";
+import UserDetailsModal from './UserDetailsModal';
 
 const MySwal = withReactContent(Swal);
 
@@ -15,16 +16,26 @@ const UsersTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ id: null, name: "", details: "" });
   const [editMode, setEditMode] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const dispatch = useDispatch();
+
+
+  const { users, isLoading } = useSelector((myStore) => myStore.userSlice);
 
 
 
   useEffect(() => {
-    const staticData = [
-      { id: 1, name: "John Doe", details: "Admin - john@example.com" },
-      { id: 2, name: "Jane Smith", details: "Receptionist - jane@example.com" },
-      { id: 3, name: "Ali Hassan", details: "Doctor - ali@hospital.com" },
-    ];
-    setData(staticData);
+
+
+    if (!users) {
+
+      dispatch(getAllUsersAction()).unwrap()
+      console.log(users)
+    }
+
+
+
 
 
 
@@ -38,15 +49,20 @@ const UsersTable = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setData((prev) => prev.filter((item) => item.id !== id));
-        MySwal.fire("Deleted!", "User has been deleted.", "success");
-
-        // Uncomment for real API
-        /*
-        await axios.delete(`http://localhost:3000/users/${id}`);
-        */
+        try {
+          await dispatch(deleteUserAction(id)).unwrap();
+          MySwal.fire("Deleted!", "User has been deleted.", "success");
+          // Refresh the users list
+          dispatch(getAllUsersAction());
+        } catch (error) {
+          MySwal.fire({
+            icon: "error",
+            title: "Delete Failed",
+            text: error?.data?.detail || "Failed to delete user. Please try again.",
+          });
+        }
       }
     });
   };
@@ -61,6 +77,11 @@ const UsersTable = () => {
     setFormData(user);
     setEditMode(true);
     setShowModal(true);
+  };
+
+  const handleShowDetails = (user) => {
+    setSelectedUser(user);
+    setShowDetailsModal(true);
   };
 
   const handleSubmit = () => {
@@ -96,8 +117,9 @@ const UsersTable = () => {
 
     setShowModal(false);
   };
-
+  console.log(users)
   return (
+
     <div className="orders-container p-3">
       <div className="text-center mb-4">
         <Button
@@ -109,45 +131,58 @@ const UsersTable = () => {
         </Button>
       </div>
 
-
-      <Table className="orders-table" striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Details</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.details}</td>
-              <td>
-                <Button
-                  variant="info"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => handleShowEdit(item)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleDelete(item.id)}
-                >
-                  Delete
-                </Button>
-              </td>
+      {isLoading ? (
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
+        <Table className="orders-table" striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>User Type</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {users?.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{`${user.first_name} ${user.second_name}`}</td>
+                <td>{user.email}</td>
+                <td>
+                  <Badge bg={user.user_type === 'client' ? 'primary' : 'success'}>
+                    {user.user_type}
+                  </Badge>
+                </td>
+                <td>
+                  <Button
+                    variant="info"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => handleShowDetails(user)}
+                  >
+                    View Details
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-      {/* Add/Edit Modal */}
+      {/* Update the modal form to match the API data structure */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Edit User" : "Add User"}</Modal.Title>
@@ -155,22 +190,42 @@ const UsersTable = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>User Name</Form.Label>
+              <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter first name"
+                value={formData.first_name || ''}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
               />
             </Form.Group>
-            <Form.Group>
-              <Form.Label>Details</Form.Label>
+            <Form.Group className="mb-3">
+              <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter role or email"
-                value={formData.details}
-                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+                placeholder="Enter last name"
+                value={formData.second_name || ''}
+                onChange={(e) => setFormData({ ...formData, second_name: e.target.value })}
               />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={formData.email || ''}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>User Type</Form.Label>
+              <Form.Select
+                value={formData.user_type || ''}
+                onChange={(e) => setFormData({ ...formData, user_type: e.target.value })}
+              >
+                <option value="">Select user type</option>
+                <option value="client">Client</option>
+                <option value="freelancer">Freelancer</option>
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -183,6 +238,13 @@ const UsersTable = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Add UserDetailsModal */}
+      <UserDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        user={selectedUser}
+      />
     </div>
   );
 };
