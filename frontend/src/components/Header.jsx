@@ -167,12 +167,14 @@ export const Header = () => {
             <span className="btn-text">Add Service</span>
             <span className="btn-icon">+</span>
           </Link>
-        ) : (
+        ) : user.user_type === "client" ? (
           <Link to="/add/project" className="add-action-btn">
             <span className="btn-text">Post a Project</span>
             <span className="btn-icon">+</span>
           </Link>
-        )}
+        ) : <Link to="/dashboard" className="add-action-btn">
+        <span className="btn-text">Admin Dashboard</span>
+      </Link>}
       </div>
     );
   };
@@ -231,6 +233,15 @@ export const Header = () => {
                 `nav-link nav-link-custom ${isActive ? "active" : ""}`
               }>
               About Us
+            </NavLink>
+            {/* add robot icon */}
+            <NavLink
+              to="/chatBot/"
+              className={({ isActive }) =>
+                `nav-link nav-link-custom me-4  ai  ${isActive ? "active" : ""}`
+              }>
+              Chat With 
+              <span className="robot-icon"> 🤖</span>
             </NavLink>
           </Nav>
 

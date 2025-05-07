@@ -5,14 +5,32 @@ import { Row, Col, Button } from "react-bootstrap";
 import ServiceCard from "../cards/ServiceCard";
 import { Plus } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllServicesAction, getMyServicesAction } from "../../store/slices/serviceSlice";
+import { getMyServicesAction, getUserServicesAction } from "../../store/slices/serviceSlice";
 
-const ServicesTab = ({ isMyProfile }) => {
-  const {myServices, isLoading, error} = useSelector((myStore)  => myStore.serviceSlice);
+const ServicesTab = ({ isMyProfile, userId }) => {
+  const { myServices, services, isLoading, error } = useSelector((state) => state.serviceSlice);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getMyServicesAction());
-  },[])
+    if (isMyProfile) {
+      dispatch(getMyServicesAction());
+    } else if (userId) {
+      dispatch(getUserServicesAction(userId));
+    }
+  }, [isMyProfile, userId, dispatch]);
+
+  const displayServices = isMyProfile ? myServices : services;
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="services-tab">
       {isMyProfile && (
@@ -25,13 +43,13 @@ const ServicesTab = ({ isMyProfile }) => {
       )}
 
       <Row xs={1} md={2} lg={3} className="g-4">
-        {myServices.map((service) => (
+        {displayServices?.map((service) => (
           <Col key={service.id}>
             <ServiceCard service={service} isOwner={isMyProfile} />
           </Col>
         ))}
 
-        {myServices.length === 0 && (
+        {(!displayServices || displayServices.length === 0) && (
           <Col xs={12}>
             <div className="text-center py-5">
               <h5 className="text-muted mb-3">No services available</h5>

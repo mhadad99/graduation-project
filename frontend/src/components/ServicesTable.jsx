@@ -13,8 +13,11 @@ const ServicesTable = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
+    // filter services nnot deleted
+  const filteredServices = services?.filter(service => !service.is_deleted);
   useEffect(() => {
     dispatch(getAllServicesAction());
+
   }, [dispatch]);
 
   const handleShowDetails = (service) => {
@@ -90,7 +93,7 @@ const ServicesTable = () => {
           </tr>
         </thead>
         <tbody>
-          {services?.map((service) => (
+          {filteredServices?.map((service) => (
             <tr key={service.id}>
               <td>{service.id}</td>
               <td>

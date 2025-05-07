@@ -75,3 +75,29 @@ export const updateService = async (id, service) => {
         throw error;
     }
 };
+
+export const getServicesByTag = async (tag) => {
+    try {
+        const response = await axios.get(`${baseURL}/by-tag/?tag=${tag}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getUserServices = async (userId) => {
+    try {
+        const response = await axios.get(`${baseURL}/user/${userId}/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

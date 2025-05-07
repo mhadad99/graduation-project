@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addService, getAllServices, getMyServices, getServiceById, updateService } from "../../api/service";
+import { addService, getAllServices, getMyServices, getServiceById, updateService, getServicesByTag, getUserServices } from "../../api/service";
 
 const initialState = {
     services: [],
@@ -86,7 +86,6 @@ export const getServiceByIdAction = createAsyncThunk(
     }
 );
 
-
 export const updateServiceAction = createAsyncThunk(
     "service/updateServiceAction",
     async (args, thunkAPI) => {
@@ -102,6 +101,38 @@ export const updateServiceAction = createAsyncThunk(
                 data: error.response?.data,
             };
             return rejectWithValue(serializedError);
+        }
+    }
+);
+
+export const getServicesByTagAction = createAsyncThunk(
+    "service/getServicesByTagAction",
+    async (tag, thunkAPI) => {
+        const { rejectWithValue } = thunkAPI;
+        try {
+            const response = await getServicesByTag(tag);
+            return response.data;
+        } catch (error) {
+            const serializedError = {
+                status: error.response?.status,
+                data: error.response?.data,
+            };
+            return rejectWithValue(serializedError);
+        }
+    }
+);
+
+export const getUserServicesAction = createAsyncThunk(
+    "service/getUserServicesAction",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const response = await getUserServices(userId);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.detail ||
+                (typeof error.response?.data === "string" ? error.response.data : error.message)
+            );
         }
     }
 );
@@ -177,6 +208,40 @@ const serviceSlice = createSlice(
                     }
                 })
                 .addCase(updateServiceAction.rejected, (state, action) => {
+                    state.isLoading = false;
+                    state.error = action.payload;
+                });
+            builder
+                .addCase(getServicesByTagAction.pending, (state) => {
+                    state.isLoading = true;
+                    state.error = null;
+                })
+                .addCase(getServicesByTagAction.fulfilled, (state, action) => {
+                    state.isLoading = false;
+                    // Map the services to ensure photo URLs are complete
+                    state.services = action.payload.map(service => ({
+                        ...service,
+                        photo: service.photo ?
+                            (service.photo.startsWith('http') ?
+                                service.photo :
+                                `http://127.0.0.1:8000${service.photo}`
+                            ) : null
+                    }));
+                })
+                .addCase(getServicesByTagAction.rejected, (state, action) => {
+                    state.isLoading = false;
+                    state.error = action.payload;
+                });
+            builder
+                .addCase(getUserServicesAction.pending, (state) => {
+                    state.isLoading = true;
+                    state.error = null;
+                })
+                .addCase(getUserServicesAction.fulfilled, (state, action) => {
+                    state.isLoading = false;
+                    state.services = action.payload;
+                })
+                .addCase(getUserServicesAction.rejected, (state, action) => {
                     state.isLoading = false;
                     state.error = action.payload;
                 });

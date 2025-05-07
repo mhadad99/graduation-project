@@ -12,21 +12,26 @@ import ReviewsSection from "../components/serviceDetails/ReviewsSection";
 import "../styles/ServiceDetailsPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getServiceByIdAction } from "../store/slices/serviceSlice";
+import { fetchUserProfile } from "../store/slices/userSlice";
 
 export function ServiceDetailsPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const serviceData = servicesData[1];
   const { service, isLoading } = useSelector((myStore) => myStore.serviceSlice);
+  const { profile } = useSelector((myStore) => myStore.userSlice);
 
   useEffect(() => {
     dispatch(getServiceByIdAction(id))
-      .unwrap().then((response) => {
-
+      .unwrap()
+      .then((response) => {
+        const freelancerId = response.freelancerId;
+        dispatch(fetchUserProfile(freelancerId));
       })
-
-
-  }, [id,dispatch]);
+      .catch((error) => {
+        console.error("Failed to fetch service:", error);
+      });
+  }, [id, dispatch]);
 
   if (!service) {
     return (
@@ -116,7 +121,7 @@ export function ServiceDetailsPage() {
                   <h5 className="mb-0 text-light">About the Seller</h5>
                 </div>
                 <div className="card-body-custom">
-                  <SellerInfo freelancer={serviceData.freelancer} />
+                  <SellerInfo freelancer={service.freelancerId} />
                 </div>
               </div>
 
