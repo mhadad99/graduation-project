@@ -51,7 +51,10 @@ INSTALLED_APPS = [
     "service_proposal",
     "project_proposal",
     "admin_dashboard",
+    "channels",
     "chatroom",
+    "chatbot",
+
 ]
 
 MIDDLEWARE = [
@@ -191,3 +194,5 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"  # Use Redis for production
     }
 }
+
+GEMINI_API_KEY = config("GEMINI_API_KEY")

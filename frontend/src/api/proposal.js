@@ -7,6 +7,7 @@ export const addProposal = async (proposal) => {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
+console.log("efdfd",proposal)
   return axios.post(`${baseURL}apply/`, proposal, config);
 };
 

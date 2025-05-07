@@ -312,6 +312,7 @@ function ProjectDetails() {
       {user.id === projectDetails?.user_id &&<ProposalsList 
         proposals={proposals}
         onApprove={handleApproveProposal}
+        projectStatus = {projectDetails.progress}
         isClientView={profile?.user_type === 'client' && projectDetails?.clientId === profile?.id}
       />}
 

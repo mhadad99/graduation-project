@@ -32,6 +32,7 @@ import Help from "../components/Help";
 import EditProfile from "../pages/EditProfile";
 import Projects from "../pages/Projects";
 import Dashboard from "../pages/Dashboard";
+import { ChatbotInterface } from "../pages/ChatBot";
 
 export function MainLayout() {
   return (
@@ -56,6 +57,7 @@ export function MainLayout() {
           <Route path="services" element={<ServicesPage />} />
           <Route path="help" element={<Help />} />
           <Route path="projects" element={<Projects />} />
+          <Route path="chatbot" element={<ChatbotInterface/>}/>
        </Route>
 
 {/* Dashboard-related routes with sidebar */}

@@ -63,7 +63,7 @@ const adminService = {
 
   deleteUser: async (userId) => {
     try {
-      const response = await axiosInstance.delete(`/users/${userId}`);
+      const response = await axiosInstance.delete(`/users/${userId}/`);
       return response;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -112,8 +112,9 @@ const adminService = {
   // Services
   getServices: async () => {
     try {
-      const response = await axiosInstance.get('/service');
-      return response.data;
+      const response = await axiosInstance.get('services/');
+      console.log(response.data)
+      return response;
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -139,8 +140,26 @@ const adminService = {
 
   deleteService: async (serviceId) => {
     try {
-      const response = await axiosInstance.delete(`/service/${serviceId}`);
+      const response = await axiosInstance.delete(`/services/${serviceId}/`);
       return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  getProposals: async () => {
+    try {
+      const response = await axiosInstance.get('project-proposals/');
+      return response;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  deleteProposal: async (proposalId) => {
+    try {
+      const response = await axiosInstance.delete(`project-proposals/${proposalId}/`);
+      return response;
     } catch (error) {
       throw error.response?.data || error.message;
     }

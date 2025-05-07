@@ -191,6 +191,7 @@ export const getAllUsersAction = createAsyncThunk(
                 return response.data;
     
             } catch (error) {
+                console.log("dd",error)
                 const serializedError = {
                     status: error.response?.status,
                     data: error.response?.data,

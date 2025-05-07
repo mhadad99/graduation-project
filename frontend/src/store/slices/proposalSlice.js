@@ -14,6 +14,7 @@ export const addProposalAction = createAsyncThunk(
       const response = await addProposal(proposal);
       return response.data;
     } catch (error) {
+      console.error("Error adding proposal:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
