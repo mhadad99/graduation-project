@@ -82,7 +82,7 @@ export default function LoginPage() {
 
       <div className="login-card">
       <div className="logo-container">
-        <img src="logo/Tanfeez.png" alt="Tanfeez Logo" className="logo " />
+        {/* <img src="logo/Tanfeez.png" alt="Tanfeez Logo" className="logo " /> */}
         <h2 className="text-center mb-4">Login to Tanfeez</h2>
       </div>
 

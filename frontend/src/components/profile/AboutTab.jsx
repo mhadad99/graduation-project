@@ -1,242 +1,126 @@
 /** @format */
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Row,
   Col,
   Card,
   Badge,
-  ListGroup,
-  ProgressBar,
-  Button,
-  Form,
 } from "react-bootstrap";
 import {
-  CheckCircleFill,
   PatchCheck,
-  Calendar,
-  Clock,
-  File,
-  Phone,
-  Envelope,
-  Bookmark,
-  Github,
-  Instagram,
-  Facebook,
-  Twitter,
-  Linkedin,
-  GeoAlt,
-  StarFill,
-  Award,
-  BriefcaseFill,
-  Pencil,
-  Save,
-  X,
-  Briefcase,
 } from "react-bootstrap-icons";
 import "../../styles/components/AboutTab.css";
+let profile = {};
 
-const AboutTab = ({ profileData, isMyProfile }) => {
+const AboutTab = ({ profileData, isProfileOwner, userRole }) => {
+  let role = profileData.user_type || userRole;
+  console.log(role)
+
+
+  console.log(profileData.user_type);
+  if (role === "freelancer") {
+    profile = profileData.freelancer_profile || {};
+  } else if (role === "client") {
+    profile = profileData.client_profile || {};
+  } else if (role === "admin") {
+    profile = { permissions: profileData.permissions || [] };
+  }
+
   const {
-    bio,
+    bio = "",
     skills = [],
-    languages = [],
-    education = [],
+    languages_list = [],
+    // skills_list = skills_list.map(({ skill_name }) => skill_name),
+    qualities_list = [],
+    educations = [],
     certifications = [],
-    hourlyRate,
-    availability,
-    company,
-    industry,
+    company = "",
     permissions = [],
-    workingStyle = {},
-  } = profileData;
+  } = profile;
+  const renderFreelancerInfo = () => (
+    <>
+      <Card className="mb-4">
+        <Card.Body>
+          <h6 className="mt-4 mb-3">Skills</h6>
+          <div className="d-flex flex-wrap gap-2">
+          {skills.map(({ skill_name, id }) => (
+            <Badge key={id} bg="light" text="dark">
+              {skill_name}
+            </Badge>
+          ))}
+          </div>
 
-  const renderFreelancerInfo = () => {
-    return (
-      <>
-        <Card className="mb-4">
-          <Card.Body>
-            <h5 className="mb-3 ">Professional Info</h5>
-            <p>
-              <strong>Hourly Rate:</strong> ${hourlyRate}/hr
-            </p>
-            <p>
-              <strong>Availability:</strong> {availability}
-            </p>
+          <h6 className="mt-4 mb-3">Languages</h6>
+          {languages_list.map((language, index) => (
+          <div key={index} className="mb-2 text-muted">
+            <span className="fw-medium">{language}</span>
+          </div>
+          ))}
+        </Card.Body>
+      </Card>
 
-            <h6 className="mt-4 mb-3">Skills</h6>
-            <div className="d-flex flex-wrap gap-2">
-              {skills &&
-                skills.map((skill, idx) => (
-                  <Badge key={idx} bg="light" text="dark">
-                    {typeof skill === "string" ? skill : skill.skill_name}
-                  </Badge>
-                ))}
-            </div>
-
-            <h6 className="mt-4 mb-3">Languages</h6>
-            {languages.map((lang, index) => (
-              <div key={index} className="mb-2">
-                <span className="fw-medium language-title">{lang.name}</span>
-                <span className="text-muted ms-2">({lang.level})</span>
-              </div>
-            ))}
-
-            <h6 className="mt-4 mb-3">Certifications</h6>
-            {(profileData.certifications || []).length === 0 && (
-              <p>No certifications listed.</p>
-            )}
-            {profileData.certifications &&
-              profileData.certifications.map((cert, idx) => (
-                <div key={idx} className="mb-2">
-                  <strong>{cert.name}</strong>
-                  {cert.issuer && (
-                    <>
-                      {" "}
-                      - <span>{cert.issuer}</span>
-                    </>
-                  )}
-                  {cert.year && (
-                    <>
-                      {" "}
-                      (<span>{cert.year}</span>)
-                    </>
-                  )}
+      <Card className="mb-4">
+        <Card.Body>
+          <h5 className="mb-3">Professional Qualities</h5>
+          <Row xs={1} md={2} className="g-3 mb-4">
+            {qualities_list.map((quality, index) => (
+              <Col key={index}>
+                <div className="quality-item">
+                  <div className="d-flex align-items-center">
+                    <PatchCheck className="text-primary me-2" size={20} />
+                    <span>{quality}</span>
+                  </div>
                 </div>
-              ))}
-
-            <h6 className="mt-4 mb-3">Education</h6>
-            {(profileData.educations || []).length === 0 && (
-              <p>No education listed.</p>
-            )}
-            {profileData.educations &&
-              profileData.educations.map((edu, idx) => (
-                <div key={idx} className="mb-2">
-                  <strong>{edu.degree}</strong> - {edu.school}
-                  {edu.year && (
-                    <>
-                      {" "}
-                      (<span>{edu.year}</span>)
-                    </>
-                  )}
-                </div>
-              ))}
-          </Card.Body>
-        </Card>
-
-        <Card className="mb-4">
-          <Card.Body>
-            <h5 className="mb-3">Professional Qualities</h5>
-
-            <div className="soft-skills-section mb-4">
-              <h6 className="section-subtitle mb-3">Soft Skills & Expertise</h6>
-              {profileData.qualities?.softSkills.map((skill, index) => (
-                <div key={index} className="skill-item mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="skill-name">{skill.name}</span>
-                    <span className="skill-level">{skill.level}%</span>
-                  </div>
-                  <ProgressBar
-                    now={skill.level}
-                    variant="primary"
-                    className="skill-progress"
-                  />
-                  <small className="text-muted d-block mt-1">
-                    {skill.description}
-                  </small>
-                </div>
-              ))}
-            </div>
-
-            <div className="working-preferences">
-              <h6 className="section-subtitle mb-3">Working Preferences</h6>
-              <Row xs={1} md={2} className="g-3">
-                <Col>
-                  <div className="preference-item">
-                    <Clock className="icon me-2" />
-                    <div>
-                      <strong>Timezone</strong>
-                      <p className="mb-0 text-muted">
-                        {profileData.qualities?.workingPreferences.timezone}
-                      </p>
-                    </div>
-                  </div>
-                </Col>
-                <Col>
-                  <div className="preference-item">
-                    <Calendar className="icon me-2" />
-                    <div>
-                      <strong>Availability</strong>
-                      <p className="mb-0 text-muted">
-                        {profileData.qualities?.workingPreferences.availability}
-                      </p>
-                    </div>
-                  </div>
-                </Col>
-                <Col>
-                  <div className="preference-item">
-                    <BriefcaseFill className="icon me-2" />
-                    <div>
-                      <strong>Project Length</strong>
-                      <p className="mb-0 text-muted">
-                        {
-                          profileData.qualities?.workingPreferences
-                            .preferredProjectLength
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </Col>
-                <Col>
-                  <div className="preference-item">
-                    <Envelope className="icon me-2" />
-                    <div>
-                      <strong>Communication</strong>
-                      <p className="mb-0 text-muted">
-                        {
-                          profileData.qualities?.workingPreferences
-                            .communicationStyle
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </Card.Body>
-        </Card>
-
-        <Card className="mb-4">
-          <Card.Body>
-            <h5 className="mb-3">Education</h5>
-            {education.map((edu, index) => (
-              <div key={index} className="mb-3">
-                <h6>{edu.degree}</h6>
-                <p className="text-muted mb-1">{edu.school}</p>
-                <small className="text-muted">{edu.year}</small>
-              </div>
+              </Col>
             ))}
-          </Card.Body>
-        </Card>
+          </Row>
+        </Card.Body>
+      </Card>
 
-        <Card className="mb-4">
-          <Card.Body>
-            <h5 className="mb-3">Certifications</h5>
-            {certifications.map((cert, index) => (
-              <div key={index} className="mb-3">
-                <h6>{cert.name}</h6>
-                <p className="text-muted mb-1">{cert.issuer}</p>
-                <small className="text-muted">{cert.year}</small>
-              </div>
-            ))}
-          </Card.Body>
-        </Card>
-      </>
-    );
-  };
+      <Card className="mb-4">
+  <Card.Body>
+    <h5 className="mb-3">Education</h5>
+    <Row xs={1} md={2} className="g-3">
+      {educations.map((edu, index) => (
+        <Col key={index}>
+          <Card className="h-100 border-light shadow-sm">
+            <Card.Body>
+              <h6 className="fw-semibold">{edu.degree}</h6>
+              <p className="mb-1 text-muted">{edu.school}</p>
+              <small className="text-muted">{edu.year}</small>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  </Card.Body>
+</Card>
+
+<Card className="mb-4">
+  <Card.Body>
+    <h5 className="mb-3">Certifications</h5>
+    <Row xs={1} md={2} className="g-3">
+      {certifications.map((cert, index) => (
+        <Col key={index}>
+          <Card className="h-100 border-light shadow-sm">
+            <Card.Body>
+              <h6 className="fw-semibold">{cert.name}</h6>
+              <p className="mb-1 text-muted">{cert.issuer}</p>
+              <small className="text-muted">{cert.year}</small>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  </Card.Body>
+</Card>
+
+    </>
+  );
 
   const renderRoleSpecificInfo = () => {
-    switch (profileData.role) {
+    switch (role) {
       case "freelancer":
         return renderFreelancerInfo();
 
@@ -249,7 +133,7 @@ const AboutTab = ({ profileData, isMyProfile }) => {
                 <strong>Company:</strong> {company}
               </p>
               <p>
-                <strong>Industry:</strong> {industry}
+                {/* <strong>Industry:</strong> {industry} */}
               </p>
             </Card.Body>
           </Card>
@@ -278,12 +162,12 @@ const AboutTab = ({ profileData, isMyProfile }) => {
 
   return (
     <div className="about-tab">
-      <Card className="mb-4">
+      {/* <Card className="mb-4">
         <Card.Body>
           <h5 className="mb-3">About Me</h5>
           <p>{bio}</p>
         </Card.Body>
-      </Card>
+      </Card> */}
 
       {renderRoleSpecificInfo()}
     </div>
