@@ -6,13 +6,13 @@ import "../../styles/components/ServiceCard.css"; // Adjust the path as necessar
 const ServiceCard = ({ service, isOwner }) => {
   const {
     id,
-    title,
+    service_name,
     description,
     price,
-    rating,
+    rating = 5,
     reviewCount,
     deliveryTime,
-    image,
+    photo,
     status = "active",
   } = service;
 
@@ -21,8 +21,8 @@ const ServiceCard = ({ service, isOwner }) => {
       <div className="service-card-image-wrapper">
         <Card.Img
           variant="top"
-          src={image}
-          alt={title}
+          src={photo}
+          alt={service_name}
           className="service-image"
         />
         {status !== "active" && (
@@ -35,7 +35,7 @@ const ServiceCard = ({ service, isOwner }) => {
         )}
       </div>
       <Card.Body className="d-flex flex-column">
-        <Card.Title className="service-title mb-2">{title}</Card.Title>
+        <Card.Title className="service-title mb-2">{service_name}</Card.Title>
         <Card.Text className="service-description mb-3">
           {description.length > 100
             ? `${description.substring(0, 100)}...`
@@ -61,7 +61,7 @@ const ServiceCard = ({ service, isOwner }) => {
           <Button 
             variant="outline-primary" 
             as={Link}
-            to={`/services/${id}/edit`}
+            to={`/${id}/service`}
             className="service-action-btn"
           >
             Edit Service

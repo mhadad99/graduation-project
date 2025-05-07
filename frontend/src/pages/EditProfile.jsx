@@ -9,22 +9,30 @@ import {
   Col,
   Alert,
   Container,
+  Tabs,
+  Tab,
 } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { mockUserData } from "../mockData/profileData";
 import "../styles/EditProfile.css";
+
+import UserTab from "../components/EditProfile/UserTab";
+import FreelancerTab from "../components/EditProfile/FreelancerTab";
+import ClientTab from "../components/EditProfile/ClientTab";
+import { useSelector } from "react-redux";
 
 const EditProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, isLoading } = useSelector((myStore) => myStore.userSlice);
 
-  // For demo, we'll determine user type based on ID
-  const userType = id === "1" ? "freelancer" : id === "2" ? "client" : "admin";
-  const userData = mockUserData[userType];
 
-  const [formData, setFormData] = useState(userData);
+
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [key, setKey] = useState('user'); // default tab is "user"
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,101 +42,28 @@ const EditProfile = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    try {
-      // Simulate API call
-      console.log("Saving profile:", formData);
-      setSuccess(true);
-      setTimeout(() => {
-        navigate(`/profile/${id}`);
-      }, 2000);
-    } catch (err) {
-      setError("Failed to update profile");
-    }
-  };
 
-  const renderRoleSpecificFields = () => {
-    switch (userType) {
-      case "freelancer":
-        return (
-          <>
-            <h4 className="section-title">Professional Information</h4>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Hourly Rate ($)</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="hourlyRate"
-                    value={formData.hourlyRate}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Expertise Level</Form.Label>
-                  <Form.Select
-                    name="expertise"
-                    value={formData.expertise}
-                    onChange={handleChange}>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="expert">Expert</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-          </>
-        );
 
-      case "client":
-        return (
-          <>
-            <h4 className="section-title">Company Information</h4>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Company Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Industry</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="industry"
-                    value={formData.industry}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-          </>
-        );
+  if (isLoading) {
+    return (
+      <Container className="py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3">Loading profile...</p>
+      </Container>
+    );
+  }
 
-      case "admin":
-        return (
-          <>
-            <h4 className="section-title">Administrative Information</h4>
-            <Form.Group className="mb-3">
-              <Form.Label>Role</Form.Label>
-              <Form.Control type="text" value={formData.role} disabled />
-            </Form.Group>
-          </>
-        );
+  if (!user) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger">User profile not found</Alert>
+      </Container>
+    );
+  }
 
-      default:
-        return null;
-    }
-  };
+  const userType = user.user_type;
 
   return (
     <Container className="py-5">
@@ -148,53 +83,47 @@ const EditProfile = () => {
             </Alert>
           )}
 
-          <Form onSubmit={handleSubmit}>
-            <h4 className="section-title">Basic Information</h4>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" value={formData.email} disabled />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-4">
-              <Form.Label>Bio</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
+          <Tabs
+            id="profile-tabs"
+            activeKey={key}
+            onSelect={(k) => setKey(k)}
+            className="mb-3"
+          >
+            <Tab eventKey="user" title="Persenal Information">
+              <UserTab
+                formData={formData}
+                handleChange={handleChange}
+                navigate={navigate}
+                id={id}
+                userType={userType}
+                setFormData={setFormData}
               />
-            </Form.Group>
+            </Tab>
 
-            {renderRoleSpecificFields()}
+            {(userType === "freelancer" ) && (
+              <Tab eventKey="freelancer" title="Professional Information">
+                <FreelancerTab
+                  formData={formData.freelancer_profile}
+                  handleChange={handleChange}
+                  navigate={navigate}
+                  id={id}
+                  setFormData={setFormData}
+                />
+              </Tab>
+            )}
 
-            <div className="d-flex gap-2 justify-content-end mt-4">
-              <Button
-                variant="outline-secondary"
-                onClick={() => navigate(`/profile/${id}`)}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit">
-                Save Changes
-              </Button>
-            </div>
-          </Form>
+            {(userType === "client" ) && (
+              <Tab eventKey="client" title="Company Information">
+                <ClientTab
+                  formData={formData}
+                  handleChange={handleChange}
+                  navigate={navigate}
+                  id={id}
+                  setFormData={setFormData}
+                />
+              </Tab>
+            )}
+          </Tabs>
         </Card.Body>
       </Card>
     </Container>

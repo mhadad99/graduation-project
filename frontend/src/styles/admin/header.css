@@ -1,0 +1,107 @@
+/* Admin Header Styling */
+.admin-header {
+  padding: 1rem 0;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #5a5c69;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Notification Icons */
+.notification-icon {
+  position: relative;
+  background: transparent !important;
+  border: none !important;
+  color: #5a5c69;
+  padding: 0.5rem;
+}
+
+.notification-icon:hover {
+  color: #4e73df;
+}
+
+.notification-icon .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.4rem;
+  background-color: #e74a3b;
+  color: white;
+  border-radius: 50%;
+}
+
+/* Notification Dropdown */
+.notification-dropdown {
+  min-width: 18rem;
+  padding: 0;
+  font-size: 0.85rem;
+  border: none;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.notification-dropdown .dropdown-header {
+  background-color: #4e73df;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+
+.notification-dropdown .dropdown-item {
+  white-space: normal;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.notification-dropdown .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+/* User Dropdown */
+.user-dropdown {
+  display: flex;
+  align-items: center;
+  background: transparent !important;
+  border: none !important;
+  color: #5a5c69;
+  padding: 0.5rem;
+}
+
+.user-dropdown:hover {
+  color: #4e73df;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4e73df;
+  color: white;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+}
