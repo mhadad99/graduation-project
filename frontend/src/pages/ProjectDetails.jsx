@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import {
   Container,
@@ -150,6 +150,15 @@ function ProjectDetails() {
     return colors[status] || "primary";
   };
   console.log(profile);
+  if (isLoading) {
+    return (
+      <div className="text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Container className="mt-5 mb-5">
@@ -210,6 +219,10 @@ function ProjectDetails() {
               <div className="client-stat">
                 <span className="client-stat-label">Duration:</span>
                 <span className="client-stat-value">{projectDetails?.duration} days</span>
+              </div>
+              <div className="client-stat">
+                <span className="client-stat-label">Numbers of Prposals:</span>
+                <span className="client-stat-value">{proposals?.length} proposals</span>
               </div>
             </Col>
 
@@ -295,7 +308,7 @@ function ProjectDetails() {
             </Col> */}
           </Row>
 
-          {projectDetails?.progress === "not_started" &&   user.user_type === "freelancer" && (
+          {  projectDetails?.progress === "not_started" &&   user.user_type === "freelancer" && (
             <div className="mt-4 d-flex justify-content-end">
               <Button
                 variant="primary"
@@ -312,7 +325,7 @@ function ProjectDetails() {
       {user.id === projectDetails?.user_id &&<ProposalsList 
         proposals={proposals}
         onApprove={handleApproveProposal}
-        projectStatus = {projectDetails.progress}
+        projectStatus = {projectDetails?.progress}
         isClientView={profile?.user_type === 'client' && projectDetails?.clientId === profile?.id}
       />}
 

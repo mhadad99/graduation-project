@@ -64,7 +64,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
       const formData = new FormData();
       formData.append("photo", file);
       dispatch(updateUserImageAction(formData))
-      // window.location.reload();
+      window.location.reload();
       profileData.address
 
     }
@@ -112,7 +112,7 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
         return "primary";
       case "client":
         return "success";
-      case "admin":
+      case "none":
         return "danger";
       default:
         return "secondary";
@@ -156,10 +156,10 @@ const ProfileHeader = ({ profileData, isMyProfile }) => {
             size="sm"
             pill>
             <PersonBadge size={12} className="me-1" />
-            {user_type}
+            {user_type === "none" ? "Admin" : user_type}
           </Badge>
         </h2>
-        {  <div className="text-muted mb-3"> {user_type === "client"? profileData.bio : ""}</div>}
+        {  <div className="text-muted mb-3"> {profileData.bio }</div>}
 
         <div className="d-flex justify-content-center gap-3 mb-4">
           <span className="profile-badge">

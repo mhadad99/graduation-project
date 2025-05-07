@@ -5,11 +5,13 @@ import { Row, Col, Button } from "react-bootstrap";
 import ServiceCard from "../cards/ServiceCard";
 import { Plus } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getMyServicesAction, getUserServicesAction } from "../../store/slices/serviceSlice";
+import { getMyServicesAction, getUserServicesAction, clearServices } from "../../store/slices/serviceSlice";
+import { useParams } from "react-router-dom";
 
 const ServicesTab = ({ isMyProfile, userId }) => {
   const { myServices, services, isLoading, error } = useSelector((state) => state.serviceSlice);
   const dispatch = useDispatch();
+  const { id } = useParams();
 
   useEffect(() => {
     if (isMyProfile) {
@@ -17,7 +19,14 @@ const ServicesTab = ({ isMyProfile, userId }) => {
     } else if (userId) {
       dispatch(getUserServicesAction(userId));
     }
-  }, [isMyProfile, userId, dispatch]);
+
+    // Cleanup function
+    return () => {
+      if (!isMyProfile) {
+        dispatch(clearServices());
+      }
+    };
+  }, [id, isMyProfile, userId, dispatch]);
 
   const displayServices = isMyProfile ? myServices : services;
 

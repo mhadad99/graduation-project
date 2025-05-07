@@ -23,6 +23,13 @@ import {
   FaBars,
   FaMoon,
   FaSun,
+  FaHome,
+  FaProjectDiagram,
+  FaTools,
+  FaInfoCircle,
+  FaRobot,
+  FaCog,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { ChatDots } from "react-bootstrap-icons";
@@ -43,10 +50,10 @@ export const Header = () => {
   const navigate = useNavigate(); // Initialize navigate  // Function to handle logout
   const handleLogout = () => {
     dispatch(logout());
-    
+
     navigate("/login"); // Redirect to the login page
   };
-  
+
   useEffect(() => {
     dispatch(getMyProfileAction());
   }, []);
@@ -131,18 +138,64 @@ export const Header = () => {
   ];
 
   const expandMenuOptions = [
-    { icon: <FaUser />, text: "My Profile" },
-    { icon: <FaShoppingCart />, text: "My Services" },
-    { icon: <FaEnvelope />, text: "Messages" },
-    { icon: <FaBell />, text: "Notifications" },
-    { icon: <FaUser />, text: "Settings" },
-    { icon: <FaUser />, text: "Logout" },
+    {
+      icon: <FaHome />,
+      text: "Home",
+      path: "/"
+    },
+    {
+      icon: <FaProjectDiagram />,
+      text: "Projects",
+      path: "/projects"
+    },
+    {
+      icon: <FaTools />,
+      text: "Services",
+      path: "/services"
+    },
+    {
+      icon: <FaInfoCircle />,
+      text: "About Us",
+      path: "/about"
+    },
+    {
+      icon: <FaRobot />,
+      text: "Chat With 🤖",
+      path: "/chatBot"
+    },
+    ...(isLoggedIn ? [
+      {
+        icon: <FaUser />,
+        text: "My Profile",
+        path: `/profile/${user?.id}`
+      },
+      {
+        icon: <FaBell />,
+        text: "Notifications",
+        path: "#notifications"
+      },
+      {
+        icon: <FaEnvelope />,
+        text: "Messages",
+        path: "/chat"
+      },
+      {
+        icon: <FaCog />,
+        text: "Settings",
+        path: "/settings"
+      },
+      {
+        icon: <FaSignOutAlt />,
+        text: "Logout",
+        onClick: handleLogout
+      }
+    ] : [])
   ];
 
   // Function to render notification badge
   const renderBadge = (items) => {
     const count = items.filter((item) => item.unread).length;
-    return count > 0 ? (
+    return 0 ? (
       <Badge
         bg="danger"
         pill
@@ -173,8 +226,8 @@ export const Header = () => {
             <span className="btn-icon">+</span>
           </Link>
         ) : <Link to="/dashboard" className="add-action-btn">
-        <span className="btn-text">Admin Dashboard</span>
-      </Link>}
+          <span className="btn-text">Admin Dashboard</span>
+        </Link>}
       </div>
     );
   };
@@ -240,7 +293,7 @@ export const Header = () => {
               className={({ isActive }) =>
                 `nav-link nav-link-custom me-4  ai  ${isActive ? "active" : ""}`
               }>
-              Chat With 
+              Chat With
               <span className="robot-icon"> 🤖</span>
             </NavLink>
           </Nav>
@@ -305,12 +358,12 @@ export const Header = () => {
                         <Popover.Header className="bg-light d-flex justify-content-between align-items-center popup-header">
                           <span>Notifications</span>
 
-                          <Button
+                          {/* <Button
                             variant="link"
                             size="sm"
                             className="p-0 text-muted mark-read-btn">
                             Mark all as read
-                          </Button>
+                          </Button> */}
                         </Popover.Header>
                         <Popover.Body className="p-0">
                           {notifications.length > 0 ? (
@@ -318,9 +371,8 @@ export const Header = () => {
                               {notifications.map((notification) => (
                                 <div
                                   key={notification.id}
-                                  className={`notification-item p-2 border-bottom ${
-                                    notification.unread ? "bg-light" : ""
-                                  }`}>
+                                  className={`notification-item p-2 border-bottom ${notification.unread ? "bg-light" : ""
+                                    }`}>
                                   <div className="d-flex justify-content-between">
                                     <span className="notification-content">
                                       {notification.content}
@@ -388,7 +440,7 @@ export const Header = () => {
                       className="p-0 profile-link"
                       aria-label="Profile">
                       <Image
-                        src={!user.photo?'/avatar.png': user.photo}
+                        src={!user.photo ? '/avatar.png' : user.photo}
                         roundedCircle
                         width="32"
                         height="32"
@@ -397,48 +449,68 @@ export const Header = () => {
                       />
                     </Nav.Link>
 
+
                     <Overlay
-                      show={dropdowns.profileMenu}
-                      target={refs.profileMenu.current}
-                      placement="bottom-end"
-                      container={refs.profileMenu.current}
-                      containerPadding={20}>
-                      <Popover
-                        id="profile-menu-popover"
-                        className="border-0 shadow-custom">
-                        <Popover.Header className="bg-light d-flex align-items-center popup-header">
-                          <Image
-                            src={user.photo == null?'/avatar.png': user.photo}
-                            roundedCircle
-                            width="40"
-                            height="40"
-                            className="border me-2"
-                            alt="Profile"
-                          />
-                          <div>
-                            <div className="fw-bold">{user.first_name} {user.second_name}</div>
-                            <div className="small text-muted">
-                              {user.email}
-                            </div>
-                          </div>
-                        </Popover.Header>
-                        <Popover.Body className="p-0">
-                          <Nav className="flex-column">
-                            {profileMenuOptions.map((option, idx) => (
-                              <Nav.Link
-                                key={idx}
-                                onClick={option.text === 'Logout' ? handleLogout : undefined} // Call handleLogout for Logout
-                                href={option.text !== 'Logout' ?(option.text === 'Profile' ? `/profile/${user.id}` :`/${option.text.toLowerCase().replace(/ /g, '-')}` ): undefined}
-                                className="px-3 py-2 text-dark menu-item"
-                              >
-                                <span className="menu-icon me-2">{option.icon}</span>
-                                {option.text}
-                              </Nav.Link>
-                            ))}
-                          </Nav>
-                        </Popover.Body>
-                      </Popover>
-                    </Overlay>
+  show={dropdowns.expandMenu}
+  target={refs.expandMenu.current}
+  placement="bottom-end"
+  container={refs.expandMenu.current}
+  containerPadding={20}>
+  <Popover
+    id="expand-menu-popover"
+    className="border-0 shadow-custom expandable-menu">
+    <Popover.Body className="p-0">
+      <Nav className="flex-column">
+        {expandMenuOptions.map((option, idx) => (
+          <Nav.Link
+            key={idx}
+            as={option.onClick ? 'button' : Link}
+            to={!option.onClick ? option.path : undefined}
+            onClick={(e) => {
+              if (option.onClick) {
+                e.preventDefault();
+                option.onClick();
+              }
+              toggleDropdown("expandMenu");
+            }}
+            className="px-3 py-2 text-dark menu-item d-flex align-items-center"
+          >
+            <span className="menu-icon me-2">
+              {option.icon}
+            </span>
+            {option.text}
+          </Nav.Link>
+        ))}
+        {!isLoggedIn && (
+          <>
+            <Nav.Link
+              as={Link}
+              to="/login"
+              className="px-3 py-2 text-dark menu-item d-flex align-items-center"
+              onClick={() => toggleDropdown("expandMenu")}
+            >
+              <span className="menu-icon me-2">
+                <FaSignInAlt />
+              </span>
+              Login
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/register"
+              className="px-3 py-2 text-dark menu-item d-flex align-items-center"
+              onClick={() => toggleDropdown("expandMenu")}
+            >
+              <span className="menu-icon me-2">
+                <FaUserPlus />
+              </span>
+              Register
+            </Nav.Link>
+          </>
+        )}
+      </Nav>
+    </Popover.Body>
+  </Popover>
+</Overlay>
                   </div>
                 </>
               )}
@@ -487,9 +559,8 @@ export const Header = () => {
                         {expandMenuOptions.map((option, idx) => (
                           <Nav.Link
                             key={idx}
-                            href={`#${option.text
-                              .toLowerCase()
-                              .replace(/ /g, "-")}`}
+                            href={option.path}
+                            onClick={option.onClick}
                             className="px-3 py-2 text-dark menu-item">
                             <span className="menu-icon me-2">
                               {option.icon}

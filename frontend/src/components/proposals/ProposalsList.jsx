@@ -40,7 +40,7 @@ const ProposalsList = ({ proposals, onApprove, isClientView , projectStatus}) =>
                                         View Profile
                                     </Button></div>
 
-                                {isClientView && !proposal.is_approved &&  (
+                                {projectStatus ===  "not_started" && isClientView && !proposal.is_approved &&  (
                                     <div className="d-flex justify-content-end">
                                         <Button
                                             variant="success"

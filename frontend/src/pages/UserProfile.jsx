@@ -124,17 +124,7 @@ const UserProfile = () => {
           />
         ),
       },
-      {
-        eventKey: "portfolio",
-        title: "Portfolio",
-        icon: <Collection className="me-2" />,
-        component: (
-          <PortfolioTab
-            portfolioItems={profileData.portfolio || []}
-            isMyProfile={isMyProfile}
-          />
-        ),
-      },
+
       ...commonTabs,
     ];
 

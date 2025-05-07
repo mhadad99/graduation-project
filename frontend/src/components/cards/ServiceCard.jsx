@@ -52,8 +52,16 @@ const ServiceCard = ({ service, isOwner }) => {
             <span>{deliveryTime}</span>
           </div>
         </div>
+        {/* add service.tags  */}
+        <div className="service-tags mb-3">
+          {service.tags?.map((tag, index) => (
+            <Badge key={index} className="tag-badge me-2">
+              {tag}
+            </Badge>
+          ))}
+        </div>
         <div className="service-footer mt-auto">
-          <div className="price">
+        <div className="price">
             <span className="price-label">Starting at:</span>
             <span className="price-value">${price}</span>
           </div>

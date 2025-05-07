@@ -141,7 +141,11 @@ const serviceSlice = createSlice(
     {
         name: "services",
         initialState,
-        reducers: {},
+        reducers: {
+            clearServices: (state) => {
+                state.services = [];
+            }
+        },
         extraReducers: (builder) => {
             builder
                 .addCase(getAllServicesAction.pending, (state) => {
@@ -240,6 +244,7 @@ const serviceSlice = createSlice(
                 .addCase(getUserServicesAction.fulfilled, (state, action) => {
                     state.isLoading = false;
                     state.services = action.payload;
+                    state.error = null;
                 })
                 .addCase(getUserServicesAction.rejected, (state, action) => {
                     state.isLoading = false;
@@ -249,4 +254,5 @@ const serviceSlice = createSlice(
     }
 )
 
+export const { clearServices } = serviceSlice.actions;
 export const serviceReducer = serviceSlice.reducer;

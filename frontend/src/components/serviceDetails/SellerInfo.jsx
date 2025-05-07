@@ -5,6 +5,7 @@ import { Card, Image, Stack, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../store/slices/userSlice";
 import { Link } from "react-router-dom";
+import { GeoAlt } from "react-bootstrap-icons";
 
 export default function SellerInfo({ id }) {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ export default function SellerInfo({ id }) {
         <div className="d-flex gap-4">
           <Link to={`/profile/${profile?.id}`}>
             <Image
-              src={profile?.photo || '/default-avatar.png'} // Add fallback image
+              src={profile?.photo || '/defaultavatar.png'} // Add fallback image
               roundedCircle
               width={72}
               height={72}
@@ -61,7 +62,8 @@ export default function SellerInfo({ id }) {
             </div>
             <div className="text-muted mb-3">
               <small>
-                {profile?.response_time || 'N/A'} Response Time
+                <GeoAlt className="me-2"/>
+                {profile?.address || 'not specified'} 
               </small>
             </div>
             <p className="mb-3">{profile?.bio || 'No bio available'}</p>
