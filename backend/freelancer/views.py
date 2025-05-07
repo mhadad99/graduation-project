@@ -1,57 +1,85 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
+from rest_framework.exceptions import (
+    PermissionDenied,
+)  # Correct import for PermissionDenied
 from .models import Freelancer
+from user.models import (
+    CustomUser,
+)  # Correct import for CustomUser  # Import CustomUser to check user_type
 from .serializers import FreelancerCreateSerializer, FreelancerOutSerializer
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+
 
 class FreelancerListView(ListAPIView):
     serializer_class = FreelancerOutSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Freelancer.objects.filter(is_deleted=False)
+
 
 class FreelancerCreateView(generics.CreateAPIView):
     serializer_class = FreelancerCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(uid=self.request.user)
+        user = self.request.user
+
+        # # Check if the user is already registered as a client
+        # if user.user_type == 'client':
+        #     raise PermissionDenied("You are already registered as a client and cannot register as a freelancer.")
+
+        # Check if the user is already registered as a freelancer
+        # # Check if the user is already registered as a freelancer
+        # if user.user_type == 'freelancer':
+        #     raise PermissionDenied("You are already registered as a freelancer.")
+
+        # Proceed with freelancer registration
+        serializer.save(uid=user)
+        user.user_type = "freelancer"
+        user.save()
 
 
 class FreelancerDetailView(generics.RetrieveAPIView):
     queryset = Freelancer.objects.filter(is_deleted=False)
     serializer_class = FreelancerOutSerializer
     permission_classes = [permissions.IsAuthenticated]
-    lookup_field = "uid"
-
-
-class FreelancerUpdateView(generics.UpdateAPIView):
-    queryset = Freelancer.objects.filter(is_deleted=False)
-    serializer_class = FreelancerCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    lookup_field = "uid"
 
     def get_object(self):
-        obj = super().get_object()
-        if obj.uid != self.request.user:
-            raise PermissionDenied("You do not have permission to update this profile.")
+        # Retrieve the freelancer associated with the authenticated user
+        try:
+            obj = self.queryset.get(uid=self.request.user.id)
+        except Freelancer.DoesNotExist:
+            raise PermissionDenied("You do not have a freelancer profile.")
         return obj
+
+
+class FreelancerUpdateView(APIView):
+    def patch(self, request):
+        try:
+            freelancer = request.user.freelancer_profile
+        except Freelancer.DoesNotExist:
+            return Response({"detail": "Freelancer profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = FreelancerCreateSerializer(freelancer, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FreelancerDeleteView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, uid):
+    def delete(self, request):
         try:
-            freelancer = Freelancer.objects.get(uid=uid, is_deleted=False)
+            freelancer = Freelancer.objects.get(uid=request.user.id, is_deleted=False)
         except Freelancer.DoesNotExist:
-            return Response({"detail": "Freelancer not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Freelancer not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         freelancer.is_deleted = True
         freelancer.save()
-        return Response({"msg": f"Freelancer {uid} marked as deleted"})
-
-
-
+        return Response({"msg": "Freelancer profile marked as deleted"})

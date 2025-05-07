@@ -47,6 +47,14 @@ INSTALLED_APPS = [
     "skill",
     "project",
     "service",
+    "client_rating",
+    "service_proposal",
+    "project_proposal",
+    "admin_dashboard",
+    "channels",
+    "chatroom",
+    "chatbot",
+
 ]
 
 MIDDLEWARE = [
@@ -179,3 +187,12 @@ SIMPLE_JWT = {
 }
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+ASGI_APPLICATION = "your_project_name.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # Use Redis for production
+    }
+}
+
+GEMINI_API_KEY = config("GEMINI_API_KEY")

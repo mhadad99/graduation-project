@@ -6,6 +6,7 @@ class ServiceCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         exclude = ["freelancerId"]
+        read_only_fields = ["freelancerId"]  # <- this is the key fix
 
 
 class ServiceRetriveDeleteSerializer(serializers.ModelSerializer):

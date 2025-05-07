@@ -1,0 +1,120 @@
+/* Statistics Overview Styling */
+.card {
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Chart Containers */
+.chart-area, .chart-pie {
+  position: relative;
+  margin: 0 auto;
+}
+
+/* Stat Cards */
+.border-left-primary,
+.border-left-success,
+.border-left-info,
+.border-left-warning {
+  overflow: hidden;
+  position: relative;
+}
+
+.border-left-primary::after,
+.border-left-success::after,
+.border-left-info::after,
+.border-left-warning::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  opacity: 0.1;
+  transform: skew(-15deg) translateX(45px);
+}
+
+.border-left-primary::after {
+  background-color: #4e73df;
+}
+
+.border-left-success::after {
+  background-color: #1cc88a;
+}
+
+.border-left-info::after {
+  background-color: #36b9cc;
+}
+
+.border-left-warning::after {
+  background-color: #f6c23e;
+}
+
+/* Stat Card Icons */
+.fa-2x {
+  font-size: 2rem;
+}
+
+/* Progress Bars */
+.progress {
+  height: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  border-radius: 0.25rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .chart-area {
+    height: 12rem;
+  }
+  
+  .chart-pie {
+    height: 10rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Tooltip Styling */
+.chartjs-tooltip {
+  opacity: 1;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 3px;
+  transition: all 0.1s ease;
+  pointer-events: none;
+  transform: translate(-50%, 0);
+  padding: 4px 8px;
+}
+
+/* Legend Styling */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 5px;
+}
+
+.legend-label {
+  font-size: 0.8rem;
+  color: #5a5c69;
+}

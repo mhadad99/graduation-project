@@ -1,3 +1,4 @@
+.migrations/
 # Python-related
 *.pyc
 *.pyo
@@ -5,6 +6,7 @@
 __pycache__
 db.sqlite3  # SQLite database file, if you are using SQLite
 *.log
+client_rating/
 
 # Virtual environment
 venv/
@@ -34,3 +36,12 @@ test-results/
 # Operating system files
 .DS_Store  # macOS
 Thumbs.db  # Windows
+
+# Migrations
+.migrations/
+migrations/
+**/migrations/
+__pycache__
+*.pyc
+*.pyo
+*.pyd

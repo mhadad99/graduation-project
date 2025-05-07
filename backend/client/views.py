@@ -8,7 +8,9 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Client
+from user.models import CustomUser  # Correct import for CustomUser  # Import CustomUser to check user_type
 from .serializers import ClientCreateSerializer, ClientOutSerializer
 
 class ClientCreateView(CreateAPIView):
@@ -16,52 +18,62 @@ class ClientCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Automatically set the uid to the currently logged-in user
-        serializer.save(uid=self.request.user)
+        user = self.request.user
 
+        # Check if the user is already registered as a freelancer
+        if user.user_type == 'freelancer':
+            raise PermissionDenied("You are already registered as a freelancer and cannot register as a client.")
+
+        # Check if the user is already registered as a client
+        if user.user_type == 'client':
+            raise PermissionDenied("You are already registered as a client.")
+
+        # Proceed with client registration
+        serializer.save(uid=user)
+        user.user_type = 'client'
+        user.save()
 
 class ClientDetailView(RetrieveAPIView):
     serializer_class = ClientOutSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        client_id = self.kwargs.get("id")
         try:
-            return Client.objects.get(id=client_id, is_deleted=False)
+            # Retrieve the client associated with the authenticated user
+            return Client.objects.get(uid=self.request.user.id, is_deleted=False)
         except Client.DoesNotExist:
-            raise Http404("Client not found")
-
+            raise NotFound("You do not have a client profile.")
 
 class ClientUpdateView(UpdateAPIView):
     serializer_class = ClientCreateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        client_id = self.kwargs.get("id")
         try:
-            return Client.objects.get(id=client_id, is_deleted=False)
+            # Retrieve the client associated with the authenticated user
+            return Client.objects.get(uid=self.request.user.id, is_deleted=False)
         except Client.DoesNotExist:
-            raise Http404("Client not found")
-
+            raise NotFound("You do not have a client profile to update.")
 
 class ClientDeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        client_id = self.kwargs.get("id")
         try:
-            return Client.objects.get(id=client_id, is_deleted=False)
+            # Retrieve the client associated with the authenticated user
+            return Client.objects.get(uid=self.request.user.id, is_deleted=False)
         except Client.DoesNotExist:
-            raise Http404("Client not found")
+            raise NotFound("You do not have a client profile to delete.")
 
     def perform_destroy(self, instance):
+        # Soft delete by marking the client as deleted
         instance.is_deleted = True
         instance.save()
-
 
 class ClientListView(ListAPIView):
     serializer_class = ClientOutSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # Only show non-deleted clients
         return Client.objects.filter(is_deleted=False)

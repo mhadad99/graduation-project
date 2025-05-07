@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, InputGroup, Button } from "react-bootstrap";
+import { Container, Row, Col, Form, InputGroup, Button, Spinner } from "react-bootstrap";
 import { Search, Funnel } from "react-bootstrap-icons";
 import ProjectCard from "../components/cards/ProjectCard";
 import ProjectFilters from "../components/projects/ProjectFilters";
-import { mockProjects } from "../mock/projectsData";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProjectAction } from "../store/slices/projectSlice";
 import "../styles/pages/Projects.css";
 
 const Projects = () => {
+  const dispatch = useDispatch();
+  const { projectList, isLoading, error } = useSelector((state) => state.projectSlice);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     priceRange: 10000,
@@ -15,46 +19,55 @@ const Projects = () => {
     level: "all",
   });
   const [showFilters, setShowFilters] = useState(false);
-  const [filteredProjects, setFilteredProjects] = useState(mockProjects);
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
+  // Fetch projects from backend on mount
   useEffect(() => {
-    const filtered = mockProjects.filter((project) => {
+    dispatch(getAllProjectAction());
+  }, [dispatch]);
+
+  // Filter projects when projectList, filters, or searchTerm changes
+  useEffect(() => {
+    const filtered = (projectList || []).filter((project) => {
       // Search filter
       const matchesSearch =
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase());
+        (project.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.description?.toLowerCase().includes(searchTerm.toLowerCase()));
 
-      // Price range filter
-      const projectBudget = parseInt(
-        project.budget.replace(/[^\d-]/g, "").split("-")[0]
-      );
-      const matchesPrice = projectBudget <= filters.priceRange;
-
-      // Status filter
-      const matchesStatus =
-        filters.status === "all" || project.status === filters.status;
-
-      // Type filter
-      const matchesType =
-        filters.type === "all" || project.type === filters.type;
-
-      // Level filter
-      const matchesLevel =
-        filters.level === "all" || project.level === filters.level;
-
-      return (
-        matchesSearch &&
-        matchesPrice &&
-        matchesStatus &&
-        matchesType &&
-        matchesLevel
-      );
+      // You may want to adjust these filters based on your backend data
+      // For now, only search is applied since backend data doesn't have price/type/level/status
+      return matchesSearch;
     });
 
     setFilteredProjects(filtered);
-  }, [filters, searchTerm]);
-
+  }, [projectList, filters, searchTerm]);
+  if(localStorage.getItem("authToken") === null) {
+    return (
+      <Container className="py-5 vh-100 d-flex align-items-center justify-content-center">
+        <Row className="mb-4 ">
+          <Col>
+            <h1 className="mb-4">Available Projects</h1>
+            <div className="text-center py-5">
+              <p className="text-muted">Please login to view projects.</p>
+            </div>
+            <div className="text-center">
+              <p className="text-muted">You can login from the top right corner.</p>
+            </div>
+            <Button 
+              variant="primary"
+              // make button in center
+              style={{ display: "block", margin: "0 auto" }}
+              className="mt-3 px-4 py-2 fs-5 rounded-3 align-items-center"
+              onClick={() => window.location.href = "/login"}>
+              Login
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
   return (
+
     <Container className="py-5">
       <Row className="mb-4">
         <Col>
@@ -89,10 +102,21 @@ const Projects = () => {
 
         <Col md={showFilters ? 9 : 12}>
           <div className="mb-3 text-muted">
-            Found {filteredProjects.length} projects
+            {isLoading
+              ? "Loading projects..."
+              : `Found ${filteredProjects.length} projects`}
           </div>
 
-          {filteredProjects.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" />
+            </div>
+          ) : error ? (
+            <div className="text-danger text-center py-5">
+              {error}
+              Failed to load projects.
+            </div>
+          ) : filteredProjects.length === 0 ? (
             <div className="text-center py-5">
               <p className="text-muted">
                 No projects found matching your criteria.

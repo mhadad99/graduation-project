@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Tabs, Tab, Alert } from "react-bootstrap";
+import { Container, Tabs, Tab, Alert, Spinner } from "react-bootstrap";
 import {
   Briefcase,
   PersonFill,
@@ -10,9 +10,6 @@ import {
   Star,
   GeoAlt,
 } from "react-bootstrap-icons";
-
-// Import mock data
-import { mockProfileData } from "../mock/profileData";
 
 // Import profile components
 import {
@@ -23,81 +20,76 @@ import {
   ReviewsTab,
   ProjectsTab,
 } from "../components/profile";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearProfile,
+  fetchUserProfile,
+  getMyProfileAction,
+} from "../store/slices/userSlice";
+
 
 const UserProfile = () => {
   const { id } = useParams();
-  const loggedInUserId = "2"; // This should come from your auth state/context
-  const isMyProfile = id === loggedInUserId;
-
-  // Improved role determination
-  const getUserRole = (id) => {
-    if (id === "1") return "freelancer";
-    if (id === "2") return "client";
-    if (id === "3") return "admin";
-    return null;
-  };
-
-  const role = getUserRole(id);
-  const profileData = role ? mockProfileData[role] : null;
-
-  // Local state
-  const [activeTab, setActiveTab] = useState("about");
-  const [isLoading, setIsLoading] = useState(true);
-  const [portfolioItems, setPortfolioItems] = useState(
-    profileData?.portfolio || []
+  const dispatch = useDispatch();
+  const { user, profile, isLoading, error } = useSelector(
+    (state) => state.userSlice
   );
 
-  // Simulate API call with mock data
+  const [activeTab, setActiveTab] = useState("about");
+
   useEffect(() => {
-    const loadMockData = () => {
-      setTimeout(() => {
-        if (role === "freelancer") {
-          setPortfolioItems(mockProfileData.freelancer.portfolio || []);
-        }
-        setIsLoading(false);
-      }, 1000);
+    dispatch(getMyProfileAction());
+  }, [ dispatch]);
+
+  useEffect(() => {
+    if (id && (!profile || String(profile.id) !== String(id))) {
+      dispatch(fetchUserProfile(id));
+    }
+    // clear profile on unmount or id change to avoid stale data
+    return () => {
+      dispatch(clearProfile());
     };
+  }, [id, dispatch]);
 
-    loadMockData();
-  }, [id, role]);
-
-  // Mock handlers
-  const handleAddPortfolioItem = (item) => {
-    setPortfolioItems((prev) => [...prev, { ...item, id: Date.now() }]);
-  };
-
-  const handleDeletePortfolioItem = (itemId) => {
-    setPortfolioItems((prev) => prev.filter((item) => item.id !== itemId));
-  };
-
-  const handleSubmitReview = (review) => {
-    console.log("Submitting review:", review);
-    // You would normally dispatch to Redux here
-  };
-
+  // Show a spinner while loading
   if (isLoading) {
     return (
       <Container className="py-5 text-center">
-        <div className="spinner-border text-primary" role="status">
+        <Spinner animation="border" role="status" variant="primary">
           <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-2">Loading profile data...</p>
+        </Spinner>
+        <p className="mt-3">Loading user profile...</p>
       </Container>
     );
   }
 
-  if (!profileData) {
+  if (error) {
     return (
       <Container className="py-5">
-        <Alert variant="warning">
-          User profile not found. Invalid user ID: {id}
+        <Alert variant="danger" className="text-center">
+          {error}
         </Alert>
       </Container>
     );
   }
 
+  // Only show "not found" if NOT loading and NOT error
+  if (!isLoading && !error && !profile) {
+    return (
+      <Container className="py-5">
+        <Alert variant="warning" className="text-center">
+          User profile not found
+        </Alert>
+      </Container>
+    );
+  }
+
+  // Only use user to check if this is your own profile
+  const isMyProfile = user && profile && String(user.id) === String(profile.id);
+  const profileData = profile;
+
   const renderTabs = () => {
-    const userRole = profileData?.role || "freelancer";
+    const userRole = profileData?.user_type || "freelancer";
 
     const commonTabs = [
       {
@@ -114,10 +106,8 @@ const UserProfile = () => {
         icon: <Star className="me-2" />,
         component: (
           <ReviewsTab
-            reviews={profileData.reviews}
-            onSubmitReview={handleSubmitReview}
-            isMyProfile={isMyProfile}
-          />
+          reviews={profileData.reviews || []}
+          isMyProfile={isMyProfile} />
         ),
       },
     ];
@@ -129,25 +119,12 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ServicesTab
-            services={profileData.services}
-            isMyProfile={isMyProfile}
+          services={profileData.services || []}
+          isMyProfile={isMyProfile}
           />
         ),
       },
-      {
-        eventKey: "portfolio",
-        title: "Portfolio",
-        icon: <Collection className="me-2" />,
-        component: (
-          <PortfolioTab
-            portfolioItems={profileData.portfolio} // Changed from portfolio to portfolioItems
-            isMyProfile={isMyProfile}
-            isLoading={isLoading}
-            onAddItem={handleAddPortfolioItem} // Changed from onAdd
-            onDeleteItem={handleDeletePortfolioItem} // Changed from onDelete
-          />
-        ),
-      },
+
       ...commonTabs,
     ];
 
@@ -158,8 +135,7 @@ const UserProfile = () => {
         icon: <Briefcase className="me-2" />,
         component: (
           <ProjectsTab
-            projects={profileData.projects}
-            isMyProfile={isMyProfile}
+          isMyProfile={isMyProfile}
           />
         ),
       },

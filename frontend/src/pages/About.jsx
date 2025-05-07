@@ -45,12 +45,12 @@ export default function About() {
         <div style={styles.underline}></div>
         <div style={styles.teamGrid}>
           {[
-            { name: "Mohamed Hassan", img: "./images/mohamed-hassan.jpg" },
-            { name: "AYMAN samer", img: "./images/ayman-samer.jpg" },
-            { name: "Saraa Talat Ali", img: "./images/saraa-talat.jpg" },
-            { name: "Mohamed Akram", img: "./images/mohamed-akram.jpg" },
-            { name: "Mohamed Emad", img: "./images/mohamed-emad.jpg" },
-            { name: "Mohamed Hosny", img: "./images/mohamed-hosny.jpg" },
+            { name: "Mohamed Hassan", img: "../logo/mhadad.jpeg" },
+            { name: "Ayman Samir", img: "../logo/ayman.jpeg" },
+            { name: "Saraa Talat Ali", img: "../logo/images (1).jpeg" },
+            { name: "Mohamed Akram", img: "./logo/Tanfeez.png" },
+            { name: "Mohamed Emad", img: "./logo/Tanfeez.png" },
+            { name: "Mohamed Hosny", img: "./logo/Tanfeez.png" },
           ].map((person, index) => (
             <div key={index} style={styles.memberCard}>
               <img src={person.img} alt={person.name} style={styles.memberImage} />

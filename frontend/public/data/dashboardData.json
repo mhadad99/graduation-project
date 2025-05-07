@@ -1,0 +1,38 @@
+{
+    "barChart": {
+      "labels": ["Orders", "Sales", "Returns"],
+      "values": [150, 200, 30]
+    },
+    "lineChart": {
+      "labels": ["January", "February", "March", "April", "May", "June", "July"],
+      "sales": [65, 59, 80, 81, 56, 55, 40],
+      "expenses": [45, 49, 60, 71, 46, 35, 30]
+    },
+    "doughnutChart": {
+      "labels": ["Coupon A", "Coupon B", "Coupon C"],
+      "values": [30, 50, 20]
+    },
+    "smallLineChart": {
+      "labels": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      "data": [5, 10, 7, 12, 9]
+    },
+    "halfDoughnutChart": {
+      "labels": ["Verified", "Unverified"],
+      "values": [80, 20]
+    },
+    "statCards": [
+    {
+      "title": "20 new messages",
+      "subtitle": "Require response"
+    },
+    {
+      "title": "5 overdue projects",
+      "subtitle": "Need immediate attention"
+    },
+    {
+      "title": "19 pending proposals",
+      "subtitle": "Awaiting client review"
+    }
+  ]
+  }
+  
